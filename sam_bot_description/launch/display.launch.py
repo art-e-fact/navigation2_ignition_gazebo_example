@@ -3,7 +3,6 @@ from launch.substitutions import Command, LaunchConfiguration
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import (
     Command,
-    FindExecutable,
     LaunchConfiguration,
     PathJoinSubstitution,
 )
@@ -23,7 +22,6 @@ def generate_launch_description():
     )
     default_rviz_config_path = os.path.join(pkg_share, "rviz/urdf_config.rviz")
     world_path = os.path.join(pkg_share, "world/my_world.sdf")
-    world_path = "empty.sdf"
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     log_level = LaunchConfiguration("log_level")
@@ -55,12 +53,6 @@ def generate_launch_description():
         output="screen",
         arguments=["-d", LaunchConfiguration("rvizconfig")],
     )
-    # spawn_entity = Node(
-    #     package="gazebo_ros",
-    #     executable="spawn_entity.py",
-    #     arguments=["-entity", "sam_bot", "-topic", "robot_description"],
-    #     output="screen",
-    # )
     robot_localization_node = Node(
         package="robot_localization",
         executable="ekf_node",
@@ -71,7 +63,6 @@ def generate_launch_description():
             {"use_sim_time": use_sim_time},
         ],
     )
-
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
@@ -82,9 +73,8 @@ def generate_launch_description():
                 ]
             )
         ),
-        launch_arguments=[("ign_args", [world_path, " -v ", ign_verbosity])],
+        launch_arguments=[("ign_args", [world_path, " -r -v ", ign_verbosity])],
     )
-
     spawn_entity = Node(
         package="ros_ign_gazebo",
         executable="create",
