@@ -147,7 +147,6 @@
   </link>
 
   <gazebo reference="imu_link">
-
     <sensor name="imu_sensor" type="imu">
       <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu">
       </plugin>
@@ -276,8 +275,9 @@
     <origin xyz="0 0 0.12" rpy="0 0 0"/>
   </joint>
 
-  <!-- <gazebo reference="lidar_link">
-    <sensor name="lidar" type="ray">
+  <gazebo reference="lidar_link">
+    <sensor name="lidar" type="gpu_lidar">
+      <topic>scan</topic>
       <always_on>true</always_on>
       <visualize>true</visualize>
       <update_rate>5</update_rate>
@@ -301,15 +301,8 @@
           <stddev>0.01</stddev>
         </noise>
       </ray>
-      <plugin name="scan" filename="libgazebo_ros_ray_sensor.so">
-        <ros>
-          <remapping>~/out:=scan</remapping>
-        </ros>
-        <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>lidar_link</frame_name>
-      </plugin>
     </sensor>
-  </gazebo> -->
+  </gazebo>
 
 
   <link name="camera_link">
