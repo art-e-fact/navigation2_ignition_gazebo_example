@@ -148,6 +148,7 @@
 
   <gazebo reference="imu_link">
     <sensor name="imu_sensor" type="imu">
+      <ignition_frame_id>imu_link</ignition_frame_id>
       <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu">
       </plugin>
 
@@ -277,6 +278,7 @@
 
   <gazebo reference="lidar_link">
     <sensor name="lidar" type="gpu_lidar">
+      <ignition_frame_id>lidar_link</ignition_frame_id>
       <topic>scan</topic>
       <always_on>true</always_on>
       <visualize>true</visualize>
@@ -343,6 +345,7 @@
 
   <!-- <gazebo reference="camera_link">
     <sensor name="depth_camera" type="depth">
+      <ignition_frame_id>camera_link</ignition_frame_id>
       <visualize>true</visualize>
       <update_rate>30.0</update_rate>
       <camera name="camera">
