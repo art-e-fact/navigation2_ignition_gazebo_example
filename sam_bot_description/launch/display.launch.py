@@ -1,6 +1,12 @@
 import launch
 from launch.substitutions import Command, LaunchConfiguration
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import (
+    ExecuteProcess,
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    RegisterEventHandler,
+)
+from launch.event_handlers import OnProcessExit
 from launch.substitutions import (
     Command,
     LaunchConfiguration,
@@ -91,8 +97,6 @@ def generate_launch_description():
         parameters=[{"use_sim_time": use_sim_time}],
     )
 
-    
-
     bridge = Node(
         package="ros_ign_bridge",
         executable="parameter_bridge",
@@ -103,6 +107,32 @@ def generate_launch_description():
             # "/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist",
             # "/sky_cam@sensor_msgs/msg/Image@ignition.msgs.Image",
             "/model/costar_husky/pose_static@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V",
+        ],
+        output="screen",
+    )
+
+    load_joint_state_controller = ExecuteProcess(
+        name="activate_joint_state_broadcaster",
+        cmd=[
+            "ros2",
+            "control",
+            "load_controller",
+            "--set-state",
+            "active",
+            "joint_state_broadcaster",
+        ],
+        output="screen",
+    )
+
+    load_joint_trajectory_controller = ExecuteProcess(
+        name="activate_diff_drive_base_controller",
+        cmd=[
+            "ros2",
+            "control",
+            "load_controller",
+            "--set-state",
+            "active",
+            "diff_drive_base_controller",
         ],
         output="screen",
     )
@@ -147,5 +177,17 @@ def generate_launch_description():
             spawn_entity,
             robot_localization_node,
             rviz_node,
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=spawn_entity,
+                    on_exit=[load_joint_state_controller],
+                )
+            ),
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=load_joint_state_controller,
+                    on_exit=[load_joint_trajectory_controller],
+                )
+            ),
         ]
     )
