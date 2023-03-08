@@ -91,6 +91,22 @@ def generate_launch_description():
         parameters=[{"use_sim_time": use_sim_time}],
     )
 
+    
+
+    bridge = Node(
+        package="ros_ign_bridge",
+        executable="parameter_bridge",
+        arguments=[
+            "/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan",
+            "/imu@sensor_msgs/msg/Imu[ignition.msgs.IMU",
+            # "/wall/touched@std_msgs/msg/Bool[ignition.msgs.Boolean",
+            # "/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist",
+            # "/sky_cam@sensor_msgs/msg/Image@ignition.msgs.Image",
+            "/model/costar_husky/pose_static@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V",
+        ],
+        output="screen",
+    )
+
     return launch.LaunchDescription(
         [
             DeclareLaunchArgument(
@@ -124,6 +140,7 @@ def generate_launch_description():
                 description="The level of logging that is applied to all ROS 2 nodes launched by this script.",
             ),
             gazebo,
+            bridge,
             joint_state_publisher_node,
             joint_state_publisher_gui_node,
             robot_state_publisher_node,
