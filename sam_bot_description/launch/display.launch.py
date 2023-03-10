@@ -103,10 +103,11 @@ def generate_launch_description():
         arguments=[
             "/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan",
             "/imu@sensor_msgs/msg/Imu[ignition.msgs.IMU",
+            # Clock message is needed for the diff_drive_controller https://github.com/ros-controls/gz_ros2_control/issues/106 
+            "/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock",
             # "/wall/touched@std_msgs/msg/Bool[ignition.msgs.Boolean",
             # "/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist",
             # "/sky_cam@sensor_msgs/msg/Image@ignition.msgs.Image",
-            "/model/costar_husky/pose_static@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V",
         ],
         output="screen",
     )
