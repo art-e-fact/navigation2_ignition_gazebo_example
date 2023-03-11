@@ -73,16 +73,16 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
                 [
-                    FindPackageShare("ros_ign_gazebo"),
+                    FindPackageShare("ros_gz_sim"),
                     "launch",
-                    "ign_gazebo.launch.py",
+                    "gz_sim.launch.py",
                 ]
             )
         ),
         launch_arguments=[("ign_args", [world_path, " -r -v ", ign_verbosity])],
     )
     spawn_entity = Node(
-        package="ros_ign_gazebo",
+        package="ros_gz_sim",
         executable="create",
         output="screen",
         arguments=[
@@ -90,6 +90,8 @@ def generate_launch_description():
             "sam_bot",
             "-topic",
             "robot_description",
+            "-z",
+            "1.0",
             "--ros-args",
             "--log-level",
             log_level,
