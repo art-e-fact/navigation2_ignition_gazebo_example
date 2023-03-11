@@ -44,13 +44,6 @@ def generate_launch_description():
         package="joint_state_publisher",
         executable="joint_state_publisher",
         name="joint_state_publisher",
-        condition=launch.conditions.UnlessCondition(LaunchConfiguration("gui")),
-    )
-    joint_state_publisher_gui_node = Node(
-        package="joint_state_publisher_gui",
-        executable="joint_state_publisher_gui",
-        name="joint_state_publisher_gui",
-        condition=launch.conditions.IfCondition(LaunchConfiguration("gui")),
     )
     rviz_node = Node(
         package="rviz2",
@@ -107,9 +100,6 @@ def generate_launch_description():
             "/imu@sensor_msgs/msg/Imu[ignition.msgs.IMU",
             # Clock message is needed for the diff_drive_controller https://github.com/ros-controls/gz_ros2_control/issues/106 
             "/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock",
-            # "/wall/touched@std_msgs/msg/Bool[ignition.msgs.Boolean",
-            # "/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist",
-            # "/sky_cam@sensor_msgs/msg/Image@ignition.msgs.Image",
         ],
         output="screen",
     )
@@ -201,7 +191,6 @@ def generate_launch_description():
             gazebo,
             bridge,
             joint_state_publisher_node,
-            joint_state_publisher_gui_node,
             robot_state_publisher_node,
             spawn_entity,
             robot_localization_node,
