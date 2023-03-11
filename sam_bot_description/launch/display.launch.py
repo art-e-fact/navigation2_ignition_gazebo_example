@@ -40,11 +40,6 @@ def generate_launch_description():
             {"robot_description": Command(["xacro ", LaunchConfiguration("model")])}
         ],
     )
-    joint_state_publisher_node = Node(
-        package="joint_state_publisher",
-        executable="joint_state_publisher",
-        name="joint_state_publisher",
-    )
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
@@ -190,7 +185,6 @@ def generate_launch_description():
             ),
             gazebo,
             bridge,
-            joint_state_publisher_node,
             robot_state_publisher_node,
             spawn_entity,
             robot_localization_node,
