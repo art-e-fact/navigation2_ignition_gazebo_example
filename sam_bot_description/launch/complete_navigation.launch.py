@@ -124,7 +124,7 @@ def generate_launch_description():
 
     waiting_success = RegisterEventHandler(
         OnProcessIO(
-            target_action=toolbox,
+            target_action=navigation,
             on_stdout=on_matching_output(
                 navigation_ready_message,
                 [
@@ -132,18 +132,6 @@ def generate_launch_description():
                 ],
             ),
         )
-    )
-
-    navigation = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            PathJoinSubstitution(
-                [
-                    FindPackageShare("nav2_bringup"),
-                    "launch",
-                    "navigation_launch.py",
-                ]
-            )
-        ),
     )
 
     return launch.LaunchDescription(

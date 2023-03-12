@@ -1,0 +1,19 @@
+
+version: 0.1.0
+
+project: navigation2-ignition-example
+jobs:
+  basic_tests: # Overall job name
+    type: test
+    runtime:
+      simulator: gazebo:fortress
+      framework: ros2:humble
+    timeout: 5 #minutes
+    scenarios:
+      defaults: # Global to all scenarios, and overriden in specific scenarios.
+        subscriptions:
+          rosout: rosout
+        output_path: /tmp/artefacts_output
+      settings:
+        - name: reach_goal
+          ros_testfile: "sam_bot_description/test/test_arm.launch.py"
