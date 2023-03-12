@@ -93,7 +93,7 @@ def generate_launch_description():
         arguments=[
             "/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan",
             "/imu@sensor_msgs/msg/Imu[ignition.msgs.IMU",
-            # Clock message is needed for the diff_drive_controller https://github.com/ros-controls/gz_ros2_control/issues/106 
+            # Clock message is necessary for the diff_drive_controller to accept commands https://github.com/ros-controls/gz_ros2_control/issues/106 
             "/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock",
         ],
         output="screen",
@@ -153,11 +153,6 @@ def generate_launch_description():
 
     return launch.LaunchDescription(
         [
-            DeclareLaunchArgument(
-                name="gui",
-                default_value="True",
-                description="Flag to enable joint_state_publisher_gui",
-            ),
             DeclareLaunchArgument(
                 name="model",
                 default_value=default_model_path,
