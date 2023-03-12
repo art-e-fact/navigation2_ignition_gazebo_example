@@ -46,6 +46,7 @@ def generate_launch_description():
         name="rviz2",
         output="screen",
         arguments=["-d", LaunchConfiguration("rvizconfig")],
+        condition=launch.conditions.IfCondition(LaunchConfiguration('use_rviz'))    
     )
     robot_localization_node = Node(
         package="robot_localization",
@@ -157,6 +158,11 @@ def generate_launch_description():
                 name="model",
                 default_value=default_model_path,
                 description="Absolute path to robot urdf file",
+            ),
+            DeclareLaunchArgument(
+                name="use_rviz",
+                default_value="True",
+                description="Absolute path to rviz config file",
             ),
             DeclareLaunchArgument(
                 name="rvizconfig",
