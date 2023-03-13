@@ -15,4 +15,4 @@ jobs:
           rosout: rosout
       settings:
         - name: reach_goal
-          ros_testfile: "sam_bot_description/test/test_arm.launch.py"
+          ros_testfile: "src/navigation2_tutorials/sam_bot_description/test/basic_test.launch.py"
