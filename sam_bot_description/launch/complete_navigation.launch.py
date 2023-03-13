@@ -3,12 +3,11 @@ from launch_ros.actions import Node
 from launch.actions import (
     ExecuteProcess,
     DeclareLaunchArgument,
-    IncludeLaunchDescription,
     LogInfo,
     RegisterEventHandler,
     TimerAction,
 )
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch.events.process import ProcessIO
@@ -47,7 +46,14 @@ def generate_launch_description():
                     "display.launch.py",
                 ]
             ),
-            "use_rviz:=False",
+            "use_rviz:=false",
+            PythonExpression([
+                "'' if '",
+                LaunchConfiguration("gz_args"),
+                "' == ''",
+                " else 'gz_args:=",
+                LaunchConfiguration("gz_args"), "'"
+            ])
         ],
         output="screen",
     )
@@ -143,6 +149,10 @@ def generate_launch_description():
                     "/rviz/navigation_config.rviz",
                 ],
                 description="Absolute path to rviz config file",
+            ),
+            DeclareLaunchArgument(
+                "gz_args",
+                description="Extra args for Gazebo (ie. '-s' for running headless)",
             ),
             DeclareLaunchArgument(
                 name="use_rviz",

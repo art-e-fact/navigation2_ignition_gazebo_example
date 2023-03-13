@@ -31,7 +31,8 @@ def generate_launch_description():
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     log_level = LaunchConfiguration("log_level")
-    ign_verbosity = LaunchConfiguration("ign_verbosity")
+    gz_verbosity = LaunchConfiguration("gz_verbosity")
+    gz_args = LaunchConfiguration("gz_args")
 
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
@@ -68,7 +69,7 @@ def generate_launch_description():
                 ]
             )
         ),
-        launch_arguments=[("ign_args", [world_path, " -r -v ", ign_verbosity])],
+        launch_arguments=[("gz_args", [world_path, " -r -v ", gz_verbosity, " ", gz_args])],
     )
     spawn_entity = Node(
         package="ros_gz_sim",
@@ -89,7 +90,7 @@ def generate_launch_description():
     )
 
     bridge = Node(
-        package="ros_ign_bridge",
+        package="ros_gz_bridge",
         executable="parameter_bridge",
         arguments=[
             "/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan",
@@ -175,9 +176,14 @@ def generate_launch_description():
                 description="Flag to enable use_sim_time",
             ),
             DeclareLaunchArgument(
-                "ign_verbosity",
+                "gz_verbosity",
                 default_value="3",
                 description="Verbosity level for Ignition Gazebo (0~4).",
+            ),
+            DeclareLaunchArgument(
+                "gz_args",
+                default_value="",
+                description="Extra args for Gazebo (ie. '-s' for running headless)",
             ),
             DeclareLaunchArgument(
                 name="log_level",
