@@ -1,15 +1,18 @@
 import unittest
 import os
-import yaml
 from ament_index_python.packages import get_package_share_directory
-import pytest
 from launch_testing.actions import ReadyToTest
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess, IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node
+import launch_testing.actions
+import launch_testing.markers
+import pytest
 
+
+# This function specifies the processes to be run for our test
 @pytest.mark.launch_test
+@launch_testing.markers.keep_alive
 def generate_test_description():
     launch_navigation_stack = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -32,7 +35,12 @@ def generate_test_description():
     )
 
 
-class TestBringup(unittest.TestCase):
-    def test_arm(self, proc_output):
-        # This will match stdout from test_process.
-        proc_output.assertWaitFor("Ready for navigation!", timeout=180)
+# This is our test fixture. Each method is a test case.
+# These run alongside the processes specified in generate_test_description()
+class TestHelloWorldProcess(unittest.TestCase):
+    def test_read_stdout(self, proc_output):
+        """Check if 'hello_world' was found in the stdout."""
+        # 'proc_output' is an object added automatically by the launch_testing framework.
+        # It captures the outputs of the processes launched in generate_test_description()
+        # Refer to the documentation for further details.
+        proc_output.assertWaitFor("Creating bond timer", timeout=300, stream="stdout")

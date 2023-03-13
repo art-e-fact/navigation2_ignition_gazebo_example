@@ -13,7 +13,6 @@ jobs:
       defaults: # Global to all scenarios, and overriden in specific scenarios.
         subscriptions:
           rosout: rosout
-        output_path: /tmp/artefacts_output
       settings:
         - name: reach_goal
           ros_testfile: "sam_bot_description/test/test_arm.launch.py"
