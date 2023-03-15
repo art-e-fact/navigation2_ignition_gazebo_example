@@ -24,7 +24,7 @@ def generate_test_description():
                 "/complete_navigation.launch.py",
             ]
         ),
-        launch_arguments=[("gz_args", "-s"), ("use_rivz", "false")],
+        launch_arguments=[("gz_args", "-s --headless-rendering"), ("use_rivz", "false")],
     )
 
     return LaunchDescription(

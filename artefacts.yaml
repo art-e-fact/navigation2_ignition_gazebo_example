@@ -5,6 +5,10 @@ project: navigation2-ignition-example
 jobs:
   basic_tests: # Overall job name
     type: test
+    package:
+      docker:
+        build:
+          dockerfile: ./Dockerfile 
     runtime:
       simulator: gazebo:fortress
       framework: ros2:humble
@@ -15,4 +19,4 @@ jobs:
           rosout: rosout
       settings:
         - name: reach_goal
-          ros_testfile: "src/navigation2_tutorials/sam_bot_description/test/basic_test.launch.py"
+          ros_testfile: "src/sam_bot_description/test/basic_test.launch.py"
