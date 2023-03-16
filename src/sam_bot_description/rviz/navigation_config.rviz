@@ -7,6 +7,8 @@ Panels:
         - /Global Options1
         - /Status1
         - /TF1
+        - /LocalCoastmap1
+        - /LocalCoastmap1/Status1
       Splitter Ratio: 0.5
     Tree Height: 1433
 Visualization Manager:
@@ -132,26 +134,24 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          base_footprint:
-            {}
-          camera_link:
-            camera_depth_frame:
-              {}
-          drivewhl_l_link:
-            {}
-          drivewhl_r_link:
-            {}
-          front_caster:
-            {}
-          imu_link:
-            {}
-          lidar_link:
-            {}
         map:
-          {}
-        odom:
-          {}
+          odom:
+            base_link:
+              base_footprint:
+                {}
+              camera_link:
+                camera_depth_frame:
+                  {}
+              drivewhl_l_link:
+                {}
+              drivewhl_r_link:
+                {}
+              front_caster:
+                {}
+              imu_link:
+                {}
+              lidar_link:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 0.699999988079071
@@ -173,6 +173,48 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /map_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: GlobalCoastmap
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/costmap
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/costmap_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: LocalCoastmap
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/costmap
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/costmap_updates
       Use Timestamp: false
       Value: true
   Enabled: true
@@ -221,7 +263,7 @@ Visualization Manager:
       Pitch: 1.155397891998291
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.40539854764938354
+      Yaw: 0.41039854288101196
     Saved: ~
 Window Geometry:
   Displays:
@@ -229,7 +271,7 @@ Window Geometry:
   Height: 1681
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000001000000000000015a0000062ffc0200000001fb000000100044006900730070006c00610079007301000000440000062f000000eb00ffffff000005c90000062f00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000001000000000000019d0000062ffc0200000001fb000000100044006900730070006c00610079007301000000440000062f000000eb00ffffff000005860000062f00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Width: 1834
   X: 0
   Y: 34

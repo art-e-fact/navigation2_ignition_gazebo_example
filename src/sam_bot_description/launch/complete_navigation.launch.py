@@ -152,6 +152,7 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "gz_args",
+                default_value=" ",
                 description="Extra args for Gazebo (ie. '-s' for running headless)",
             ),
             DeclareLaunchArgument(

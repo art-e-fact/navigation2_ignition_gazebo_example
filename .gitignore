@@ -1,4 +1,5 @@
 *.pyc
 build
 install
-logs
+log
+src/gz_ros2_control
