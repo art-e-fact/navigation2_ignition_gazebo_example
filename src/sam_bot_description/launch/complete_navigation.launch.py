@@ -99,6 +99,8 @@ def generate_launch_description():
                     "navigation_launch.py",
                 ]
             ),
+            "use_sim_time:=True",  
+            # "slam:=True",     
         ],
         output="screen",
     )
@@ -114,6 +116,7 @@ def generate_launch_description():
         OnProcessIO(
             target_action=toolbox,
             on_stdout=on_matching_output(
+                # diff_drive_loaded_message,
                 toolbox_ready_message,
                 [
                     LogInfo(msg="SLAM Toolbox loaded. Starting navigation..."),
