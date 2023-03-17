@@ -7,7 +7,11 @@ from launch.actions import (
     RegisterEventHandler,
     TimerAction,
 )
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
+from launch.substitutions import (
+    LaunchConfiguration,
+    PathJoinSubstitution,
+    PythonExpression,
+)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch.events.process import ProcessIO
@@ -47,13 +51,16 @@ def generate_launch_description():
                 ]
             ),
             "use_rviz:=false",
-            PythonExpression([
-                "'' if '",
-                LaunchConfiguration("gz_args"),
-                "' == ''",
-                " else 'gz_args:=",
-                LaunchConfiguration("gz_args"), "'"
-            ])
+            PythonExpression(
+                [
+                    "'' if '",
+                    LaunchConfiguration("gz_args"),
+                    "' == ''",
+                    " else 'gz_args:=",
+                    LaunchConfiguration("gz_args"),
+                    "'",
+                ]
+            ),
         ],
         output="screen",
     )
@@ -99,8 +106,8 @@ def generate_launch_description():
                     "navigation_launch.py",
                 ]
             ),
-            "use_sim_time:=True",  
-            # "slam:=True",     
+            "use_sim_time:=True",
+            ["params_file:=", LaunchConfiguration('params_file')]
         ],
         output="screen",
     )
@@ -145,6 +152,11 @@ def generate_launch_description():
 
     return launch.LaunchDescription(
         [
+            DeclareLaunchArgument(
+                "params_file",
+                default_value=[FindPackageShare("sam_bot_description"), "/config/nav2_params.yaml"],
+                description="Full path to the ROS2 parameters file to use for all launched nodes",
+            ),
             DeclareLaunchArgument(
                 name="rvizconfig",
                 default_value=[

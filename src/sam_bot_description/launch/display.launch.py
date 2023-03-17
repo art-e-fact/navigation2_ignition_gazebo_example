@@ -49,16 +49,16 @@ def generate_launch_description():
         arguments=["-d", LaunchConfiguration("rvizconfig")],
         condition=launch.conditions.IfCondition(LaunchConfiguration('use_rviz'))    
     )
-    # robot_localization_node = Node(
-    #     package="robot_localization",
-    #     executable="ekf_node",
-    #     name="ekf_filter_node",
-    #     output="screen",
-    #     parameters=[
-    #         os.path.join(pkg_share, "config/ekf.yaml"),
-    #         {"use_sim_time": use_sim_time},
-    #     ],
-    # )
+    robot_localization_node = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_filter_node",
+        output="screen",
+        parameters=[
+            os.path.join(pkg_share, "config/ekf.yaml"),
+            {"use_sim_time": use_sim_time},
+        ],
+    )
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
@@ -194,7 +194,7 @@ def generate_launch_description():
             bridge,
             robot_state_publisher_node,
             spawn_entity,
-            # robot_localization_node,
+            robot_localization_node,
             rviz_node,
             RegisterEventHandler(
                 event_handler=OnProcessExit(
