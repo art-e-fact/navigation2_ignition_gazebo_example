@@ -46,7 +46,7 @@
         <box size="${base_length} ${base_width} ${base_height}"/>
       </geometry>
       <material name="Cyan">
-        <color rgba="0 1.0 1.0 1.0"/>
+        <color rgba="0.09 0.30 0.46 1.0"/>
       </material>
     </visual>
 
@@ -111,7 +111,7 @@
         <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
       </geometry>
       <material name="Cyan">
-        <color rgba="0 1.0 1.0 1.0"/>
+        <color rgba="0.09 0.30 0.46 1.0"/>
       </material>
     </visual>
 

@@ -5,6 +5,7 @@ from launch.actions import (
     DeclareLaunchArgument,
     IncludeLaunchDescription,
     RegisterEventHandler,
+    SetEnvironmentVariable,
 )
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import (
@@ -28,6 +29,7 @@ def generate_launch_description():
     )
     default_rviz_config_path = os.path.join(pkg_share, "rviz/urdf_config.rviz")
     world_path = os.path.join(pkg_share, "world/my_world.sdf")
+    models_path = os.path.join(pkg_share, "models")
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     log_level = LaunchConfiguration("log_level")
@@ -47,7 +49,7 @@ def generate_launch_description():
         name="rviz2",
         output="screen",
         arguments=["-d", LaunchConfiguration("rvizconfig")],
-        condition=launch.conditions.IfCondition(LaunchConfiguration('use_rviz'))    
+        condition=launch.conditions.IfCondition(LaunchConfiguration("use_rviz")),
     )
     robot_localization_node = Node(
         package="robot_localization",
@@ -69,8 +71,11 @@ def generate_launch_description():
                 ]
             )
         ),
-        launch_arguments=[("gz_args", [world_path, " -r -v ", gz_verbosity, " ", gz_args])],
+        launch_arguments=[
+            ("gz_args", [world_path, " -r -v ", gz_verbosity, " ", gz_args])
+        ],
     )
+
     spawn_entity = Node(
         package="ros_gz_sim",
         executable="create",
@@ -82,6 +87,8 @@ def generate_launch_description():
             "robot_description",
             "-z",
             "1.0",
+            "-x",
+            "-1.5",
             "--ros-args",
             "--log-level",
             log_level,
@@ -95,7 +102,7 @@ def generate_launch_description():
         arguments=[
             "/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan",
             "/imu@sensor_msgs/msg/Imu[ignition.msgs.IMU",
-            # Clock message is necessary for the diff_drive_controller to accept commands https://github.com/ros-controls/gz_ros2_control/issues/106 
+            # Clock message is necessary for the diff_drive_controller to accept commands https://github.com/ros-controls/gz_ros2_control/issues/106
             "/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock",
         ],
         output="screen",
@@ -155,6 +162,14 @@ def generate_launch_description():
 
     return launch.LaunchDescription(
         [
+            SetEnvironmentVariable(
+                name="IGN_GAZEBO_RESOURCE_PATH",
+                value=models_path,
+            ),
+            SetEnvironmentVariable(
+                name="IGN_GAZEBO_MODEL_PATH",
+                value=models_path,
+            ),
             DeclareLaunchArgument(
                 name="model",
                 default_value=default_model_path,
