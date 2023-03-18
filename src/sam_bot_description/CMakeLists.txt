@@ -32,6 +32,7 @@ install(
 # Install Python executables
 install(PROGRAMS
   scripts/reach_goal.py
+  scripts/follow_waypoints.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

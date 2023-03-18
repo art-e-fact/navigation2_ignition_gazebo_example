@@ -39,3 +39,23 @@ jobs:
       settings:
         - name: reach_goal
           ros_testfile: "src/sam_bot_description/test/test_reach_goal.launch.py"
+
+  
+
+  follow_waypoints: # Overall job name
+    type: test
+    package:
+      docker:
+        build:
+          dockerfile: ./Dockerfile 
+    runtime:
+      simulator: gazebo:fortress
+      framework: ros2:humble
+    timeout: 5 #minutes
+    scenarios:
+      defaults: # Global to all scenarios, and overriden in specific scenarios.
+        subscriptions:
+          rosout: rosout
+      settings:
+        - name: follow_waypoints
+          ros_testfile: "src/sam_bot_description/test/test_follow_waypoints.launch.py"

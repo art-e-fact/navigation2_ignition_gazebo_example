@@ -46,7 +46,7 @@ def generate_launch_description():
             {"robot_description": Command(["xacro ", LaunchConfiguration("model")])}
         ],
     )
-    
+
     rviz_node = Node(
         condition=launch.conditions.IfCondition(use_rviz),
         package="rviz2",
