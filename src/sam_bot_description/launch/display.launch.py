@@ -88,7 +88,7 @@ def generate_launch_description():
             "-z",
             "1.0",
             "-x",
-            "-1.5",
+            "-2.0",
             "--ros-args",
             "--log-level",
             log_level,

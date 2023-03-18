@@ -18,5 +18,8 @@ jobs:
         subscriptions:
           rosout: rosout
       settings:
+        - name: bringup
+          ros_testfile: "src/sam_bot_description/test/bringup.launch.py"
+      settings:
         - name: reach_goal
-          ros_testfile: "src/sam_bot_description/test/basic_test.launch.py"
+          ros_testfile: "src/sam_bot_description/test/reach_goal.launch.py"

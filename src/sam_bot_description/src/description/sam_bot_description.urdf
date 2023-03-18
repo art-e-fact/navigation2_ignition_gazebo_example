@@ -45,7 +45,7 @@
       <geometry>
         <box size="${base_length} ${base_width} ${base_height}"/>
       </geometry>
-      <material name="Cyan">
+      <material name="DarkBlue">
         <color rgba="0.09 0.30 0.46 1.0"/>
       </material>
     </visual>
@@ -78,8 +78,8 @@
         <geometry>
           <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
         </geometry>
-        <material name="Gray">
-          <color rgba="0.5 0.5 0.5 1.0"/>
+        <material name="LightBlue">
+          <color rgba="0.11 0.37 0.56"/>
         </material>
       </visual>
 
@@ -110,7 +110,7 @@
       <geometry>
         <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
       </geometry>
-      <material name="Cyan">
+      <material name="DarkBlue">
         <color rgba="0.09 0.30 0.46 1.0"/>
       </material>
     </visual>
@@ -268,6 +268,9 @@
       <geometry>
         <cylinder radius="0.0508" length="0.055"/>
       </geometry>
+      <material name="LightBlue">
+        <color rgba="0.11 0.37 0.56"/>
+      </material>
     </visual>
   </link>
 
@@ -314,6 +317,9 @@
       <geometry>
         <box size="0.015 0.130 0.022"/>
       </geometry>
+      <material name="LightBlue">
+        <color rgba="0.11 0.37 0.56"/>
+      </material>
     </visual>
 
     <collision>

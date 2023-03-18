@@ -24,22 +24,18 @@ Basic navigation demo to go to pose.
 
 
 def main():
-    print(1)
     rclpy.init()
-
-    print(1)
     navigator = BasicNavigator()
 
-    print(1)
     # Set our demo's initial pose
-    initial_pose = PoseStamped()
-    initial_pose.header.frame_id = 'map'
-    initial_pose.header.stamp = navigator.get_clock().now().to_msg()
-    initial_pose.pose.position.x = 3.45
-    initial_pose.pose.position.y = 2.15
-    initial_pose.pose.orientation.z = 1.0
-    initial_pose.pose.orientation.w = 0.0
-    navigator.setInitialPose(initial_pose)
+    # initial_pose = PoseStamped()
+    # initial_pose.header.frame_id = 'map'
+    # initial_pose.header.stamp = navigator.get_clock().now().to_msg()
+    # initial_pose.pose.position.x = 3.45
+    # initial_pose.pose.position.y = 2.15
+    # initial_pose.pose.orientation.z = 1.0
+    # initial_pose.pose.orientation.w = 0.0
+    # navigator.setInitialPose(initial_pose)
 
     # Activate navigation, if not autostarted. This should be called after setInitialPose()
     # or this will initialize at the origin of the map and update the costmap with bogus readings.
@@ -48,7 +44,7 @@ def main():
 
     # Wait for navigation to fully activate, since autostarting nav2
     navigator.waitUntilNav2Active(localizer="smoother_server")
-    print(1)
+
     # If desired, you can change or load the map as well
     # navigator.changeMap('/path/to/map.yaml')
 
@@ -61,8 +57,8 @@ def main():
     goal_pose = PoseStamped()
     goal_pose.header.frame_id = 'map'
     goal_pose.header.stamp = navigator.get_clock().now().to_msg()
-    goal_pose.pose.position.x = 2.0
-    goal_pose.pose.position.y = 1.5
+    goal_pose.pose.position.x = 0.8
+    goal_pose.pose.position.y = 0.5
     goal_pose.pose.orientation.w = 1.0
 
     # sanity check a valid path exists
@@ -81,7 +77,7 @@ def main():
         # Do something with the feedback
         i = i + 1
         feedback = navigator.getFeedback()
-        print("FEEDBACL", feedback)
+
         if feedback and i % 5 == 0:
             print('Estimated time of arrival: ' + '{0:.0f}'.format(
                   Duration.from_msg(feedback.estimated_time_remaining).nanoseconds / 1e9)

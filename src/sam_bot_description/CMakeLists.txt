@@ -31,7 +31,7 @@ install(
 
 # Install Python executables
 install(PROGRAMS
-  scripts/nav_test.py
+  scripts/reach_goal.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

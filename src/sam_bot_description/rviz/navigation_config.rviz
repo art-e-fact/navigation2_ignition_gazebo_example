@@ -11,8 +11,9 @@ Panels:
         - /Plan1
         - /LaserScan1
         - /LaserScan1/Topic1
+        - /Goal1
       Splitter Ratio: 0.5
-    Tree Height: 1433
+    Tree Height: 1185
 Visualization Manager:
   Class: ""
   Displays:
@@ -294,6 +295,26 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /local_costmap/published_footprint
       Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Pose
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Goal
+      Shaft Length: 0.5
+      Shaft Radius: 0.05000000074505806
+      Shape: Arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /goal_pose
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -322,16 +343,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 10.185944557189941
+      Distance: 6.922656536102295
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.0093789100646973
-        Y: 1.8382847309112549
-        Z: -1.4608968496322632
+        X: 0.3263019621372223
+        Y: -0.10204039514064789
+        Z: -0.8599916696548462
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
@@ -345,10 +366,10 @@ Visualization Manager:
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1681
+  Height: 1433
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000001000000000000019d0000062ffc0200000001fb000000100044006900730070006c00610079007301000000440000062f000000eb00ffffff000005860000062f00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
-  Width: 1834
-  X: 326
-  Y: 1057
+  QMainWindow State: 000000ff00000000fd00000001000000000000019d00000537fc0200000001fb000000100044006900730070006c006100790073010000004400000537000000eb00ffffff0000072c0000053700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Width: 2256
+  X: 0
+  Y: 34
