@@ -6,6 +6,9 @@ Tutorial code referenced in https://navigation.ros.org/
 sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup
 ```
 
+## Set navigation goals with RViz
+TODO
+
 ## Run tests with Artefacts
 ```
 # Locally
@@ -15,6 +18,6 @@ artefacts run tests
 artefacts run-remote tests --description "Test Navigation2"
 
 # Locally with Docker
-docker build --build-arg MAKEFLAGS=-j8 -t nav2-gz .
+docker build --build-arg MAKEFLAGS=-j5 -t nav2-gz .
 docker run --rm -e ARTEFACTS_JOB_NAME=tests -e ARTEFACTS_KEY=<API_KEY> nav2-gz
 ```

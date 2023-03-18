@@ -3,7 +3,7 @@ version: 0.1.0
 
 project: navigation2-ignition-example
 jobs:
-  basic_tests: # Overall job name
+  bringup: # Overall job name
     type: test
     package:
       docker:
@@ -19,7 +19,23 @@ jobs:
           rosout: rosout
       settings:
         - name: bringup
-          ros_testfile: "src/sam_bot_description/test/bringup.launch.py"
+          ros_testfile: "src/sam_bot_description/test/test_bringup.launch.py"
+  
+
+  reach_goal: # Overall job name
+    type: test
+    package:
+      docker:
+        build:
+          dockerfile: ./Dockerfile 
+    runtime:
+      simulator: gazebo:fortress
+      framework: ros2:humble
+    timeout: 5 #minutes
+    scenarios:
+      defaults: # Global to all scenarios, and overriden in specific scenarios.
+        subscriptions:
+          rosout: rosout
       settings:
         - name: reach_goal
-          ros_testfile: "src/sam_bot_description/test/reach_goal.launch.py"
+          ros_testfile: "src/sam_bot_description/test/test_reach_goal.launch.py"

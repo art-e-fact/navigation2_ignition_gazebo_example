@@ -27,7 +27,6 @@ diff_drive_base_controller:
     pose_covariance_diagonal : [0.001, 0.001, 0.0, 0.0, 0.0, 0.01]
     twist_covariance_diagonal: [0.001, 0.0, 0.0, 0.0, 0.0, 0.01]
 
-    # TODO what is this for?
     open_loop: true 
     enable_odom_tf: true
 

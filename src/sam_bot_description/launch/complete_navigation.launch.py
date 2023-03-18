@@ -38,6 +38,8 @@ def generate_launch_description():
     toolbox_ready_message = "Registering sensor"
     navigation_ready_message = "Creating bond timer"
 
+    use_rviz = LaunchConfiguration("use_rviz")
+
     bringup = ExecuteProcess(
         name="launch_bringup",
         cmd=[
@@ -51,6 +53,8 @@ def generate_launch_description():
                 ]
             ),
             "use_rviz:=false",
+            "use_localization:=false",
+            # Thy to replace with LaunchConfigurationNotEquals
             PythonExpression(
                 [
                     "'' if '",
@@ -112,12 +116,12 @@ def generate_launch_description():
         output="screen",
     )
     rviz_node = Node(
+        condition=launch.conditions.IfCondition(use_rviz),
         package="rviz2",
         executable="rviz2",
         name="rviz2",
         output="screen",
         arguments=["-d", LaunchConfiguration("rvizconfig")],
-        condition=launch.conditions.IfCondition(LaunchConfiguration("use_rviz")),
     )
     waiting_navigation = RegisterEventHandler(
         OnProcessIO(

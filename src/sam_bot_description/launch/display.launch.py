@@ -10,6 +10,7 @@ from launch.actions import (
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import (
     Command,
+    FindExecutable,
     LaunchConfiguration,
     PathJoinSubstitution,
 )
@@ -32,6 +33,8 @@ def generate_launch_description():
     models_path = os.path.join(pkg_share, "models")
 
     use_sim_time = LaunchConfiguration("use_sim_time")
+    use_localization = LaunchConfiguration("use_localization")
+    use_rviz = LaunchConfiguration("use_rviz")
     log_level = LaunchConfiguration("log_level")
     gz_verbosity = LaunchConfiguration("gz_verbosity")
     gz_args = LaunchConfiguration("gz_args")
@@ -43,15 +46,18 @@ def generate_launch_description():
             {"robot_description": Command(["xacro ", LaunchConfiguration("model")])}
         ],
     )
+    
     rviz_node = Node(
+        condition=launch.conditions.IfCondition(use_rviz),
         package="rviz2",
         executable="rviz2",
         name="rviz2",
         output="screen",
         arguments=["-d", LaunchConfiguration("rvizconfig")],
-        condition=launch.conditions.IfCondition(LaunchConfiguration("use_rviz")),
     )
+
     robot_localization_node = Node(
+        condition=launch.conditions.IfCondition(use_localization),
         package="robot_localization",
         executable="ekf_node",
         name="ekf_filter_node",
@@ -61,6 +67,7 @@ def generate_launch_description():
             {"use_sim_time": use_sim_time},
         ],
     )
+
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
@@ -178,7 +185,7 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 name="use_rviz",
                 default_value="True",
-                description="Absolute path to rviz config file",
+                description="Start RViz",
             ),
             DeclareLaunchArgument(
                 name="rvizconfig",
@@ -189,6 +196,11 @@ def generate_launch_description():
                 name="use_sim_time",
                 default_value="True",
                 description="Flag to enable use_sim_time",
+            ),
+            DeclareLaunchArgument(
+                name="use_localization",
+                default_value="True",
+                description="Use EKF to estimagte odom->base_link transform from IMU + wheel odometry",
             ),
             DeclareLaunchArgument(
                 "gz_verbosity",

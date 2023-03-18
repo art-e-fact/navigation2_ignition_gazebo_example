@@ -25,19 +25,19 @@ def generate_test_description():
                 "/complete_navigation.launch.py",
             ]
         ),
-        # launch_arguments=[("gz_args", "-s --headless-rendering"), ("use_rivz", "false")],
+        launch_arguments=[("gz_args", "-s --headless-rendering"), ("use_rviz", "false")],
     )
 
-    go_to_pose = Node(
+    reach_goal = Node(
         package="sam_bot_description",
-        executable="go_to_pose.py",
+        executable="reach_goal.py",
         output="screen",
     )
 
     return LaunchDescription(
         [
             launch_navigation_stack,
-            go_to_pose,
+            reach_goal,
             ReadyToTest(),
         ]
     )
