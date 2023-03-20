@@ -29,7 +29,7 @@ def generate_launch_description():
         pkg_share, "src/description/sam_bot_description.urdf"
     )
     default_rviz_config_path = os.path.join(pkg_share, "rviz/urdf_config.rviz")
-    world_path = os.path.join(pkg_share, "world/my_world.sdf")
+    world_path = os.path.join(pkg_share, "world/empty.sdf")
     models_path = os.path.join(pkg_share, "models")
 
     use_sim_time = LaunchConfiguration("use_sim_time")
