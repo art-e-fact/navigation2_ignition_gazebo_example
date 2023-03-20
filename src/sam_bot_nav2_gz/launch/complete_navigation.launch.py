@@ -47,7 +47,7 @@ def generate_launch_description():
             "launch",
             PathJoinSubstitution(
                 [
-                    FindPackageShare("sam_bot_description"),
+                    FindPackageShare("sam_bot_nav2_gz"),
                     "launch",
                     "display.launch.py",
                 ]
@@ -158,13 +158,13 @@ def generate_launch_description():
         [
             DeclareLaunchArgument(
                 "params_file",
-                default_value=[FindPackageShare("sam_bot_description"), "/config/nav2_params.yaml"],
+                default_value=[FindPackageShare("sam_bot_nav2_gz"), "/config/nav2_params.yaml"],
                 description="Full path to the ROS2 parameters file to use for all launched nodes",
             ),
             DeclareLaunchArgument(
                 name="rvizconfig",
                 default_value=[
-                    FindPackageShare("sam_bot_description"),
+                    FindPackageShare("sam_bot_nav2_gz"),
                     "/rviz/navigation_config.rviz",
                 ],
                 description="Absolute path to rviz config file",

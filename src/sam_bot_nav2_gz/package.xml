@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>sam_bot_description</name>
+  <name>sam_bot_nav2_gz</name>
   <version>1.0.0</version>
-  <description>URDF Setup Demo</description>
-  <maintainer email="jd.deleon@samsung.com">Josen Daniel De Leon</maintainer>
+  <description>Nav2 Example with (Ignition) Gazebo</description>
+  <maintainer email="azazdeaz@gmail.com">Andras Polgar</maintainer>
   <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

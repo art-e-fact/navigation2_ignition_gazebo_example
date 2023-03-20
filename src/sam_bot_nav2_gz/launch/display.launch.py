@@ -23,8 +23,8 @@ import os
 
 def generate_launch_description():
     pkg_share = launch_ros.substitutions.FindPackageShare(
-        package="sam_bot_description"
-    ).find("sam_bot_description")
+        package="sam_bot_nav2_gz"
+    ).find("sam_bot_nav2_gz")
     default_model_path = os.path.join(
         pkg_share, "src/description/sam_bot_description.urdf"
     )
