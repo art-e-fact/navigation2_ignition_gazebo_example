@@ -6,9 +6,12 @@ jobs:
   bringup: # Overall job name
     type: test
     package:
-      docker:
-        build:
-          dockerfile: ./Dockerfile 
+    custom:
+      commands:
+      - echo $PWD
+      - ls
+      - apt update && apt install -y ros-humble-navigation2 ros-humble-nav2-bringup
+      - vcs import --input deps.repos src 
     runtime:
       simulator: gazebo:fortress
       framework: ros2:humble
@@ -19,7 +22,7 @@ jobs:
           rosout: rosout
       settings:
         - name: bringup
-          ros_testfile: "src/sam_bot_description/test/test_bringup.launch.py"
+          ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
   
 
   reach_goal: # Overall job name
@@ -38,7 +41,7 @@ jobs:
           rosout: rosout
       settings:
         - name: reach_goal
-          ros_testfile: "src/sam_bot_description/test/test_reach_goal.launch.py"
+          ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
 
   
 
@@ -58,4 +61,4 @@ jobs:
           rosout: rosout
       settings:
         - name: follow_waypoints
-          ros_testfile: "src/sam_bot_description/test/test_follow_waypoints.launch.py"
+          ros_testfile: "src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py"
