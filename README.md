@@ -4,22 +4,37 @@ Minimal example ROS2 project to use Navigation2 with (Ignition) Gazebo. Based on
 
 [gz-nav2-tb3.webm](https://user-images.githubusercontent.com/2298371/226628768-818a7c3f-e5e1-49c6-b819-112c2cfa668b.webm)
 
-## Setup
+## Setup and build
 ```
-#install Nav2 dependencies 
+# Install Nav2 dependencies 
 sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup
+
+# Import source dependencies
+vcs import --input create3_3.repos src
+
+# Install rosrep dependencies
+rosdep install -y -r -i  --from-paths . 
+
+# Make sure ROS2 is sourced
+source /opt/ros/humble/setup.bash
+
+# Build
+colcon build --symlink-install
 ```
 
-## Set navigation goals with RViz
-TODO
+## Run examples
+```
+# Launch Gazebo, RViz, and Navigation2
+ros2 launch sam_bot_nav2_gz complete_navigation.launch.py
 
-## Visualize logs with Rerun
-TODO
-
-## Run tests locally
+# Set goal poses in RViz or run a navigation example:
+ros2 run sam_bot_nav2_gz follow_waypoints.py
+ros2 run sam_bot_nav2_gz reach_goal.py
+```
 
 
 ## Run tests with Artefacts
+# TODO add instructions to create a new Artefacts project
 ```
 # Locally
 artefacts run tests
