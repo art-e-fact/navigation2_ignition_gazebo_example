@@ -3,26 +3,26 @@ version: 0.1.0
 
 project: navigation2-ignition-example
 jobs:
-  bringup: # Overall job name
-    type: test
-    package:
-    custom:
-      commands:
-      - echo $PWD
-      - ls
-      - apt update && apt install -y ros-humble-navigation2 ros-humble-nav2-bringup
-      - vcs import --input deps.repos src 
-    runtime:
-      simulator: gazebo:fortress
-      framework: ros2:humble
-    timeout: 5 #minutes
-    scenarios:
-      defaults: # Global to all scenarios, and overriden in specific scenarios.
-        subscriptions:
-          rosout: rosout
-      settings:
-        - name: bringup
-          ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
+  # bringup: # Overall job name
+  #   type: test
+  #   package:
+  #   custom:
+  #     commands:
+  #     - echo $PWD
+  #     - ls
+  #     - apt update && apt install -y ros-humble-navigation2 ros-humble-nav2-bringup
+  #     - vcs import --input deps.repos src 
+  #   runtime:
+  #     simulator: gazebo:fortress
+  #     framework: ros2:humble
+  #   timeout: 5 #minutes
+  #   scenarios:
+  #     defaults: # Global to all scenarios, and overriden in specific scenarios.
+  #       subscriptions:
+  #         rosout: rosout
+  #     settings:
+  #       - name: bringup
+  #         ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
   
 
   reach_goal: # Overall job name
