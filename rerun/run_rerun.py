@@ -15,6 +15,7 @@ import sys
 
 import numpy as np
 import rerun as rr
+from rerun.log.text import LogLevel
 import rerun_urdf
 
 try:
@@ -31,6 +32,7 @@ try:
     from rclpy.time import Duration, Time
     from sensor_msgs.msg import CameraInfo, Image, LaserScan, PointCloud2, PointField
     from sensor_msgs_py import point_cloud2
+    from rcl_interfaces.msg import Log as LogMsg
     from std_msgs.msg import String
     from tf2_ros import TransformException
     from tf2_ros.buffer import Buffer
@@ -198,6 +200,14 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
             callback_group=self.callback_group,
         )
 
+        self.urdf_sub = self.create_subscription(
+            LogMsg,
+            "/rosout",
+            self.rosout_callback,
+            10, # TODO maske sure all messages are kept
+            callback_group=self.callback_group,
+        )
+
     def log_tf_as_rigid3(self, path: str, time: Time) -> None:
         """
         Helper to look up a transform with tf and log using `log_rigid3`.
@@ -316,8 +326,28 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
         """Log a URDF using `log_scene` from `rerun_urdf`."""
         urdf = rerun_urdf.load_urdf_from_msg(urdf_msg)
 
-       scaled = urdf.scene
-        rerun_urdf.log_scene(scene=scaled, node=urdf.base_link, path="map/odom/robot", timeless=True)
+        rerun_urdf.log_scene(scene=urdf.scene, node=urdf.base_link, path="map/odom/robot", timeless=True)
+    
+
+    def rosout_callback(self, msg: LogMsg) -> None:
+        """Log ros-log messages (from /rosout)"""
+        time = Time.from_msg(msg.stamp)
+        rr.set_time_nanos("ros_time", time.nanoseconds)
+
+        level = LogLevel.TRACE
+        # values taken from https://docs.ros2.org/galactic/api/rclpy/api/logging.html
+        if msg.level >= 50:
+            level = LogLevel.CRITICAL
+        elif msg.level >= 40:
+            level = LogLevel.ERROR
+        elif msg.level >= 30:
+            level = LogLevel.WARN
+        elif msg.level >= 20:
+            level = LogLevel.INFO
+        elif msg.level >= 10:
+            level = LogLevel.DEBUG
+        name = msg.name if msg.name else "unknown"
+        rr.log_text_entry(name, f"{msg.msg} [{msg.file}:{msg.function}@{msg.line}]", level=level)
 
 
 def main() -> None:
@@ -333,7 +363,7 @@ def main() -> None:
 
     # Use the MultiThreadedExecutor so that calls to `lookup_transform` don't block the other threads
     rclpy.spin(turtle_subscriber, executor=rclpy.executors.MultiThreadedExecutor())
-
+    
     turtle_subscriber.destroy_node()
     rclpy.shutdown()
 
