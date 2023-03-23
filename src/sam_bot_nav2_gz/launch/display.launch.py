@@ -30,7 +30,7 @@ def generate_launch_description():
     )
     default_rviz_config_path = os.path.join(pkg_share, "rviz/urdf_config.rviz")
     world_path = os.path.join(pkg_share, "world/empty.sdf")
-    models_path = os.path.join(pkg_share, "models")
+    gz_models_path = os.path.join(pkg_share, "models")
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     use_localization = LaunchConfiguration("use_localization")
@@ -171,11 +171,11 @@ def generate_launch_description():
         [
             SetEnvironmentVariable(
                 name="IGN_GAZEBO_RESOURCE_PATH",
-                value=models_path,
+                value=gz_models_path,
             ),
             SetEnvironmentVariable(
                 name="IGN_GAZEBO_MODEL_PATH",
-                value=models_path,
+                value=gz_models_path,
             ),
             DeclareLaunchArgument(
                 name="model",

@@ -79,7 +79,7 @@
           <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
         </geometry>
         <material name="LightBlue">
-          <color rgba="0.11 0.37 0.56"/>
+          <color rgba="0.11 0.37 0.56 1.0"/>
         </material>
       </visual>
 
@@ -269,7 +269,7 @@
         <cylinder radius="0.0508" length="0.055"/>
       </geometry>
       <material name="LightBlue">
-        <color rgba="0.11 0.37 0.56"/>
+        <color rgba="0.11 0.37 0.56 1.0"/>
       </material>
     </visual>
   </link>
@@ -318,7 +318,7 @@
         <box size="0.015 0.130 0.022"/>
       </geometry>
       <material name="LightBlue">
-        <color rgba="0.11 0.37 0.56"/>
+        <color rgba="0.11 0.37 0.56 1.0"/>
       </material>
     </visual>
 

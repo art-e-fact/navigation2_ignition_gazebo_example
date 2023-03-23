@@ -316,13 +316,7 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
         """Log a URDF using `log_scene` from `rerun_urdf`."""
         urdf = rerun_urdf.load_urdf_from_msg(urdf_msg)
 
-        # The turtlebot URDF appears to have scale set incorrectly for the camera-link
-        # Although rviz loads it properly `yourdfpy` does not.
-        # orig, _ = urdf.scene.graph.get("camera_link")
-        # scale = trimesh.transformations.scale_matrix(0.00254)
-        # urdf.scene.graph.update(frame_to="camera_link", matrix=orig.dot(scale))
-        scaled = urdf.scene.scaled(1.0)
-
+       scaled = urdf.scene
         rerun_urdf.log_scene(scene=scaled, node=urdf.base_link, path="map/odom/robot", timeless=True)
 
 
