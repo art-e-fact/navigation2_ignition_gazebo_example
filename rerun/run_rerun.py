@@ -167,13 +167,13 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
             callback_group=self.callback_group,
         )
 
-        # self.img_sub = self.create_subscription(
-        #     Image,
-        #     "/intel_realsense_r200_depth/image_raw",
-        #     self.image_callback,
-        #     10,
-        #     callback_group=self.callback_group,
-        # )
+        self.img_sub = self.create_subscription(
+            Image,
+            "/sky_cam",
+            self.image_callback,
+            10,
+            callback_group=self.callback_group,
+        )
 
         # self.points_sub = self.create_subscription(
         #     PointCloud2,
@@ -265,13 +265,9 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
         # Update the robot pose itself via TF
         self.log_tf_as_rigid3("map/odom", time)
 
-    # def image_callback(self, img: Image) -> None:
-    #     """Log an `Image` with `log_image` using `cv_bridge`."""
-    #     time = Time.from_msg(img.header.stamp)
-    #     rr.set_time_nanos("ros_time", time.nanoseconds)
-
-    #     rr.log_image("map/robot/camera/img", self.cv_bridge.imgmsg_to_cv2(img))
-    #     self.log_tf_as_rigid3("map/robot/camera", time)
+    def image_callback(self, img: Image) -> None:
+        """Log an `Image` with `log_image` using `cv_bridge`."""
+        rr.log_image("sky_cam", self.cv_bridge.imgmsg_to_cv2(img))
 
     # def points_callback(self, points: PointCloud2) -> None:
     #     """Log a `PointCloud2` with `log_points`."""
