@@ -24,7 +24,7 @@ try:
     import rclpy
     import trimesh
     from image_geometry import PinholeCameraModel
-    from nav_msgs.msg import Odometry
+    from nav_msgs.msg import Odometry, Path
     from numpy.lib.recfunctions import structured_to_unstructured
     from rclpy.callback_groups import ReentrantCallbackGroup
     from rclpy.node import Node
@@ -71,9 +71,9 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
         self.path_to_frame = {
             "map": "map",
             "map/odom": "odom",
-            "map/odom/robot": "base_link",
-            "map/odom/robot/base_footprint": "base_footprint",
-            "map/odom/robot/scan": "lidar_link",
+            "map/odom/base_link": "base_link",
+            "map/odom/base_link/base_footprint": "base_footprint",
+            "map/odom/base_link/lidar_link": "lidar_link",
         }
 
         # Assorted helpers for data conversionsq
@@ -191,6 +191,14 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
             callback_group=self.callback_group,
         )
 
+        self.plan_sub = self.create_subscription(
+            Path,
+            "/plan",
+            self.plan_callback,
+            10,
+            callback_group=self.callback_group,
+        )
+
         # The urdf is published as latching
         self.urdf_sub = self.create_subscription(
             String,
@@ -200,7 +208,7 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
             callback_group=self.callback_group,
         )
 
-        self.urdf_sub = self.create_subscription(
+        self.rosout_sub = self.create_subscription(
             LogMsg,
             "/rosout",
             self.rosout_callback,
@@ -319,14 +327,27 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
         origin = (pts / np.linalg.norm(pts, axis=1).reshape(-1, 1)) * 0.3
         segs = np.hstack([origin, pts]).reshape(pts.shape[0] * 2, 3)
 
-        rr.log_line_segments("map/odom/robot/scan", segs, stroke_width=0.005)
-        self.log_tf_as_rigid3("map/odom/robot/scan", time)
+        rr.log_line_segments("map/odom/base_link/lidar_link", segs, stroke_width=0.005)
+        self.log_tf_as_rigid3("map/odom/base_link/lidar_link", time)
+        self.log_tf_as_rigid3("map/odom/base_link", time)
+
+    def plan_callback(self, msg: Path) -> None:
+        """
+        Log a Path after transforming it to a line-strip.
+        """
+        time = Time.from_msg(msg.header.stamp)
+        rr.set_time_nanos("ros_time", time.nanoseconds)
+
+        positions = [[p.pose.position.x, p.pose.position.y, p.pose.position.z] for p in msg.poses]
+
+        rr.log_line_strip("map", positions, stroke_width=0.05)
+        self.log_tf_as_rigid3("map", time)
 
     def urdf_callback(self, urdf_msg: String) -> None:
         """Log a URDF using `log_scene` from `rerun_urdf`."""
         urdf = rerun_urdf.load_urdf_from_msg(urdf_msg)
 
-        rerun_urdf.log_scene(scene=urdf.scene, node=urdf.base_link, path="map/odom/robot", timeless=True)
+        rerun_urdf.log_scene(scene=urdf.scene, node=urdf.base_link, path="map/odom/base_link", timeless=True)
     
 
     def rosout_callback(self, msg: LogMsg) -> None:
@@ -347,14 +368,15 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
         elif msg.level >= 10:
             level = LogLevel.DEBUG
         name = msg.name if msg.name else "unknown"
-        rr.log_text_entry(name, f"{msg.msg} [{msg.file}:{msg.function}@{msg.line}]", level=level)
+        rr.log_text_entry(f"log/{name}", f"{msg.msg} [{msg.file}:{msg.function}@{msg.line}]", level=level)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Simple example of a ROS node that republishes to Rerun.")
+    parser = argparse.ArgumentParser(description="Republish Navigation2 related messages to Rerun.")
     rr.script_add_args(parser)
     args, unknownargs = parser.parse_known_args()
-    rr.script_setup(args, "turtlebot_viz")
+    rerun_app_id = "nav2_viz"
+    rr.script_setup(args, rerun_app_id)
 
     # Any remaining args go to rclpy
     rclpy.init(args=unknownargs)
@@ -363,9 +385,9 @@ def main() -> None:
 
     # Use the MultiThreadedExecutor so that calls to `lookup_transform` don't block the other threads
     rclpy.spin(turtle_subscriber, executor=rclpy.executors.MultiThreadedExecutor())
-    
     turtle_subscriber.destroy_node()
     rclpy.shutdown()
+    rr.script_teardown(args)
 
 
 if __name__ == "__main__":
