@@ -25,12 +25,13 @@ try:
     import trimesh
     from image_geometry import PinholeCameraModel
     from nav_msgs.msg import Odometry, Path
+    from geometry_msgs.msg import PoseStamped
     from numpy.lib.recfunctions import structured_to_unstructured
     from rclpy.callback_groups import ReentrantCallbackGroup
     from rclpy.node import Node
     from rclpy.qos import QoSDurabilityPolicy, QoSProfile
     from rclpy.time import Duration, Time
-    from sensor_msgs.msg import CameraInfo, Image, LaserScan, PointCloud2, PointField
+    from sensor_msgs.msg import CameraInfo, Image, LaserScan
     from sensor_msgs_py import point_cloud2
     from rcl_interfaces.msg import Log as LogMsg
     from std_msgs.msg import String
@@ -216,6 +217,14 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
             callback_group=self.callback_group,
         )
 
+        self.create_subscription(
+            PoseStamped,
+            "/goal_pose",
+            self.goal_pose_callback,
+            10, # TODO maske sure all messages are kept
+            callback_group=self.callback_group,
+        )
+
     def log_tf_as_rigid3(self, path: str, time: Time) -> None:
         """
         Helper to look up a transform with tf and log using `log_rigid3`.
@@ -323,7 +332,7 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
         origin = (pts / np.linalg.norm(pts, axis=1).reshape(-1, 1)) * 0.3
         segs = np.hstack([origin, pts]).reshape(pts.shape[0] * 2, 3)
 
-        rr.log_line_segments("map/odom/base_link/lidar_link", segs, stroke_width=0.005)
+        rr.log_line_segments("map/odom/base_link/lidar_link", segs, stroke_width=0.005, color=[255, 222, 185])
         self.log_tf_as_rigid3("map/odom/base_link/lidar_link", time)
         self.log_tf_as_rigid3("map/odom/base_link", time)
 
@@ -337,6 +346,20 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
         positions = [[p.pose.position.x, p.pose.position.y, p.pose.position.z] for p in msg.poses]
 
         rr.log_line_strip("map", positions, stroke_width=0.05)
+        self.log_tf_as_rigid3("map", time)
+    
+
+    def goal_pose_callback(self, msg: PoseStamped) -> None:
+        """
+        Log a PoseStamped as an downwards pointing arrow.
+        """
+        time = Time.from_msg(msg.header.stamp)
+        rr.set_time_nanos("ros_time", time.nanoseconds)
+
+        length = 1.2
+        goal = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.z])
+        print("GOAL", goal, msg.header)
+        rr.log_arrow("map", goal + [0,0,length], [0,0,-length], width_scale=0.12, color=[252, 41, 71])
         self.log_tf_as_rigid3("map", time)
 
     def urdf_callback(self, urdf_msg: String) -> None:
