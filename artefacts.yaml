@@ -27,9 +27,11 @@ jobs:
   reach_goal: # Overall job name
     type: test
     package:
-      docker:
-        build:
-          dockerfile: ./Dockerfile 
+      custom:
+        commands:
+        - apt update && apt install -y ros-humble-navigation2 ros-humble-nav2-bringup
+        - pip install vcstool
+        - vcs import --input /ws/src/deps.repos src/src
     runtime:
       simulator: gazebo:fortress
       framework: ros2:humble
@@ -47,9 +49,11 @@ jobs:
   follow_waypoints: # Overall job name
     type: test
     package:
-      docker:
-        build:
-          dockerfile: ./Dockerfile 
+      custom:
+        commands:
+        - apt update && apt install -y ros-humble-navigation2 ros-humble-nav2-bringup
+        - pip install vcstool
+        - vcs import --input /ws/src/deps.repos src/src
     runtime:
       simulator: gazebo:fortress
       framework: ros2:humble
