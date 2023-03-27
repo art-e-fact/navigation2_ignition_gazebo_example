@@ -29,7 +29,7 @@ try:
     from numpy.lib.recfunctions import structured_to_unstructured
     from rclpy.callback_groups import ReentrantCallbackGroup
     from rclpy.node import Node
-    from rclpy.qos import QoSDurabilityPolicy, QoSProfile
+    from rclpy.qos import QoSDurabilityPolicy, QoSProfile, QoSHistoryPolicy, QoSReliabilityPolicy
     from rclpy.time import Duration, Time
     from sensor_msgs.msg import CameraInfo, Image, LaserScan
     from sensor_msgs_py import point_cloud2
@@ -56,7 +56,7 @@ See: README.md for more details.
 
 class Nav2Subscriber(Node):  # type: ignore[misc]
     def __init__(self) -> None:
-        super().__init__("rr_turtlebot")
+        super().__init__("rr_nav2")
 
         # Used for subscribing to latching topics
         latching_qos = QoSProfile(depth=1, durability=QoSDurabilityPolicy.TRANSIENT_LOCAL)
@@ -75,6 +75,8 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
             "map/odom/base_link": "base_link",
             "map/odom/base_link/base_footprint": "base_footprint",
             "map/odom/base_link/lidar_link": "lidar_link",
+            "map/odom/base_link/camera_link": "camera_link",
+            "map/odom/base_link/camera_link/camera_frame": "camera_frame",
         }
 
         # Assorted helpers for data conversionsq
@@ -92,75 +94,10 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
             timeless=True,
         )
 
-        # /behavior_server/transition_event [lifecycle_msgs/msg/TransitionEvent]
-        # /behavior_tree_log [nav2_msgs/msg/BehaviorTreeLog]
-        # /bond [bond/msg/Status]
-        # /bt_navigator/transition_event [lifecycle_msgs/msg/TransitionEvent]
-        # /clock [rosgraph_msgs/msg/Clock]
-        # /cmd_vel [geometry_msgs/msg/Twist]
-        # /cmd_vel_nav [geometry_msgs/msg/Twist]
-        # /controller_server/transition_event [lifecycle_msgs/msg/TransitionEvent]
-        # /cost_cloud [sensor_msgs/msg/PointCloud2]
-        # /diagnostics [diagnostic_msgs/msg/DiagnosticArray]
-        # /diff_drive_base_controller/cmd_vel_unstamped [geometry_msgs/msg/Twist]
-        # /diff_drive_base_controller/odom [nav_msgs/msg/Odometry]
-        # /diff_drive_base_controller/transition_event [lifecycle_msgs/msg/TransitionEvent]
-        # /dynamic_joint_states [control_msgs/msg/DynamicJointState]
-        # /evaluation [dwb_msgs/msg/LocalPlanEvaluation]
-        # /global_costmap/costmap [nav_msgs/msg/OccupancyGrid]
-        # /global_costmap/costmap_raw [nav2_msgs/msg/Costmap]
-        # /global_costmap/costmap_updates [map_msgs/msg/OccupancyGridUpdate]
-        # /global_costmap/footprint [geometry_msgs/msg/Polygon]
-        # /global_costmap/global_costmap/transition_event [lifecycle_msgs/msg/TransitionEvent]
-        # /global_costmap/published_footprint [geometry_msgs/msg/PolygonStamped]
-        # /goal_pose [geometry_msgs/msg/PoseStamped]
-        # /imu [sensor_msgs/msg/Imu]
-        # /joint_state_broadcaster/transition_event [lifecycle_msgs/msg/TransitionEvent]
-        # /joint_states [sensor_msgs/msg/JointState]
-        # /local_costmap/clearing_endpoints [sensor_msgs/msg/PointCloud2]
-        # /local_costmap/costmap [nav_msgs/msg/OccupancyGrid]
-        # /local_costmap/costmap_raw [nav2_msgs/msg/Costmap]
-        # /local_costmap/costmap_updates [map_msgs/msg/OccupancyGridUpdate]
-        # /local_costmap/footprint [geometry_msgs/msg/Polygon]
-        # /local_costmap/local_costmap/transition_event [lifecycle_msgs/msg/TransitionEvent]
-        # /local_costmap/published_footprint [geometry_msgs/msg/PolygonStamped]
-        # /local_costmap/voxel_grid [nav2_msgs/msg/VoxelGrid]
-        # /local_plan [nav_msgs/msg/Path]
-        # /map [nav_msgs/msg/OccupancyGrid]
-        # /map_metadata [nav_msgs/msg/MapMetaData]
-        # /map_updates [map_msgs/msg/OccupancyGridUpdate]
-        # /marker [visualization_msgs/msg/MarkerArray]
-        # /odom [nav_msgs/msg/Odometry]
-        # /parameter_events [rcl_interfaces/msg/ParameterEvent]
-        # /plan [nav_msgs/msg/Path]
-        # /planner_server/transition_event [lifecycle_msgs/msg/TransitionEvent]
-        # /pose [geometry_msgs/msg/PoseWithCovarianceStamped]
-        # /received_global_plan [nav_msgs/msg/Path]
-        # /robot_description [std_msgs/msg/String]
-        # /rosout [rcl_interfaces/msg/Log]
-        # /scan [sensor_msgs/msg/LaserScan]
-        # /slam_toolbox/feedback [visualization_msgs/msg/InteractiveMarkerFeedback]
-        # /slam_toolbox/graph_visualization [visualization_msgs/msg/MarkerArray]
-        # /slam_toolbox/scan_visualization [sensor_msgs/msg/LaserScan]
-        # /slam_toolbox/update [visualization_msgs/msg/InteractiveMarkerUpdate]
-        # /speed_limit [nav2_msgs/msg/SpeedLimit]
-        # /tf [tf2_msgs/msg/TFMessage]
-        # /tf_static [tf2_msgs/msg/TFMessage]
-        # /transformed_global_plan [nav_msgs/msg/Path]
-        # /velocity_smoother/transition_event [lifecycle_msgs/msg/TransitionEvent]
-        # /waypoint_follower/transition_event [lifecycle_msgs/msg/TransitionEvent]
-
 
         # Subscriptions
-        # self.info_sub = self.create_subscription(
-        #     CameraInfo,
-        #     "/intel_realsense_r200_depth/camera_info",
-        #     self.cam_info_callback,
-        #     10,
-        #     callback_group=self.callback_group,
-        # )
 
-        self.odom_sub = self.create_subscription(
+        self.create_subscription(
             Odometry,
             "/odom",
             self.odom_callback,
@@ -168,23 +105,31 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
             callback_group=self.callback_group,
         )
 
-        self.img_sub = self.create_subscription(
+        self.create_subscription(
             Image,
             "/sky_cam",
-            self.image_callback,
+            self.sky_cam_callback,
+            1,
+            callback_group=self.callback_group,
+        )
+
+        self.create_subscription(
+            Image,
+            "/robot_cam",
+            self.robot_cam_callback,
+            1,
+            callback_group=self.callback_group,
+        )
+
+        self.create_subscription(
+            CameraInfo,
+            "/camera_info",
+            self.camera_info_callback,
             10,
             callback_group=self.callback_group,
         )
 
-        # self.points_sub = self.create_subscription(
-        #     PointCloud2,
-        #     "/intel_realsense_r200_depth/points",
-        #     self.points_callback,
-        #     10,
-        #     callback_group=self.callback_group,
-        # )
-
-        self.scan_sub = self.create_subscription(
+        self.create_subscription(
             LaserScan,
             "/scan",
             self.scan_callback,
@@ -192,7 +137,7 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
             callback_group=self.callback_group,
         )
 
-        self.plan_sub = self.create_subscription(
+        self.create_subscription(
             Path,
             "/plan",
             self.plan_callback,
@@ -201,7 +146,7 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
         )
 
         # The urdf is published as latching
-        self.urdf_sub = self.create_subscription(
+        self.create_subscription(
             String,
             "/robot_description",
             self.urdf_callback,
@@ -209,11 +154,11 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
             callback_group=self.callback_group,
         )
 
-        self.rosout_sub = self.create_subscription(
+        self.create_subscription(
             LogMsg,
             "/rosout",
             self.rosout_callback,
-            10, # TODO maske sure all messages are kept
+            1000,
             callback_group=self.callback_group,
         )
 
@@ -248,19 +193,32 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
         except TransformException as ex:
             print("Failed to get transform: {}".format(ex))
 
-    # def cam_info_callback(self, info: CameraInfo) -> None:
-    #     """Log a `CameraInfo` with `log_pinhole`."""
-    #     time = Time.from_msg(info.header.stamp)
-    #     rr.set_time_nanos("ros_time", time.nanoseconds)
+    def sky_cam_callback(self, img: Image) -> None:
+        """Log an `Image` with `log_image` using `cv_bridge`."""
+        rr.log_image("sky_cam", self.cv_bridge.imgmsg_to_cv2(img))
+    
+    def robot_cam_callback(self, img: Image) -> None:
+        """Log an `Image` with `log_image` using `cv_bridge`."""
+        time = Time.from_msg(img.header.stamp)
+        rr.set_time_nanos("ros_time", time.nanoseconds)
 
-    #     self.model.fromCameraInfo(info)
+        rr.log_image("map/odom/base_link/camera_link/camera_frame/img", self.cv_bridge.imgmsg_to_cv2(img))
+        self.log_tf_as_rigid3("map/odom/base_link/camera_link/camera_frame", time)
 
-    #     rr.log_pinhole(
-    #         "map/robot/camera/img",
-    #         child_from_parent=self.model.intrinsicMatrix(),
-    #         width=self.model.width,
-    #         height=self.model.height,
-    #     )
+    def camera_info_callback(self, info: CameraInfo) -> None:
+        # (Ignition) GZ publishes all CameraInfo messages on the same topic
+        #  This might be avoidable in the future: https://github.com/gazebosim/gz-sensors/issues/332#issuecomment-1472661285 
+        if info.header.frame_id == "sam_bot/base_link/robot_cam":
+            time = Time.from_msg(info.header.stamp)
+            rr.set_time_nanos("ros_time", time.nanoseconds)
+
+            self.model.fromCameraInfo(info)
+            rr.log_pinhole(
+                "map/odom/base_link/camera_link/camera_frame/img",
+                child_from_parent=self.model.intrinsicMatrix(),
+                width=self.model.width,
+                height=self.model.height,
+            )
 
     def odom_callback(self, odom: Odometry) -> None:
         """Update transforms when odom is updated."""
@@ -273,44 +231,6 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
 
         # Update the robot pose itself via TF
         self.log_tf_as_rigid3("map/odom", time)
-
-    def image_callback(self, img: Image) -> None:
-        """Log an `Image` with `log_image` using `cv_bridge`."""
-        rr.log_image("sky_cam", self.cv_bridge.imgmsg_to_cv2(img))
-
-    # def points_callback(self, points: PointCloud2) -> None:
-    #     """Log a `PointCloud2` with `log_points`."""
-    #     time = Time.from_msg(points.header.stamp)
-    #     rr.set_time_nanos("ros_time", time.nanoseconds)
-
-    #     pts = point_cloud2.read_points(points, field_names=["x", "y", "z"], skip_nans=True)
-
-    #     # The realsense driver exposes a float field called 'rgb', but the data is actually stored
-    #     # as bytes within the payload (not a float at all). Patch points.field to use the correct
-    #     # r,g,b, offsets so we can extract them with read_points.
-    #     points.fields = [
-    #         PointField(name="r", offset=16, datatype=PointField.UINT8, count=1),
-    #         PointField(name="g", offset=17, datatype=PointField.UINT8, count=1),
-    #         PointField(name="b", offset=18, datatype=PointField.UINT8, count=1),
-    #     ]
-
-    #     colors = point_cloud2.read_points(points, field_names=["r", "g", "b"], skip_nans=True)
-
-    #     pts = structured_to_unstructured(pts)
-    #     colors = colors = structured_to_unstructured(colors)
-
-    #     # Log points once rigidly under robot/camera/points. This is a robot-centric
-    #     # view of the world.
-    #     rr.log_points("map/robot/camera/points", positions=pts, colors=colors)
-    #     self.log_tf_as_rigid3("map/robot/camera/points", time)
-
-    #     # Log points a second time after transforming to the map frame. This is a map-centric
-    #     # view of the world.
-    #     #
-    #     # Once Rerun supports fixed-frame aware transforms [#1522](https://github.com/rerun-io/rerun/issues/1522)
-    #     # this will no longer be necessary.
-    #     rr.log_points("map/points", positions=pts, colors=colors)
-    #     self.log_tf_as_rigid3("map/points", time)
 
     def scan_callback(self, scan: LaserScan) -> None:
         """
@@ -358,7 +278,7 @@ class Nav2Subscriber(Node):  # type: ignore[misc]
 
         length = 1.2
         goal = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.z])
-        print("GOAL", goal, msg.header)
+
         rr.log_arrow("map", goal + [0,0,length], [0,0,-length], width_scale=0.12, color=[252, 41, 71])
         self.log_tf_as_rigid3("map", time)
 
