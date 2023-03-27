@@ -41,6 +41,7 @@ launch_test src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py
 ```
 
 
+
 ## Run tests with **Artefacts CI**
  1. Set up a new Artefacts CI project. Instructions: https://docs.artefacts.com/latest/
  2. Replace the project name in the `artefacts.yaml` with the name of your project
@@ -52,8 +53,10 @@ artefacts run tests
 artefacts run-remote tests --description "Test Navigation2"
 
 # Run test locally with Docker
-docker build --build-arg MAKEFLAGS=-j5 -t nav2-gz .
-docker run --rm -e ARTEFACTS_JOB_NAME=tests -e ARTEFACTS_KEY=<API_KEY> nav2-gz
+docker build --build-arg -t nav2-gz .
+# ARTEFACTS_JOB_NAME should be a job name from the `artefacts.yaml`. Ie. bringup, reach_goal, or follow_waypoints
+# ARTEFACTS_KEY can be created at the project-settings page of the Artefacts CI dashboard
+docker run --rm -e ARTEFACTS_JOB_NAME=bringup -e ARTEFACTS_KEY=<API_KEY> nav2-gz
 ```
 
 ## Visulaize navigation with **Rerun.io** (experimental)
