@@ -116,6 +116,8 @@ def main():
     goal_poses = list(map(create_pose, waypoints["waypoints"]))
 
 
+    # Wait for navigation to fully activate, since autostarting nav2
+    navigator.waitUntilNav2Active(localizer="smoother_server")
 
     # sanity check a valid path exists
     # path = navigator.getPath(initial_pose, goal_pose)
