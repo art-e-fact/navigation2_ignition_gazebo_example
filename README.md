@@ -69,3 +69,6 @@ source rr-venv/bin/activate
 pip install -r requirements
 # Run rerun node
 python run-rerun.py
+```
+![Screenshot from 2023-03-27 20-42-32](https://user-images.githubusercontent.com/2298371/228792085-66837913-32fe-4506-9624-673424328ea4.png)
+
