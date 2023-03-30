@@ -4,13 +4,18 @@ Minimal example ROS2 project to use Navigation2 with (Ignition) Gazebo. Based on
 
 [gz-nav2-tb3.webm](https://user-images.githubusercontent.com/2298371/226628768-818a7c3f-e5e1-49c6-b819-112c2cfa668b.webm)
 
+## Requirements
+ - ROS 2 Humble
+ - Gazebo Fortress
+ - Navigation 2
+
 ## Setup and build
 ```
 # Install Nav2 dependencies 
 sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup
 
 # Import source dependencies
-vcs import --input create3_3.repos src
+vcs import --input deps.repos src
 
 # Install rosrep dependencies
 rosdep install -y -r -i  --from-paths . 
@@ -19,7 +24,7 @@ rosdep install -y -r -i  --from-paths .
 source /opt/ros/humble/setup.bash
 
 # Build
-colcon build --symlink-install
+colcon build
 ```
 
 ## Run examples
@@ -55,7 +60,7 @@ artefacts run-remote tests --description "Test Navigation2"
 # Run test locally with Docker
 docker build --build-arg -t nav2-gz .
 # ARTEFACTS_JOB_NAME should be a job name from the `artefacts.yaml`. Ie. bringup, reach_goal, or follow_waypoints
-# ARTEFACTS_KEY can be created at the project-settings page of the Artefacts CI dashboard
+# ARTEFACTS_KEY can be generated at the project-settings page of the Artefacts CI dashboard
 docker run --rm -e ARTEFACTS_JOB_NAME=bringup -e ARTEFACTS_KEY=<API_KEY> nav2-gz
 ```
 
