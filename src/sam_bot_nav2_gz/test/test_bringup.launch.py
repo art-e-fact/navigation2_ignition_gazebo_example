@@ -14,22 +14,14 @@ import pytest
 @pytest.mark.launch_test
 @launch_testing.markers.keep_alive
 def generate_test_description():
-
-    # kill_gazebo = ExecuteProcess(
-    #     name="kill gazebo process",
-    #     cmd="pkill -9 --full --echo 'ign gazebo'",
-    #     shell=True,
-    #     output="screen",
-    # )
-
     launch_navigation_stack = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
                 os.path.join(
                     get_package_share_directory("sam_bot_nav2_gz"),
                     "launch",
+                    "complete_navigation.launch.py"
                 ),
-                "/complete_navigation.launch.py",
             ]
         ),
         launch_arguments=[("gz_args", "-s --headless-rendering"), ("use_rviz", "False")],

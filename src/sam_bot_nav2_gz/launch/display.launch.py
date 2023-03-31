@@ -10,7 +10,6 @@ from launch.actions import (
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import (
     Command,
-    FindExecutable,
     LaunchConfiguration,
     PathJoinSubstitution,
 )
@@ -56,6 +55,8 @@ def generate_launch_description():
         arguments=["-d", LaunchConfiguration("rvizconfig")],
     )
 
+    # Localize using odometry and IMU data. 
+    # It can be turned off because the navigation stack uses AMCL with lidar data for localization
     robot_localization_node = Node(
         condition=launch.conditions.IfCondition(use_localization),
         package="robot_localization",

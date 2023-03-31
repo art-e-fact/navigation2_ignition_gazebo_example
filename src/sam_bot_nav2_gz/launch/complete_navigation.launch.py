@@ -40,6 +40,7 @@ def generate_launch_description():
 
     use_rviz = LaunchConfiguration("use_rviz")
 
+    # Including launchfiles with execute process because i didn't find another way to wait for a certain messages befor starting the next launchfile
     bringup = ExecuteProcess(
         name="launch_bringup",
         cmd=[

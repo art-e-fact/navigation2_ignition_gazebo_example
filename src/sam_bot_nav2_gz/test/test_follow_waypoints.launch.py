@@ -21,8 +21,8 @@ def generate_test_description():
                 os.path.join(
                     get_package_share_directory("sam_bot_nav2_gz"),
                     "launch",
+                    "complete_navigation.launch.py"
                 ),
-                "/complete_navigation.launch.py",
             ]
         ),
         launch_arguments=[("gz_args", "-s --headless-rendering"), ("use_rviz", "false")],
@@ -47,7 +47,7 @@ def generate_test_description():
 # These run alongside the processes specified in generate_test_description()
 class TestHelloWorldProcess(unittest.TestCase):
     def test_read_stdout(self, proc_output):
-        """Check if 'hello_world' was found in the stdout."""
+        """Check the logs to see if the navigation task is completed"""
         # 'proc_output' is an object added automatically by the launch_testing framework.
         # It captures the outputs of the processes launched in generate_test_description()
         # Refer to the documentation for further details.

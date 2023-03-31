@@ -63,6 +63,7 @@
       </link>
     </model>
 
+    <!-- A camera sensor that looks straight down on the map. -->
     <model name="sky_cam">
       <static>true</static>
       <link name="camera_link">
