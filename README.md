@@ -7,11 +7,11 @@ Minimal example ROS2 project to use Navigation2 with (Ignition) Gazebo. Based on
 ## Requirements
  - ROS 2 Humble
  - Gazebo Fortress
- - Navigation 2
+ - [Navigation 2](https://navigation.ros.org/build_instructions/index.html#install)
 
 ## Setup and build
 ```
-# Install Nav2 dependencies 
+# Install Nav2 dependencies
 sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup
 
 # Import source dependencies
@@ -64,7 +64,7 @@ docker build --build-arg -t nav2-gz .
 docker run --rm -e ARTEFACTS_JOB_NAME=bringup -e ARTEFACTS_KEY=<API_KEY> nav2-gz
 ```
 
-## Visulaize navigation with **Rerun.io** (experimental)
+## Visualize navigation with **Rerun.io** (experimental)
 For more info, see: https://www.rerun.io/docs/howto/ros2-nav-turtlebot
 ```
 cd rerun
