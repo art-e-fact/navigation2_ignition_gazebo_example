@@ -5,27 +5,7 @@ project: navigation2-ignition-example
 
 jobs:
 
-  bringup: # Overall job name
-    type: test
-    package:
-      custom:
-        commands:
-        - apt update && apt install -y ros-humble-navigation2 ros-humble-nav2-bringup
-        - pip install vcstool
-        - vcs import --input /ws/src/deps.repos src/src
-    runtime:
-      simulator: gazebo:fortress
-      framework: ros2:humble
-    timeout: 5 #minutes
-    scenarios:
-      defaults: # Global to all scenarios, and overriden in specific scenarios.
-        subscriptions:
-          rosout: rosout
-      settings:
-        - name: bringup
-          ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
-
-  # reach_goal: # Overall job name
+  # bringup: # Overall job name
   #   type: test
   #   package:
   #     custom:
@@ -42,8 +22,28 @@ jobs:
   #       subscriptions:
   #         rosout: rosout
   #     settings:
-  #       - name: reach_goal
-  #         ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
+  #       - name: bringup
+  #         ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
+
+  reach_goal: # Overall job name
+    type: test
+    package:
+      custom:
+        commands:
+        - apt update && apt install -y ros-humble-navigation2 ros-humble-nav2-bringup
+        - pip install vcstool
+        - vcs import --input /ws/src/deps.repos src/src
+    runtime:
+      simulator: gazebo:fortress
+      framework: ros2:humble
+    timeout: 5 #minutes
+    scenarios:
+      defaults: # Global to all scenarios, and overriden in specific scenarios.
+        subscriptions:
+          rosout: rosout
+      settings:
+        - name: reach_goal
+          ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
 
   # follow_waypoints: # Overall job name
   #   type: test
