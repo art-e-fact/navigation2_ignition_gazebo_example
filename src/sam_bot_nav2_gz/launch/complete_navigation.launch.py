@@ -7,10 +7,11 @@ from launch.actions import (
     RegisterEventHandler,
     TimerAction,
 )
+from launch.conditions import IfCondition
 from launch.substitutions import (
     LaunchConfiguration,
     PathJoinSubstitution,
-    PythonExpression,
+    NotSubstitution,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
@@ -38,7 +39,7 @@ def generate_launch_description():
     toolbox_ready_message = "Registering sensor"
     navigation_ready_message = "Creating bond timer"
 
-    use_rviz = LaunchConfiguration("use_rviz")
+    run_headless = LaunchConfiguration("run_headless")
 
     # Including launchfiles with execute process because i didn't find another way to wait for a certain messages befor starting the next launchfile
     bringup = ExecuteProcess(
@@ -54,19 +55,10 @@ def generate_launch_description():
                 ]
             ),
             "use_rviz:=false",
+            ["run_headless:=", run_headless],
             "use_localization:=false",
-            # Thy to replace with LaunchConfigurationNotEquals
-            PythonExpression(
-                [
-                    "'' if '",
-                    LaunchConfiguration("gz_args"),
-                    "' == ''",
-                    " else 'gz_args:=",
-                    LaunchConfiguration("gz_args"),
-                    "'",
-                ]
-            ),
         ],
+        shell=False,
         output="screen",
     )
     toolbox = ExecuteProcess(
@@ -82,6 +74,7 @@ def generate_launch_description():
                 ]
             ),
         ],
+        shell=False,
         output="screen",
     )
     waiting_toolbox = RegisterEventHandler(
@@ -114,10 +107,11 @@ def generate_launch_description():
             "use_sim_time:=True",
             ["params_file:=", LaunchConfiguration('params_file')]
         ],
+        shell=False,
         output="screen",
     )
     rviz_node = Node(
-        condition=launch.conditions.IfCondition(use_rviz),
+        condition=IfCondition(NotSubstitution(run_headless)),
         package="rviz2",
         executable="rviz2",
         name="rviz2",
@@ -176,9 +170,9 @@ def generate_launch_description():
                 description="Extra args for Gazebo (ie. '-s' for running headless)",
             ),
             DeclareLaunchArgument(
-                name="use_rviz",
-                default_value="True",
-                description="Absolute path to rviz config file",
+                name="run_headless",
+                default_value="False",
+                description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
             ),
             bringup,
             waiting_toolbox,

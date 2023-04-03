@@ -25,7 +25,7 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("gz_args", "-s --headless-rendering"), ("use_rviz", "false")],
+        launch_arguments=[("run_headless", "True")],
     )
 
     reach_goal = Node(

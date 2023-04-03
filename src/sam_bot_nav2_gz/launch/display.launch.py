@@ -1,5 +1,5 @@
 import launch
-from launch.substitutions import Command, LaunchConfiguration
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration
 from launch.actions import (
     ExecuteProcess,
     DeclareLaunchArgument,
@@ -7,11 +7,13 @@ from launch.actions import (
     RegisterEventHandler,
     SetEnvironmentVariable,
 )
+from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import (
     Command,
     LaunchConfiguration,
-    PathJoinSubstitution,
+    NotSubstitution,
+    AndSubstitution,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
@@ -36,7 +38,7 @@ def generate_launch_description():
     use_rviz = LaunchConfiguration("use_rviz")
     log_level = LaunchConfiguration("log_level")
     gz_verbosity = LaunchConfiguration("gz_verbosity")
-    gz_args = LaunchConfiguration("gz_args")
+    run_headless = LaunchConfiguration("run_headless")
 
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
@@ -47,7 +49,7 @@ def generate_launch_description():
     )
 
     rviz_node = Node(
-        condition=launch.conditions.IfCondition(use_rviz),
+        condition=IfCondition(AndSubstitution(NotSubstitution(run_headless), use_rviz)),
         package="rviz2",
         executable="rviz2",
         name="rviz2",
@@ -69,20 +71,32 @@ def generate_launch_description():
         ],
     )
 
-    gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            PathJoinSubstitution(
-                [
-                    FindPackageShare("ros_gz_sim"),
-                    "launch",
-                    "gz_sim.launch.py",
-                ]
-            )
+    # gazebo have to be executed with shell=False, or test_launch won't terminate it
+    #   see: https://github.com/ros2/launch/issues/545
+    # This code is form taken ros_gz_sim and modified to work with shell=False
+    #   see: https://github.com/gazebosim/ros_gz/blob/ros2/ros_gz_sim/launch/gz_sim.launch.py.in
+    gz_env = {'GZ_SIM_SYSTEM_PLUGIN_PATH':
+           ':'.join([os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', default=''),
+                     os.environ.get('LD_LIBRARY_PATH', default='')]),
+           'IGN_GAZEBO_SYSTEM_PLUGIN_PATH':  # TODO(CH3): To support pre-garden. Deprecated.
+                      ':'.join([os.environ.get('IGN_GAZEBO_SYSTEM_PLUGIN_PATH', default=''),
+                                os.environ.get('LD_LIBRARY_PATH', default='')])}
+    gazebo = [
+        ExecuteProcess(
+            condition=launch.conditions.IfCondition(run_headless),
+            cmd=['ruby', FindExecutable(name="ign"), 'gazebo',  '-r', '-v', gz_verbosity, '-s', '--headless-rendering', world_path],
+            output='screen',
+            additional_env=gz_env, # type: ignore
+            shell=False,
         ),
-        launch_arguments=[
-            ("gz_args", [world_path, " -r -v ", gz_verbosity, " ", gz_args])
-        ],
-    )
+        ExecuteProcess(
+            condition=launch.conditions.UnlessCondition(run_headless),
+            cmd=['ruby', FindExecutable(name="ign"), 'gazebo',  '-r', '-v', gz_verbosity, world_path],
+            output='screen',
+            additional_env=gz_env, # type: ignore
+            shell=False,
+        )
+    ]
 
     spawn_entity = Node(
         package="ros_gz_sim",
@@ -129,6 +143,7 @@ def generate_launch_description():
             "active",
             "joint_state_broadcaster",
         ],
+        shell=False,
         output="screen",
     )
 
@@ -142,6 +157,7 @@ def generate_launch_description():
             "active",
             "diff_drive_base_controller",
         ],
+        shell=False,
         output="screen",
     )
 
@@ -192,6 +208,11 @@ def generate_launch_description():
                 description="Start RViz",
             ),
             DeclareLaunchArgument(
+                name="run_headless",
+                default_value="False",
+                description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
+            ),
+            DeclareLaunchArgument(
                 name="rvizconfig",
                 default_value=default_rviz_config_path,
                 description="Absolute path to rviz config file",
@@ -221,7 +242,6 @@ def generate_launch_description():
                 default_value="warn",
                 description="The level of logging that is applied to all ROS 2 nodes launched by this script.",
             ),
-            gazebo,
             bridge,
             robot_state_publisher_node,
             spawn_entity,
@@ -241,5 +261,5 @@ def generate_launch_description():
             ),
             relay_odom,
             relay_cmd_vel,
-        ]
+        ] + gazebo
     )

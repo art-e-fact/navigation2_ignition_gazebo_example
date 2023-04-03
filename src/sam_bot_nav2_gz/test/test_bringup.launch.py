@@ -24,7 +24,7 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("gz_args", "-s --headless-rendering"), ("use_rviz", "False")],
+        launch_arguments=[("run_headless", "True")],
     )
 
     return LaunchDescription(
