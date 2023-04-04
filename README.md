@@ -15,16 +15,20 @@ Minimal example ROS2 project to use Navigation2 with (Ignition) Gazebo. Based on
 sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup
 
 # Import source dependencies
+pip3 install vcstool
 vcs import --input deps.repos src
 
 # Install rosrep dependencies
 rosdep install -y -r -i  --from-paths . 
 
-# Make sure ROS2 is sourced
+# Make sure ROS2 is sourced (assuming bash, please replace extension as needed)
 source /opt/ros/humble/setup.bash
 
 # Build
 colcon build
+
+# Make sure the app is sourced (assuming bash, please replace extension as needed)
+source install/setup.bash
 ```
 
 ## Run examples
