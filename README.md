@@ -23,8 +23,9 @@ rosdep install -y -r -i  --from-paths .
 # Make sure ROS2 is sourced
 source /opt/ros/humble/setup.bash
 
-# Build
+# Build & source the workspace
 colcon build
+source install/setup.bash
 ```
 
 ## Run examples
