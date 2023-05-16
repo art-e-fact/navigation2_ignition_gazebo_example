@@ -56,15 +56,15 @@ launch_test src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py
  2. Replace the project name in the `artefacts.yaml` with the name of your project
 ```
 # Run test locally
-artefacts run nav2_tests
+artefacts run all
 
 # Run test remotely
-artefacts run-remote nav2_tests --description "Test Navigation2"
+artefacts run-remote all --description "Test Navigation2"
 
 # Run test locally with Docker
 docker build -t nav2-gz .
 # ARTEFACTS_KEY can be generated at the project-settings page of the Artefacts CI dashboard
-docker run --rm -e ARTEFACTS_JOB_NAME=nav2_tests -e ARTEFACTS_KEY=<API_KEY> nav2-gz
+docker run --rm -e ARTEFACTS_JOB_NAME=all -e ARTEFACTS_KEY=${ARTEFACTS_KEY} nav2-gz
 ```
 
 ## Visualize navigation with **Rerun.io** (experimental)

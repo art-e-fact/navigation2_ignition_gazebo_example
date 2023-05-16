@@ -165,11 +165,6 @@ def generate_launch_description():
                 description="Absolute path to rviz config file",
             ),
             DeclareLaunchArgument(
-                "gz_args",
-                default_value=" ",
-                description="Extra args for Gazebo (ie. '-s' for running headless)",
-            ),
-            DeclareLaunchArgument(
                 name="run_headless",
                 default_value="False",
                 description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
