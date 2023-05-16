@@ -20,6 +20,8 @@ jobs:
       defaults: # Global to all scenarios, and overriden in specific scenarios.
         subscriptions:
           rosout: rosout
+        launch_arguments:
+          run_headless: true
       settings:
         - name: bringup
           ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"

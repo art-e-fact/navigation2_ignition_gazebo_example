@@ -25,7 +25,6 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("run_headless", "True")],
     )
 
     reach_goal = Node(

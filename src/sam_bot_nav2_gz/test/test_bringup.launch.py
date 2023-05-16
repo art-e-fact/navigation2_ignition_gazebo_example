@@ -24,7 +24,6 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("run_headless", "True")],
     )
 
     return LaunchDescription(
