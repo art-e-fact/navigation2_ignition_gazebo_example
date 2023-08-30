@@ -121,11 +121,11 @@ def generate_launch_description():
         package="ros_gz_bridge",
         executable="parameter_bridge",
         arguments=[
-            "/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan",
+            # "/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan",
             "/imu@sensor_msgs/msg/Imu[ignition.msgs.IMU",
-            "/sky_cam@sensor_msgs/msg/Image@ignition.msgs.Image",
-            "/robot_cam@sensor_msgs/msg/Image@ignition.msgs.Image",
-            "/camera_info@sensor_msgs/msg/CameraInfo@ignition.msgs.CameraInfo",
+            # "/sky_cam@sensor_msgs/msg/Image@ignition.msgs.Image",
+            # "/robot_cam@sensor_msgs/msg/Image@ignition.msgs.Image",
+            # "/camera_info@sensor_msgs/msg/CameraInfo@ignition.msgs.CameraInfo",
             # Clock message is necessary for the diff_drive_controller to accept commands https://github.com/ros-controls/gz_ros2_control/issues/106
             "/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock",
         ],
@@ -223,7 +223,7 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 name="use_localization",
-                default_value="True",
+                default_value="False",
                 description="Use EKF to estimagte odom->base_link transform from IMU + wheel odometry",
             ),
             DeclareLaunchArgument(

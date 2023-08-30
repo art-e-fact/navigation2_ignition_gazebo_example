@@ -88,10 +88,10 @@
       </link>
     </model>
 
-    <include>
+    <!--include>
         <uri>TurtlebotArena</uri>
         <pose>0.0 0.0 0.0 0 0 0</pose>
-    </include>
+    </include-->
 
   </world>
 </sdf>

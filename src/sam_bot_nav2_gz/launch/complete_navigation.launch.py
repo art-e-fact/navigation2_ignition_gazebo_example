@@ -1,3 +1,5 @@
+import os
+
 import launch
 from launch_ros.actions import Node
 from launch.actions import (
@@ -17,6 +19,13 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
 from launch.events.process import ProcessIO
 from launch.event_handlers import OnProcessIO
+
+from launch.actions import DeclareLaunchArgument, GroupAction, SetEnvironmentVariable
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration, PythonExpression
+from nav2_common.launch import RewrittenYaml
+
+from ament_index_python.packages import get_package_share_directory
 
 # Create event handler that waits for an output message and then returns actions
 def on_matching_output(matcher: str, result: launch.SomeActionsType):
@@ -56,7 +65,7 @@ def generate_launch_description():
             ),
             "use_rviz:=false",
             ["run_headless:=", run_headless],
-            "use_localization:=false",
+            "use_localization:=true",
         ],
         shell=False,
         output="screen",
@@ -77,6 +86,7 @@ def generate_launch_description():
         shell=False,
         output="screen",
     )
+
     waiting_toolbox = RegisterEventHandler(
         OnProcessIO(
             target_action=bringup,
@@ -91,6 +101,10 @@ def generate_launch_description():
             ),
         )
     )
+
+    # bringup_dir = get_package_share_directory('nav2_bringup')
+    # map_file=os.path.join(bringup_dir, 'maps', 'turtlebot3_world.yaml')
+    # print(map_file)
 
     navigation = ExecuteProcess(
         name="launch_navigation",
@@ -120,10 +134,10 @@ def generate_launch_description():
     )
     waiting_navigation = RegisterEventHandler(
         OnProcessIO(
-            target_action=toolbox,
+            target_action=bringup,
             on_stdout=on_matching_output(
-                # diff_drive_loaded_message,
-                toolbox_ready_message,
+                diff_drive_loaded_message,
+                #toolbox_ready_message,
                 [
                     LogInfo(msg="SLAM Toolbox loaded. Starting navigation..."),
                     # TODO Debug: Navigation fails to start if it's launched right after the slam_toolbox
@@ -136,6 +150,22 @@ def generate_launch_description():
             ),
         )
     )
+
+
+
+
+    # "map:=/opt/ros/humble/share/nav2_bringup/maps/turtlebot3_world.yaml",
+
+
+    map_transform_node = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='map_transform',
+        output='screen',
+        arguments = "--x 1 --y 0 --z 0 --roll 0 --pitch 0 --yaw 0 --frame-id map --child-frame-id odom".split(' '),
+        )
+    
+
 
     waiting_success = RegisterEventHandler(
         OnProcessIO(
@@ -170,8 +200,9 @@ def generate_launch_description():
                 description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
             ),
             bringup,
-            waiting_toolbox,
+            # waiting_toolbox,
             waiting_navigation,
             waiting_success,
+            map_transform_node
         ]
     )
