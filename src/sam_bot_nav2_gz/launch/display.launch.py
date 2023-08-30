@@ -128,6 +128,7 @@ def generate_launch_description():
             # "/camera_info@sensor_msgs/msg/CameraInfo@ignition.msgs.CameraInfo",
             # Clock message is necessary for the diff_drive_controller to accept commands https://github.com/ros-controls/gz_ros2_control/issues/106
             "/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock",
+            '/gps/fix@sensor_msgs/msg/NavSatFix@gz.msgs.NavSat', 
         ],
         output="screen",
     )

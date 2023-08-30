@@ -155,7 +155,7 @@
 
       <topic>imu</topic>
       <always_on>true</always_on>
-      <update_rate>100</update_rate>
+      <update_rate>50</update_rate>
       <visualize>true</visualize>
       <imu>
         <angular_velocity>
@@ -219,6 +219,44 @@
     <child link="imu_link"/>
     <origin xyz="0 0 0.01"/>
   </joint>
+
+
+
+
+
+  <link name="gnss_link">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </collision>
+
+    <xacro:box_inertia m="0.001" w="0.1" d="0.1" h="0.1"/>
+  </link>
+
+  <joint name="gnss_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="gnss_link"/>
+    <origin xyz="0 0 0.01"/>
+  </joint>
+
+
+  <gazebo reference="gnss_link">
+    <sensor name="navsat" type="navsat">
+      <ignition_frame_id>gnss_link</ignition_frame_id>
+      <always_on>1</always_on>
+      <update_rate>25</update_rate>
+      <topic>gps/fix</topic>
+      <visualize>true</visualize>
+    </sensor>
+  </gazebo>
+
 
   <ros2_control name="IgnitionSystem" type="system">
     <hardware>

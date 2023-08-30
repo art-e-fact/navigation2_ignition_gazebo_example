@@ -65,7 +65,7 @@ def generate_launch_description():
             ),
             "use_rviz:=false",
             ["run_headless:=", run_headless],
-            "use_localization:=true",
+            "use_localization:=false",
         ],
         shell=False,
         output="screen",
@@ -167,6 +167,37 @@ def generate_launch_description():
     
 
 
+    navsat_transform_node = Node(
+        package='robot_localization',
+        executable='navsat_transform_node',
+        name='navsat_transform_node',
+        output='screen',
+        respawn=True,
+        parameters=[{
+            "magnetic_declination_radians": 0.0,
+            "yaw_offset": 0.0,
+            "zero_altitude": True,
+            "use_odometry_yaw": False,
+            "wait_for_datum": False,
+            "publish_filtered_gps": False,
+            "broadcast_utm_transform": False,
+        }])
+
+
+    ukf_localization_node = Node(
+        package='robot_localization',
+        executable='ukf_node',
+        name='ukf_node',
+        output='screen',
+        respawn=True,
+        parameters=[os.path.join(get_package_share_directory("sam_bot_nav2_gz"), 'config', 'ukf.yaml')],
+        )
+
+
+
+
+
+
     waiting_success = RegisterEventHandler(
         OnProcessIO(
             target_action=navigation,
@@ -203,6 +234,8 @@ def generate_launch_description():
             # waiting_toolbox,
             waiting_navigation,
             waiting_success,
+            navsat_transform_node,
+            ukf_localization_node,
             map_transform_node
         ]
     )
