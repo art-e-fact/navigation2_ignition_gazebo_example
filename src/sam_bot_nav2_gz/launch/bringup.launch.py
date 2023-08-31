@@ -24,13 +24,14 @@ def generate_launch_description():
 
     # Start simulation
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
-    pkg_imu_gnss_navigation = get_package_share_directory('imu_gnss_navigation')
+    pkg_share = get_package_share_directory('sam_bot_nav2_gz')
+
 
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')),
         launch_arguments={
-            'gz_args': ' -r ' + pkg_imu_gnss_navigation + '/worlds/diff_drive.sdf'
+            'gz_args': ' -r ' + pkg_share + '/world/diff_drive.sdf'
         }.items(),
     )
 
@@ -45,7 +46,6 @@ def generate_launch_description():
 
 
     # Start GUI
-    pkg_share = get_package_share_directory('sam_bot_nav2_gz')
     rviz_config_path = os.path.join(pkg_share, "rviz/navigation_config.rviz")
 
     rviz_node = Node(
@@ -65,8 +65,11 @@ def generate_launch_description():
                 executable='map_server',
                 name='map_server',
                 output='screen',
-                parameters=[os.path.join(pkg_share, "config/map_server.yaml")],
+                parameters=[os.path.join(pkg_share, 'config/nav2_params.yaml')],
                 arguments=['--ros-args', '--log-level', 'info'])
+
+
+             
 
 
     map_server_lifecycle_node = Node(
