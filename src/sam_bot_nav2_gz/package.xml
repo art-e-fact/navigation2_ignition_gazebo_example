@@ -4,29 +4,20 @@
   <name>sam_bot_nav2_gz</name>
   <version>1.0.0</version>
   <description>Nav2 Example with (Ignition) Gazebo</description>
-  <maintainer email="azazdeaz@gmail.com">Andras Polgar</maintainer>
+  <maintainer email="polzin.max@gmail.com">Max Polzin</maintainer>
   <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <buildtool_depend>ament_cmake_python</buildtool_depend>
 
-  <build_depend>control_msgs</build_depend>
-
-  <exec_depend>joint_state_publisher</exec_depend>
-  <exec_depend>robot_state_publisher</exec_depend>
-  <exec_depend>ros2_control</exec_depend>
-  <exec_depend>ros2_controllers</exec_depend>
   <exec_depend>rviz2</exec_depend>
-  <exec_depend>xacro</exec_depend>
   <exec_depend>robot_localization</exec_depend>
-  <exec_depend>ros_ign_gazebo</exec_depend>
-  <exec_depend>ign_ros2_control</exec_depend>
-  <exec_depend>topic_tools</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>nav2_map_server</exec_depend>
+  <exec_depend>nav2_lifecycle_manager</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
   
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
-  <test_depend>launch_testing</test_depend>
-
   <export>
     <build_type>ament_cmake</build_type>
   </export>
