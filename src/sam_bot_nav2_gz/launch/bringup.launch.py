@@ -70,9 +70,9 @@ def generate_launch_description():
 
 
 
+    #TODO: Replace with robot model and robot_publisher
     # spawn = Node( package='ros_gz_sim', executable='create', arguments=[ '-name', 'ROBOT_NAME', '-topic', 'robot_description', ], output='screen' ) 
 
-    #TODO: Replace with robot model and robot_publisher
     gnss_transform_node = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -81,7 +81,6 @@ def generate_launch_description():
         arguments = "--x 0 --y 0 --z 1.0 --roll 0 --pitch 0 --yaw 0 --frame-id base_link --child-frame-id gnss_link".split(' '),
         )
 
-    #TODO: Replace with robot model and robot_publisher
     imu_transform_node = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -89,7 +88,8 @@ def generate_launch_description():
         output='screen',
         arguments = "--x 0 --y 0 --z 0.5 --roll 0 --pitch 0 --yaw 0 --frame-id base_link --child-frame-id imu_link".split(' '),
         )
-    
+
+    #END TODO
     
 
 
