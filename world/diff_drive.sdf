@@ -100,7 +100,7 @@
       <pose>0 0 0.325 0 -0 0</pose>
 
       <link name="imu">
-        <pose>0.554282 0 0.5 0 0 -1.57</pose>
+        <pose>0.554282 0 0.5 -0.1 0.3 -1.77</pose>
         <inertial>
           <mass>0.1</mass>
           <inertia>
@@ -134,7 +134,7 @@
       </link>
 
       <link name="gnss">
-        <pose>0.554282 0 1.0 0 0.0 0</pose>
+        <pose>0.554282 0 1.0 0.3 1.6 -0.4</pose>
         <inertial>
           <mass>0.1</mass>
           <inertia>
