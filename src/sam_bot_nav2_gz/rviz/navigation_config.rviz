@@ -13,7 +13,7 @@ Panels:
         - /LaserScan1/Topic1
         - /Goal1
       Splitter Ratio: 0.5
-    Tree Height: 1185
+    Tree Height: 927
 Visualization Manager:
   Class: ""
   Displays:
@@ -53,49 +53,6 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        base_footprint:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        camera_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        drivewhl_l_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        drivewhl_r_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        front_caster:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        imu_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        lidar_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Mass Properties:
         Inertia: false
         Mass: false
@@ -109,23 +66,11 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        base_footprint:
-          Value: true
         base_link:
           Value: true
-        camera_depth_frame:
-          Value: true
-        camera_link:
-          Value: true
-        drivewhl_l_link:
-          Value: true
-        drivewhl_r_link:
-          Value: true
-        front_caster:
+        gnss_link:
           Value: true
         imu_link:
-          Value: true
-        lidar_link:
           Value: true
         map:
           Value: true
@@ -140,20 +85,9 @@ Visualization Manager:
         map:
           odom:
             base_link:
-              base_footprint:
-                {}
-              camera_link:
-                camera_depth_frame:
-                  {}
-              drivewhl_l_link:
-                {}
-              drivewhl_r_link:
-                {}
-              front_caster:
+              gnss_link:
                 {}
               imu_link:
-                {}
-              lidar_link:
                 {}
       Update Interval: 0
       Value: true
@@ -343,33 +277,33 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 6.922656536102295
+      Distance: 8.194294929504395
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.3263019621372223
-        Y: -0.10204039514064789
-        Z: -0.8599916696548462
+        X: 0.23209738731384277
+        Y: 2.1459336280822754
+        Z: -0.2564907371997833
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.155397891998291
+      Pitch: 1.120397925376892
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.3853985369205475
+      Yaw: 4.708573818206787
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1433
+  Height: 1163
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000001000000000000019d00000537fc0200000001fb000000100044006900730070006c006100790073010000004400000537000000eb00ffffff0000072c0000053700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
-  Width: 2256
-  X: 0
-  Y: 34
+  QMainWindow State: 000000ff00000000fd00000001000000000000019d00000431fc0200000001fb000000100044006900730070006c006100790073010000003d00000431000000c900ffffff000005970000043100000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Width: 1850
+  X: 70
+  Y: 240
