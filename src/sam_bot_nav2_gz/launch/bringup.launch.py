@@ -78,7 +78,7 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='gnss_transform',
         output='screen',
-        arguments = "--x 0 --y 0 --z 0.3 --roll 0 --pitch 0 --yaw 0 --frame-id base_link --child-frame-id gnss_link".split(' '),
+        arguments = "--x 0 --y 0 --z 1.0 --roll 0 --pitch 0 --yaw 0 --frame-id base_link --child-frame-id gnss_link".split(' '),
         )
 
     #TODO: Replace with robot model and robot_publisher
@@ -87,7 +87,7 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='imu_transform',
         output='screen',
-        arguments = "--x 0 --y 0 --z 0.2 --roll 0 --pitch 0 --yaw 0 --frame-id base_link --child-frame-id imu_link".split(' '),
+        arguments = "--x 0 --y 0 --z 0.5 --roll 0 --pitch 0 --yaw 0 --frame-id base_link --child-frame-id imu_link".split(' '),
         )
     
     
