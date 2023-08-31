@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(sam_bot_nav2_gz)
+project(nav2_outdoor_example)
 
 find_package(ament_cmake REQUIRED)
 

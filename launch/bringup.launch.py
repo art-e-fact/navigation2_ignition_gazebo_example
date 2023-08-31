@@ -15,7 +15,7 @@ def generate_launch_description():
 
     # Start simulation
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
-    pkg_share = get_package_share_directory('sam_bot_nav2_gz')
+    pkg_share = get_package_share_directory('nav2_outdoor_example')
 
 
     gz_sim = IncludeLaunchDescription(
