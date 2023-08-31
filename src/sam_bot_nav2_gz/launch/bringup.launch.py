@@ -11,15 +11,6 @@ from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
-from launch.substitutions import (
-    FindExecutable,
-    LaunchConfiguration,
-    Command
-)
-from launch.actions import (
-    ExecuteProcess,
-)
-
 def generate_launch_description():
 
     # Start simulation
@@ -57,7 +48,6 @@ def generate_launch_description():
     )
 
 
-
     # Start map, localization, and navigation
     lifecycle_nodes = ['map_server']
     map_server_node = Node(
@@ -67,10 +57,6 @@ def generate_launch_description():
                 output='screen',
                 parameters=[os.path.join(pkg_share, 'config/nav2_params.yaml')],
                 arguments=['--ros-args', '--log-level', 'info'])
-
-
-             
-
 
     map_server_lifecycle_node = Node(
                 package='nav2_lifecycle_manager',
@@ -84,7 +70,7 @@ def generate_launch_description():
 
 
 
-
+    # spawn = Node( package='ros_gz_sim', executable='create', arguments=[ '-name', 'ROBOT_NAME', '-topic', 'robot_description', ], output='screen' ) 
 
     #TODO: Replace with robot model and robot_publisher
     gnss_transform_node = Node(
@@ -105,15 +91,6 @@ def generate_launch_description():
         )
     
     
-    # spawn = Node( package='ros_gz_sim', executable='create', arguments=[ '-name', 'ROBOT_NAME', '-topic', 'robot_description', ], output='screen' ) 
-
-
-
-
-
-
-
-
 
 
     map_transform_node = Node(
