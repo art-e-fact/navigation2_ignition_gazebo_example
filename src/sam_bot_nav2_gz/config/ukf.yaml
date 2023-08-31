@@ -6,7 +6,7 @@ ukf_node:
     frequency: 10.0
     sensor_timeout: 0.1
 
-    two_d_mode: false
+    two_d_mode: true
 
     transform_time_offset: 0.0
 
@@ -57,9 +57,9 @@ ukf_node:
     imu0_differential: false
     imu0_relative: true
     imu0_queue_size: 5
-    imu0_pose_rejection_threshold: 0.8                 # Note the difference in parameter names
-    imu0_twist_rejection_threshold: 0.8                #
-    imu0_linear_acceleration_rejection_threshold: 0.8  #
+    imu0_pose_rejection_threshold: 5.0                 # Note the difference in parameter names
+    imu0_twist_rejection_threshold: 1.0                #
+    imu0_linear_acceleration_rejection_threshold: 5.0  #
 
 
     imu0_remove_gravitational_acceleration: true

@@ -27,6 +27,12 @@ from nav2_common.launch import RewrittenYaml
 
 from ament_index_python.packages import get_package_share_directory
 
+from launch.actions import EmitEvent
+from launch_ros.actions import LifecycleNode
+from launch_ros.events.lifecycle import ChangeState
+
+import lifecycle_msgs.msg
+
 # Create event handler that waits for an output message and then returns actions
 def on_matching_output(matcher: str, result: launch.SomeActionsType):
     def on_output(event: ProcessIO):
@@ -154,7 +160,53 @@ def generate_launch_description():
 
 
 
-    # "map:=/opt/ros/humble/share/nav2_bringup/maps/turtlebot3_world.yaml",
+
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    declare_use_sim_time_cmd = DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='false',
+        description='Use simulation (Gazebo) clock if true')
+    
+    remappings = [('/tf', 'tf'),
+                  ('/tf_static', 'tf_static')]
+
+    # Create our own temporary YAML files that include substitutions
+    param_substitutions = {
+        'use_sim_time': use_sim_time,
+        'yaml_filename': '/home/max/colcon_ws/src/navigation2_ignition_gazebo_example/src/sam_bot_nav2_gz/world/turtlebot3_world.yaml'}
+
+    bringup_dir = get_package_share_directory('nav2_bringup')
+    params_file = os.path.join(bringup_dir, 'params', 'nav2_params.yaml')
+
+    configured_params = RewrittenYaml(
+        source_file=params_file,
+        param_rewrites=param_substitutions,
+        convert_types=True)
+    
+    map_server_node = LifecycleNode(
+                package='nav2_map_server',
+                executable='map_server',
+                name='map_server',
+                namespace='',
+                output='screen',
+                respawn_delay=2.0,
+                arguments=['--ros-args', '--log-level', 'info'],
+                parameters=[configured_params],
+                remappings=remappings)
+    
+    lifecycle_nodes = ['map_server']
+
+    map_server_lifecycle_node = Node(
+                package='nav2_lifecycle_manager',
+                executable='lifecycle_manager',
+                name='lifecycle_manager_localization',
+                output='screen',
+                arguments=['--ros-args', '--log-level', 'info'],
+                parameters=[{'use_sim_time': use_sim_time},
+                            {'autostart': True},
+                            {'node_names': lifecycle_nodes}])
+
+
 
 
     map_transform_node = Node(
@@ -165,8 +217,6 @@ def generate_launch_description():
         arguments = "--x 1 --y 0 --z 0 --roll 0 --pitch 0 --yaw 0 --frame-id map --child-frame-id odom".split(' '),
         )
     
-
-
     navsat_transform_node = Node(
         package='robot_localization',
         executable='navsat_transform_node',
@@ -182,7 +232,6 @@ def generate_launch_description():
             "publish_filtered_gps": False,
             "broadcast_utm_transform": False,
         }])
-
 
     ukf_localization_node = Node(
         package='robot_localization',
@@ -230,12 +279,14 @@ def generate_launch_description():
                 default_value="False",
                 description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
             ),
+            # declare_use_sim_time_cmd,
+            # map_server_node,
+            # map_server_lifecycle_node,
             bringup,
-            # waiting_toolbox,
             waiting_navigation,
             waiting_success,
             navsat_transform_node,
             ukf_localization_node,
-            map_transform_node
+            map_transform_node,
         ]
     )
