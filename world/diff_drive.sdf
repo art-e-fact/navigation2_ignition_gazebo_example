@@ -129,6 +129,7 @@
           <update_rate>50</update_rate>
           <visualize>true</visualize>
           <topic>imu</topic>
+          <!-- <enable_metrics>true</enable_metrics> -->
         </sensor>
       </link>
 
@@ -161,8 +162,8 @@
             <specular>0.0 0.0 1.0 1</specular>
           </material>
         </visual>
-
         <sensor name="navsat" type="navsat">
+          <ignition_frame_id>gnss_link</ignition_frame_id>
           <always_on>1</always_on>
           <update_rate>25</update_rate>
           <visualize>true</visualize>
