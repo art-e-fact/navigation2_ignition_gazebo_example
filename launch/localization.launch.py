@@ -20,7 +20,7 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='gnss_transform',
         output='screen',
-        arguments = "--x 0 --y 0 --z 1.0 --roll 0 --pitch 0 --yaw 0 --frame-id base_link --child-frame-id gnss_link".split(' '),
+        arguments = "--x 0 --y 0 --z 1.0 --roll 0 --pitch 0 --yaw 0 --frame-id base_link --child-frame-id vehicle_blue/gnss/navsat".split(' '),
         )
 
     imu_transform_node = Node(
