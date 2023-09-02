@@ -125,7 +125,7 @@
 
 
     <joint name="imu_joint" type="fixed">
-        <origin xyz="0.554283 0 1.0" rpy="-0.1 0.3 -1.77"/>
+        <origin xyz="0.554283 0 1.0" rpy="0 0 0"/>
         <parent link="chassis_link"/>
         <child link="imu_link"/>
     </joint>
@@ -151,7 +151,7 @@
     </link>
 
     <joint name="gnss_joint" type="fixed">
-        <origin xyz="0.554282 0 1.5" rpy="0.3 1.6 -0.4"/>
+        <origin xyz="0.554282 0 1.5" rpy="0 0 0"/>
         <parent link="chassis_link"/>
         <child link="gnss_link"/>
     </joint>
