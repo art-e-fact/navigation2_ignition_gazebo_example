@@ -9,11 +9,9 @@ Panels:
         - /TF1
         - /LocalCoastmap1
         - /Plan1
-        - /LaserScan1
-        - /LaserScan1/Topic1
         - /Goal1
       Splitter Ratio: 0.5
-    Tree Height: 927
+    Tree Height: 900
 Visualization Manager:
   Class: ""
   Displays:
@@ -53,6 +51,40 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        caster:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        chassis_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gnss_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        imu_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Mass Properties:
         Inertia: false
         Mass: false
@@ -68,13 +100,21 @@ Visualization Manager:
         All Enabled: true
         base_link:
           Value: true
+        caster:
+          Value: true
+        chassis_link:
+          Value: true
         gnss_link:
           Value: true
         imu_link:
           Value: true
+        left_wheel:
+          Value: true
         map:
           Value: true
         odom:
+          Value: true
+        right_wheel:
           Value: true
       Marker Scale: 0.30000001192092896
       Name: TF
@@ -85,10 +125,17 @@ Visualization Manager:
         map:
           odom:
             base_link:
-              gnss_link:
-                {}
-              imu_link:
-                {}
+              chassis_link:
+                caster:
+                  {}
+                gnss_link:
+                  {}
+                imu_link:
+                  {}
+                left_wheel:
+                  {}
+                right_wheel:
+                  {}
       Update Interval: 0
       Value: true
     - Alpha: 0.699999988079071
@@ -183,40 +230,6 @@ Visualization Manager:
         Value: /plan
       Value: true
     - Alpha: 1
-      Autocompute Intensity Bounds: true
-      Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
-        Value: true
-      Axis: Z
-      Channel Name: intensity
-      Class: rviz_default_plugins/LaserScan
-      Color: 255; 255; 255
-      Color Transformer: Intensity
-      Decay Time: 0
-      Enabled: true
-      Invert Rainbow: false
-      Max Color: 255; 255; 255
-      Max Intensity: 0
-      Min Color: 0; 0; 0
-      Min Intensity: 0
-      Name: LaserScan
-      Position Transformer: XYZ
-      Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.009999999776482582
-      Style: Flat Squares
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /scan
-      Use Fixed Frame: true
-      Use rainbow: true
-      Value: true
-    - Alpha: 1
       Class: rviz_default_plugins/Polygon
       Color: 25; 255; 0
       Enabled: true
@@ -277,33 +290,33 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 8.194294929504395
+      Distance: 10.992371559143066
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.23209738731384277
-        Y: 2.1459336280822754
-        Z: -0.2564907371997833
+        X: -0.12895938754081726
+        Y: 0.3603276312351227
+        Z: -0.8437395095825195
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.120397925376892
+      Pitch: 0.2303987592458725
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.708573818206787
+      Yaw: 3.2135636806488037
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1163
+  Height: 1136
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000001000000000000019d00000431fc0200000001fb000000100044006900730070006c006100790073010000003d00000431000000c900ffffff000005970000043100000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000001000000000000019d00000416fc0200000001fb000000100044006900730070006c006100790073010000003d00000416000000c900ffffff000005970000041600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Width: 1850
   X: 70
-  Y: 240
+  Y: 27

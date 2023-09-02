@@ -12,27 +12,7 @@ def generate_launch_description():
 
     pkg_share = get_package_share_directory('nav2_outdoor_example')
 
-    #TODO: Replace with robot model and robot_publisher
-    # spawn = Node( package='ros_gz_sim', executable='create', arguments=[ '-name', 'ROBOT_NAME', '-topic', 'robot_description', ], output='screen' ) 
-
-    gnss_transform_node = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='gnss_transform',
-        output='screen',
-        arguments = "--x 0 --y 0 --z 1.0 --roll 0 --pitch 0 --yaw 0 --frame-id base_link --child-frame-id gnss_link".split(' '),
-        )
-
-    imu_transform_node = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='imu_transform',
-        output='screen',
-        arguments = "--x 0 --y 0 --z 0.5 --roll 0 --pitch 0 --yaw 0 --frame-id base_link --child-frame-id imu_link".split(' '),
-        )
-
-    #END TODO
-    
+  
     map_transform_node = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -54,6 +34,7 @@ def generate_launch_description():
             "wait_for_datum": False,
             "publish_filtered_gps": False,
             "broadcast_utm_transform": False,
+            "use_simtime": True,
         }])
 
     ukf_localization_node = Node(
@@ -69,8 +50,6 @@ def generate_launch_description():
             ukf_localization_node,
             navsat_transform_node,
             map_transform_node,
-            gnss_transform_node,
-            imu_transform_node,
         ]
     )
 

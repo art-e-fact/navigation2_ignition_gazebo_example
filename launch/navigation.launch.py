@@ -46,7 +46,7 @@ def generate_launch_description():
                 name='lifecycle_manager_localization',
                 output='screen',
                 arguments=['--ros-args', '--log-level', 'info'],
-                parameters=[{'use_sim_time': False},
+                parameters=[{'use_sim_time': True},
                             {'autostart': True},
                             {'node_names': lifecycle_nodes}])
 
@@ -56,7 +56,7 @@ def generate_launch_description():
     # Start navigation
     nav2_bringup_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pkg_nav2_bringup, 'launch/navigation_launch.py')),
-        launch_arguments={'use_sim_time': 'False', 'params_file': params_file}.items(),
+        launch_arguments={'use_sim_time': 'True', 'params_file': params_file}.items(),
     )
 
 

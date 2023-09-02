@@ -4,7 +4,7 @@ project(nav2_outdoor_example)
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY  launch rviz config world
+  DIRECTORY  launch rviz config world urdf
   DESTINATION share/${PROJECT_NAME}
 )
 
