@@ -202,7 +202,7 @@
     <gazebo reference="imu_link">
         <sensor name="GazeboIMU" type="imu">
             <always_on>1</always_on>
-            <update_rate>25.0</update_rate>
+            <update_rate>5.0</update_rate>
             <visualize>true</visualize>
             <topic>imu</topic>
             <ignition_frame_id>imu_link</ignition_frame_id>
@@ -212,7 +212,7 @@
     <gazebo reference="gnss_link">
         <sensor name="GazeboNavSat" type="navsat">
             <always_on>1</always_on>
-            <update_rate>25.0</update_rate>
+            <update_rate>5.0</update_rate>
             <visualize>true</visualize>
             <topic>gps/fix</topic>
             <ignition_frame_id>gnss_link</ignition_frame_id>
