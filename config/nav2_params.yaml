@@ -137,7 +137,7 @@ local_costmap:
       width: 3
       height: 3
       resolution: 0.05
-      footprint: "[ [0.21, 0.195], [0.21, -0.195], [-0.21, -0.195], [-0.21, 0.195] ]"
+      footprint: "[ [1.21, 0.895], [1.21, -0.895], [-1.21, -0.895], [-1.21, 0.895] ]"
       plugins: ["static_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"

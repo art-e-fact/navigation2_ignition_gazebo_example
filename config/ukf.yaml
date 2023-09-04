@@ -57,7 +57,7 @@ ukf_node:
                   true,  true,  true]
     imu0_nodelay: false
     imu0_differential: false
-    imu0_relative: false
+    imu0_relative: true
     imu0_queue_size: 5
     imu0_pose_rejection_threshold: 5.0                 # Note the difference in parameter names
     imu0_twist_rejection_threshold: 1.0                #
