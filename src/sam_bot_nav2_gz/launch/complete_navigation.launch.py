@@ -92,6 +92,15 @@ def generate_launch_description():
         )
     )
 
+    rviz_node = Node(
+        condition=IfCondition(NotSubstitution(run_headless)),
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="screen",
+        arguments=["-d", LaunchConfiguration("rvizconfig")],
+    )
+
     navigation = ExecuteProcess(
         name="launch_navigation",
         cmd=[
@@ -105,31 +114,49 @@ def generate_launch_description():
                 ]
             ),
             "use_sim_time:=True",
+            #TODO(andyz): find site_config pkg path
+            "map:=/home/andy/ws_clr/src/site_config/config/default_arena_map.yaml",
+            "slam:=False",
             ["params_file:=", LaunchConfiguration('params_file')]
         ],
         shell=False,
         output="screen",
     )
-    rviz_node = Node(
-        condition=IfCondition(NotSubstitution(run_headless)),
-        package="rviz2",
-        executable="rviz2",
-        name="rviz2",
+
+    localization = ExecuteProcess(
+        name="launch_localization",
+        cmd=[
+            "ros2",
+            "launch",
+            PathJoinSubstitution(
+                [
+                    FindPackageShare("nav2_bringup"),
+                    "launch",
+                    "localization_launch.py",
+                ]
+            ),
+            "use_sim_time:=True",
+            #TODO(andyz): find site_config pkg path
+            "map:=/home/andy/ws_clr/src/site_config/config/default_arena_map.yaml",
+            ["params_file:=", LaunchConfiguration('params_file')]
+        ],
+        shell=False,
         output="screen",
-        arguments=["-d", LaunchConfiguration("rvizconfig")],
     )
+
+    # Delayed launching of the nav stack
     waiting_navigation = RegisterEventHandler(
         OnProcessIO(
-            target_action=toolbox,
+            target_action=bringup,
             on_stdout=on_matching_output(
-                # diff_drive_loaded_message,
-                toolbox_ready_message,
+                diff_drive_loaded_message,
+                # toolbox_ready_message,
                 [
-                    LogInfo(msg="SLAM Toolbox loaded. Starting navigation..."),
+                    LogInfo(msg="Starting navigation..."),
                     # TODO Debug: Navigation fails to start if it's launched right after the slam_toolbox
                     TimerAction(
                         period=20.0,
-                        actions=[navigation],
+                        actions=[navigation, localization],
                     ),
                     rviz_node,
                 ],
@@ -170,7 +197,7 @@ def generate_launch_description():
                 description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
             ),
             bringup,
-            waiting_toolbox,
+            # waiting_toolbox,
             waiting_navigation,
             waiting_success,
         ]
