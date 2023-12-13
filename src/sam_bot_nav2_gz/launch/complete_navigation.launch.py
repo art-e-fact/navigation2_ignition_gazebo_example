@@ -114,8 +114,13 @@ def generate_launch_description():
                 ]
             ),
             "use_sim_time:=True",
-            #TODO(andyz): find site_config pkg path
-            "map:=/home/andy/ws_clr/src/site_config/config/default_arena_map.yaml",
+            ["map:=", PathJoinSubstitution(
+                [
+                    FindPackageShare("site_config"),
+                    "config",
+                    "default_arena_map.yaml",
+                ]
+            ) ],
             "slam:=False",
             ["params_file:=", LaunchConfiguration('params_file')]
         ],
@@ -136,8 +141,13 @@ def generate_launch_description():
                 ]
             ),
             "use_sim_time:=True",
-            #TODO(andyz): find site_config pkg path
-            "map:=/home/andy/ws_clr/src/site_config/config/default_arena_map.yaml",
+            ["map:=", PathJoinSubstitution(
+                [
+                    FindPackageShare("site_config"),
+                    "config",
+                    "default_arena_map.yaml",
+                ]
+            ) ],
             ["params_file:=", LaunchConfiguration('params_file')]
         ],
         shell=False,
