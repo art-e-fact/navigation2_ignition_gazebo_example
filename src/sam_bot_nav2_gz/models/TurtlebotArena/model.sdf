@@ -4,6 +4,76 @@
       <static>1</static>
       <link name='symbol'>
 
+        <collision name='one_one'>
+          <pose>-1.1 -1.1 0.25 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.15</radius>
+              <length>0.5</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+          </surface>
+        </collision>
+
+        <visual name='one_one'>
+          <pose>-1.1 -1.1 0.25 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.15</radius>
+              <length>0.5</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>.74 .28 .29 1</ambient>
+            <diffuse>.74 .28 .29 1</diffuse>
+            <specular>1 1 1 1</specular>
+          </material>
+        </visual>
+
+        <collision name='one_three'>
+          <pose>-1.1 1.1 0.25 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.15</radius>
+              <length>0.5</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <bounce/>
+            <friction>
+              <ode/>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+          </surface>
+        </collision>
+
+        <visual name='one_three'>
+          <pose>-1.1 1.1 0.25 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.15</radius>
+              <length>0.5</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>.74 .28 .29 1</ambient>
+            <diffuse>.74 .28 .29 1</diffuse>
+            <specular>1 1 1 1</specular>
+          </material>
+        </visual>
+
         <!-- Draw Hexagon -->
         <collision name='head'>
           <pose>3.5 0 0 0 0 0</pose>
