@@ -1,4 +1,4 @@
-FROM public.ecr.aws/artefacts/ros2:humble-fortress-0.4.5
+FROM public.ecr.aws/artefacts/ros2:humble-fortress
 
 WORKDIR /ws
 
