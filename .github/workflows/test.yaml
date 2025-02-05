@@ -1,0 +1,22 @@
+name: test
+
+# Trigger Rule: Trigger when push to main or PR to main.
+on: 
+  workflow_dispatch:
+  push:
+  
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository under $GITHUB_WORKSPACE, so our jobs can access it.
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: art-e-fact/action-artefacts-ci@main
+        with:
+          artefacts-api-key: ${{ secrets.ARTEFACTS_API_KEY }}
+          job-name: all
