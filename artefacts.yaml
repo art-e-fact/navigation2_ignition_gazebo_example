@@ -16,8 +16,6 @@ jobs:
     timeout: 5 #minutes
     scenarios:
       defaults: # Global to all scenarios, and overriden in specific scenarios.
-        subscriptions:
-          rosout: rosout
       settings:
         - name: bringup
           ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
