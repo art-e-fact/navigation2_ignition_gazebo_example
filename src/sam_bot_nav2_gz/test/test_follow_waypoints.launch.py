@@ -9,6 +9,7 @@ from launch_ros.actions import Node
 import launch_testing.actions
 import launch_testing.markers
 import pytest
+from artefacts_toolkit.rosbag import rosbag
 
 
 # This function specifies the processes to be run for our test
@@ -28,18 +29,23 @@ def generate_test_description():
         launch_arguments=[("run_headless", "True")],
     )
 
-    reach_goal = Node(
+    follow_waypoints = Node(
         package="sam_bot_nav2_gz",
         executable="follow_waypoints.py",
         output="screen",
     )
+    topics = ["/odom"]
+    bag_recorder, rosbag_filepath = rosbag.get_bag_recorder(
+            topics, use_sim_time=True
+        )
 
     return LaunchDescription(
         [
             launch_navigation_stack,
-            reach_goal,
+            follow_waypoints,
+            bag_recorder,
             ReadyToTest(),
-        ]
+        ]. { "rosbag_filepath": rosbag_filepath}
     )
 
 
