@@ -1,8 +1,6 @@
-FROM public.ecr.aws/artefacts/ros2:humble-fortress
+FROM public.ecr.aws/artefacts/nav2:humble-fortress
 
 WORKDIR /ws
-
-RUN apt update && apt install -y ros-humble-navigation2 ros-humble-nav2-bringup && rm -rf /var/lib/apt/lists/*
 
 # Install only the external packages first to speed up rebuilds
 COPY deps.repos /tmp
