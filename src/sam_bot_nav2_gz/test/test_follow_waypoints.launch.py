@@ -35,6 +35,7 @@ def generate_test_description():
         executable="follow_waypoints.py",
         output="screen",
     )
+
     topics = ["/odom"]
     bag_recorder, rosbag_filepath = rosbag.get_bag_recorder(
             topics, use_sim_time=True

@@ -9,6 +9,8 @@ from launch_ros.actions import Node
 import launch_testing.actions
 import launch_testing.markers
 import pytest
+from artefacts_toolkit.rosbag import rosbag
+from artefacts_toolkit.chart import make_chart
 
 
 # This function specifies the processes to be run for our test
@@ -33,14 +35,21 @@ def generate_test_description():
         executable="reach_goal.py",
         output="screen",
     )
+ 
+    topics = ["/odom"]
+    bag_recorder, rosbag_filepath = rosbag.get_bag_recorder(
+            topics, use_sim_time=True
+        )
+
 
     return LaunchDescription(
         [
             launch_navigation_stack,
             reach_goal,
+            bag_recorder,
             ReadyToTest(),
         ]
-    )
+    ), { "rosbag_filepath": rosbag_filepath}
 
 
 # This is our test fixture. Each method is a test case.
@@ -52,3 +61,16 @@ class TestHelloWorldProcess(unittest.TestCase):
         # It captures the outputs of the processes launched in generate_test_description()
         # Refer to the documentation for further details.
         proc_output.assertWaitFor("Goal succeeded!", timeout=800, stream="stdout")
+
+
+@launch_testing.post_shutdown_test()
+class TestProcOutputAfterShutdown(unittest.TestCase):
+    def test_exit_code(self, rosbag_filepath):
+        print(rosbag_filepath)
+        make_chart(
+            rosbag_filepath,
+            "/odom.pose.pose.position.x",
+            "/odom.pose.pose.position.y",
+            field_unit="m",
+            chart_name="odometry_position",
+        )
