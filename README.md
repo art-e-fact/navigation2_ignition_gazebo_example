@@ -47,8 +47,13 @@ ros2 run sam_bot_nav2_gz reach_goal.py
 ```
 
 ## Run tests with **launch_testing**
+
+You will need to pip install the `artefacts-toolkit` package to run the tests. 
+
 ```
 # Start one of the tests with
+# if using a virtualenv you may need to add the path to the python packages to make it available in the ROS2 environment:
+# export PYTHONPATH=$PYTHONPATH:$HOME/.pyenv/versions/[venv-name]/lib/python3.10/site-packages
 launch_test src/sam_bot_nav2_gz/test/test_bringup.launch.py
 launch_test src/sam_bot_nav2_gz/test/test_reach_goal.launch.py
 launch_test src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py
@@ -59,6 +64,10 @@ launch_test src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py
 ## Run tests with **Artefacts CI**
  1. Set up a new Artefacts CI project. Instructions: https://docs.artefacts.com/latest/
  2. Replace the project name in the `artefacts.yaml` with the name of your project
+
+
+You will need to pip install the `artefacts-toolkit` and `artefacts-cli` packages to run the tests. 
+
 ```
 # Run test locally
 artefacts run all
