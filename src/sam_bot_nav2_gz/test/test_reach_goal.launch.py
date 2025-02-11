@@ -3,7 +3,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch_testing.actions import ReadyToTest
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 import launch_testing.actions
@@ -37,15 +37,44 @@ def generate_test_description():
     )
  
     topics = ["/odom"]
+    metrics = ["/distance_from_start_gt", "/distance_from_start_est", "/odometry_error"]
+    sim_topics = ["/world/dynamic_pose/info"]
     bag_recorder, rosbag_filepath = rosbag.get_bag_recorder(
-            topics, use_sim_time=True
+            topics + sim_topics + metrics, use_sim_time=True
         )
 
+    # Gazebo ros bridge
+    gz_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        parameters=[{
+            "config_file": os.path.join(
+                "src",
+                "sam_bot_nav2_gz",
+                "test",
+                 "bridge.yaml"
+                )}],
+        output="screen",
+        )
+
+    test_odometry_node = ExecuteProcess(
+        cmd=[
+            "python3",
+            os.path.join(
+                "src",
+                "sam_bot_nav2_gz",
+                "test",
+                "test_odometry_node.py"
+            ),
+        ]
+    )
 
     return LaunchDescription(
         [
             launch_navigation_stack,
             reach_goal,
+            test_odometry_node,
+            gz_bridge,
             bag_recorder,
             ReadyToTest(),
         ]

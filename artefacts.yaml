@@ -17,6 +17,10 @@ jobs:
     scenarios:
       defaults: # Global to all scenarios, and overriden in specific scenarios.
         output_dirs: ["output"]
+        metrics:
+          - /odometry_error
+          - /distance_from_start_gt
+          - /distance_from_start_est
       settings:
         - name: bringup
           ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
