@@ -9,7 +9,7 @@ from launch_ros.actions import Node
 import launch_testing.actions
 import launch_testing.markers
 import pytest
-from artefacts_toolkit.rosbag import rosbag
+from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
 from artefacts_toolkit.config import get_artefacts_param
 
@@ -77,3 +77,5 @@ class TestProcOutputAfterShutdown(unittest.TestCase):
             field_unit="m",
             chart_name="odometry_position",
         )
+        image_topics.extract_camera_image(rosbag_filepath, "/sky_cam")
+        image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.webm")
