@@ -81,12 +81,13 @@ class TestOdometry(Node):
             #self.get_logger().info(f"Distance from start: {distance_from_start_est}")
 
             # compute the position estimate error
-            odometry_error = math.sqrt(
-                (self.current_location.x - msg.pose.pose.position.x) ** 2
-                + (self.current_location.y - msg.pose.pose.position.y) ** 2
-            )
-            # publish the cumulative error
-            self.odometry_error_pub.publish(Float32(data=odometry_error))
+            if self.current_location:
+                odometry_error = math.sqrt(
+                    (self.current_location.x - msg.pose.pose.position.x) ** 2
+                    + (self.current_location.y - msg.pose.pose.position.y) ** 2
+                )
+                # publish the cumulative error
+                self.odometry_error_pub.publish(Float32(data=odometry_error))
 
 
         self.last_odom_msg = msg
