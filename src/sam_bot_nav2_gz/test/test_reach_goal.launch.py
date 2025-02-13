@@ -9,7 +9,7 @@ from launch_ros.actions import Node
 import launch_testing.actions
 import launch_testing.markers
 import pytest
-from artefacts_toolkit.rosbag import rosbag
+from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
 
 
@@ -38,9 +38,10 @@ def generate_test_description():
  
     topics = ["/odom"]
     metrics = ["/distance_from_start_gt", "/distance_from_start_est", "/odometry_error"]
+    camera_topics = ["/sky_cam"]
     sim_topics = ["/world/dynamic_pose/info"]
     bag_recorder, rosbag_filepath = rosbag.get_bag_recorder(
-            topics + sim_topics + metrics, use_sim_time=True
+            topics + sim_topics + metrics + camera_topics, use_sim_time=True
         )
 
     # Gazebo ros bridge
@@ -103,3 +104,5 @@ class TestProcOutputAfterShutdown(unittest.TestCase):
             field_unit="m",
             chart_name="odometry_position",
         )
+        image_topics.extract_camera_image(rosbag_filepath, "/sky_cam")
+        image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.webm")
