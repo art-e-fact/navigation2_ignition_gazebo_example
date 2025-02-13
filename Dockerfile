@@ -10,7 +10,7 @@ RUN apt update -y && rosdep install --from-paths src --ignore-src -r -y
 RUN source /opt/ros/humble/setup.bash --extend && colcon build --symlink-install
 
 COPY . /ws
-RUN apt update -y && rosdep install --from-paths src --ignore-src -r -y
+RUN apt update -y && apt install -y ros-humble-rosbag2-storage-mcap && rosdep install --from-paths src --ignore-src -r -y
 RUN source /opt/ros/humble/setup.bash --extend && colcon build --symlink-install
 
 RUN pip install -r src/sam_bot_nav2_gz/requirements.txt
