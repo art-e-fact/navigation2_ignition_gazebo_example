@@ -149,8 +149,8 @@
 
   <gazebo reference="imu_link">
     <sensor name="imu_sensor" type="imu">
-      <ignition_frame_id>imu_link</ignition_frame_id>
-      <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu">
+      <frame_id>imu_link</frame_id>
+      <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu">
       </plugin>
 
       <topic>imu</topic>
@@ -220,9 +220,9 @@
     <origin xyz="0 0 0.01"/>
   </joint>
 
-  <ros2_control name="IgnitionSystem" type="system">
+  <ros2_control name="GazeboSimSystem" type="system">
     <hardware>
-      <plugin>ign_ros2_control/IgnitionSystem</plugin>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
     </hardware>
     <joint name="drivewhl_l_joint">
       <command_interface name="velocity">
@@ -244,7 +244,7 @@
 
 
   <gazebo>
-    <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <parameters>$(find sam_bot_nav2_gz)/config/diff_drive_controller_velocity.yaml</parameters>
     </plugin>
   </gazebo>
@@ -282,7 +282,7 @@
 
   <gazebo reference="lidar_link">
     <sensor name="lidar" type="gpu_lidar">
-      <ignition_frame_id>lidar_link</ignition_frame_id>
+      <frame_id>lidar_link</frame_id>
       <topic>scan</topic>
       <always_on>true</always_on>
       <visualize>true</visualize>
