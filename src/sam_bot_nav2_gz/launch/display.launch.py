@@ -76,21 +76,21 @@ def generate_launch_description():
     #   see: https://github.com/gazebosim/ros_gz/blob/ros2/ros_gz_sim/launch/gz_sim.launch.py.in
     gz_env = {'GZ_SIM_SYSTEM_PLUGIN_PATH':
            ':'.join([os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', default=''),
-                     os.environ.get('LD_LIBRARY_PATH', default='')]),
-           'IGN_GAZEBO_SYSTEM_PLUGIN_PATH':  # TODO(CH3): To support pre-garden. Deprecated.
-                      ':'.join([os.environ.get('IGN_GAZEBO_SYSTEM_PLUGIN_PATH', default=''),
-                                os.environ.get('LD_LIBRARY_PATH', default='')])}
+                     os.environ.get('LD_LIBRARY_PATH', default='')])},
+        #    'IGN_GAZEBO_SYSTEM_PLUGIN_PATH':  # TODO(CH3): To support pre-garden. Deprecated.
+        #               ':'.join([os.environ.get('IGN_GAZEBO_SYSTEM_PLUGIN_PATH', default=''),
+        #                         os.environ.get('LD_LIBRARY_PATH', default='')])}
     gazebo = [
         ExecuteProcess(
             condition=launch.conditions.IfCondition(run_headless),
-            cmd=['ruby', FindExecutable(name="ign"), 'gazebo',  '-r', '-v', gz_verbosity, '-s', '--headless-rendering', world_path],
+            cmd=['ruby', FindExecutable(name="gz"), 'sim',  '-r', '-v', gz_verbosity, '-s', '--headless-rendering', world_path],
             output='screen',
             additional_env=gz_env, # type: ignore
             shell=False,
         ),
         ExecuteProcess(
             condition=launch.conditions.UnlessCondition(run_headless),
-            cmd=['ruby', FindExecutable(name="ign"), 'gazebo',  '-r', '-v', gz_verbosity, world_path],
+            cmd=['ruby', FindExecutable(name="gz"), 'sim',  '-r', '-v', gz_verbosity, world_path],
             output='screen',
             additional_env=gz_env, # type: ignore
             shell=False,
@@ -189,11 +189,11 @@ def generate_launch_description():
     return launch.LaunchDescription(
         [
             SetEnvironmentVariable(
-                name="IGN_GAZEBO_RESOURCE_PATH",
+                name="GZ_SIM_RESOURCE_PATH",
                 value=gz_models_path,
             ),
             SetEnvironmentVariable(
-                name="IGN_GAZEBO_MODEL_PATH",
+                name="GZ_SIM_MODEL_PATH",
                 value=gz_models_path,
             ),
             DeclareLaunchArgument(
