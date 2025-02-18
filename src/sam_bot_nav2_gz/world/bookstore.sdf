@@ -67,6 +67,7 @@
 
 
 	<model name="AirConditionerC_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_AirConditionerC_01</uri>
         </include>
@@ -75,6 +76,7 @@
 
 
 	<model name="Bicycle_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Bicycle_01</uri>
         </include>
@@ -84,6 +86,7 @@
 
 
 	<model name="BookE_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -91,6 +94,7 @@
 	</model>
 
 	<model name="BookE_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -98,6 +102,7 @@
 	</model>
 
 	<model name="BookE_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -105,6 +110,7 @@
 	</model>
 
 	<model name="BookE_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -112,6 +118,7 @@
 	</model>
 
 	<model name="BookE_01_005">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -119,6 +126,7 @@
 	</model>
 
 	<model name="BookE_01_006">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -126,6 +134,7 @@
 	</model>
 
 	<model name="BookE_01_007">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -134,6 +143,7 @@
 
 
 	<model name="BookE_01_008">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -141,6 +151,7 @@
 	</model>
 
 	<model name="BookE_01_009">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -148,6 +159,7 @@
 	</model>
 
 	<model name="BookE_01_010">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -155,6 +167,7 @@
 	</model>
 
 	<model name="BookE_01_011">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -162,6 +175,7 @@
 	</model>
 
 	<model name="BookE_01_012">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -169,6 +183,7 @@
 	</model>
 
 	<model name="BookE_01_013">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -176,6 +191,7 @@
 	</model>
 
 	<model name="BookE_01_014">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -183,6 +199,7 @@
 	</model>
 
 	<model name="BookE_01_015">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -190,6 +207,7 @@
 	</model>
 
 	<model name="BookE_01_016">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -197,6 +215,7 @@
 	</model>
 
 	<model name="BookE_01_017">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -204,6 +223,7 @@
 	</model>
 
 	<model name="BookE_01_018">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -212,6 +232,7 @@
 
 
 	<model name="BookE_01_019">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -220,6 +241,7 @@
 	</model>
 
 	<model name="BookE_01_020">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -227,6 +249,7 @@
 	</model>
 
 	<model name="BookE_01_021">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -234,6 +257,7 @@
 	</model>
 
 	<model name="BookE_01_022">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -241,6 +265,7 @@
 	</model>
 
 	<model name="BookE_01_023">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -248,6 +273,7 @@
 	</model>
 
 	<model name="BookE_01_024">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -255,6 +281,7 @@
 	</model>
 
 	<model name="BookE_01_025">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -263,6 +290,7 @@
 
 
 	<model name="BookE_01_026">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -270,6 +298,7 @@
 	</model>
 
 	<model name="BookE_01_027">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -277,6 +306,7 @@
 	</model>
 
 	<model name="BookE_01_028">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -284,6 +314,7 @@
 	</model>
 
 	<model name="BookE_01_029">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -292,6 +323,7 @@
 
 
 	<model name="BookE_01_030">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookE_01</uri>
         </include>
@@ -300,6 +332,7 @@
 
 
 	<model name="BookF_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookF_01</uri>
         </include>
@@ -307,6 +340,7 @@
 	</model>
 
 	<model name="BookD_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookD_01</uri>
         </include>
@@ -314,6 +348,7 @@
 	</model>
 
 	<model name="BookF_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookF_01</uri>
         </include>
@@ -321,6 +356,7 @@
 	</model>
 
 	<model name="BookD_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookD_01</uri>
         </include>
@@ -328,6 +364,7 @@
 	</model>
 
 	<model name="BookF_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookF_01</uri>
         </include>
@@ -335,6 +372,7 @@
 	</model>
 
 	<model name="BookD_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookD_01</uri>
         </include>
@@ -342,6 +380,7 @@
 	</model>
 
 	<model name="BookF_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookF_01</uri>
         </include>
@@ -349,6 +388,7 @@
 	</model>
 
 	<model name="BookD_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookD_01</uri>
         </include>
@@ -356,6 +396,7 @@
 	</model>
 
 	<model name="BookF_01_005">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookF_01</uri>
         </include>
@@ -363,6 +404,7 @@
 	</model>
              
        <model name="BookshelfA_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfA_01</uri>
         </include>
@@ -370,6 +412,7 @@
 	</model>
 
 	<model name="BookshelfA_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfA_01</uri>
         </include>
@@ -377,6 +420,7 @@
 	</model>
 
 	<model name="BookshelfA_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfA_01</uri>
         </include>
@@ -384,6 +428,7 @@
 	</model>
 
 	<model name="BookshelfA_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfA_01</uri>
         </include>
@@ -391,6 +436,7 @@
 	</model>
 
 	<model name="BookshelfB_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfB_01</uri>
         </include>
@@ -398,6 +444,7 @@
 	</model>
 
 	<model name="BookshelfB_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfB_01</uri>
         </include>
@@ -405,6 +452,7 @@
 	</model>
 
 	<model name="BookshelfB_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfB_01</uri>
         </include>
@@ -412,6 +460,7 @@
 	</model>
 
 	<model name="BookshelfB_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfB_01</uri>
         </include>
@@ -419,6 +468,7 @@
 	</model>
 
 	<model name="BookshelfB_01_005">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfB_01</uri>
         </include>
@@ -426,6 +476,7 @@
 	</model>
 
 	<model name="BookshelfB_01_006">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfB_01</uri>
         </include>
@@ -433,6 +484,7 @@
 	</model>
 
 	<model name="BookshelfB_01_007">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfB_01</uri>
         </include>
@@ -440,6 +492,7 @@
 	</model>
 
 	<model name="BookshelfB_01_008">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfB_01</uri>
         </include>
@@ -447,6 +500,7 @@
 	</model>
 
    	<model name="BookshelfC_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfC_01</uri>
         </include>
@@ -454,6 +508,7 @@
 	</model>
 
 	<model name="BookshelfC_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfC_01</uri>
         </include>
@@ -461,6 +516,7 @@
 	</model>
 
 	<model name="BookshelfC_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfC_01</uri>
         </include>
@@ -468,6 +524,7 @@
 	</model>
 
 	<model name="BookshelfC_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookshelfC_01</uri>
         </include>
@@ -478,6 +535,7 @@
     <!-- Exclude logo, it's just a store -->
     <!--
 	<model name="BookstoreLogo_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_BookstoreLogo_01</uri>
         </include>
@@ -488,6 +546,7 @@
     <!-- Exclude ceiling, easier to view -->
     <!--
 	<model name="RetailShopCeiling_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_RetailShopCeiling_01</uri>
         </include>
@@ -496,6 +555,7 @@
     -->
 
        <model name="ChairB_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -503,6 +563,7 @@
 	</model>
 
        <model name="ChairB_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -510,6 +571,7 @@
 	</model>
 
        <model name="ChairB_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -517,6 +579,7 @@
 	</model>
 
        <model name="ChairB_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -525,6 +588,7 @@
 
 
        <model name="ChairB_01_005">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -532,6 +596,7 @@
 	</model>
 
        <model name="ChairB_01_006">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -539,6 +604,7 @@
 	</model>
 
        <model name="ChairB_01_007">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -546,6 +612,7 @@
 	</model>
 
        <model name="ChairB_01_008">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -553,6 +620,7 @@
 	</model>
 
        <model name="ChairB_01_009">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -560,6 +628,7 @@
 	</model>
 
        <model name="ChairB_01_010">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -567,6 +636,7 @@
 	</model>
 
        <model name="ChairB_01_011">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -574,6 +644,7 @@
 	</model>
 
        <model name="ChairB_01_012">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -581,6 +652,7 @@
 	</model>
 
        <model name="ChairB_01_013">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -588,6 +660,7 @@
 	</model>
 
        <model name="ChairB_01_014">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -595,6 +668,7 @@
 	</model>
 
        <model name="ChairB_01_015">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -602,6 +676,7 @@
 	</model>
 
        <model name="ChairB_01_016">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ChairB_01</uri>
         </include>
@@ -609,6 +684,7 @@
 	</model>
 
 	<model name="ColumnB_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ColumnB_01</uri>
         </include>
@@ -616,6 +692,7 @@
 	</model>
 
 	<model name="Computer_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Computer_01</uri>
         </include>
@@ -623,6 +700,7 @@
 	</model>
 
 	<model name="SecurityCamera_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_SecurityCamera_01</uri>
         </include>
@@ -630,6 +708,7 @@
 	</model>
 
 	<model name="SecurityCamera_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_SecurityCamera_01</uri>
         </include>
@@ -637,6 +716,7 @@
 	</model>
 
 	<model name="InfoDesk_01_001">
+	<static>true</static>
         <include>
          <uri>models/aws_robomaker_retail_InfoDesk_01</uri>
         </include>
@@ -644,6 +724,7 @@
 	</model>
 
 	<model name="DeskB_01_001">
+	<static>true</static>
         <include>
          <uri>models/aws_robomaker_retail_DeskB_01</uri>
         </include>
@@ -651,6 +732,7 @@
 	</model>
 
 	<model name="DeskB_01_002">
+	<static>true</static>
         <include>
          <uri>models/aws_robomaker_retail_DeskB_01</uri>
         </include>
@@ -658,6 +740,7 @@
 	</model>
 
 	<model name="DeskA_01_001">
+	<static>true</static>
         <include>
          <uri>models/aws_robomaker_retail_DeskA_01</uri>
         </include>
@@ -665,6 +748,7 @@
 	</model>
 
 	<model name="DeskA_01_002">
+	<static>true</static>
         <include>
          <uri>models/aws_robomaker_retail_DeskA_01</uri>
         </include>
@@ -672,6 +756,7 @@
 	</model>
 
 	<model name="DeskA_01_003">
+	<static>true</static>
         <include>
          <uri>models/aws_robomaker_retail_DeskA_01</uri>
         </include>
@@ -679,6 +764,7 @@
 	</model>
 
 	<model name="DeskA_01_004">
+	<static>true</static>
         <include>
          <uri>models/aws_robomaker_retail_DeskA_01</uri>
         </include>
@@ -686,6 +772,7 @@
 	</model>
 
 	<model name="DeskA_01_005">
+	<static>true</static>
         <include>
          <uri>models/aws_robomaker_retail_DeskA_01</uri>
         </include>
@@ -693,6 +780,7 @@
 	</model>
 
 	<model name="DoorB_01_001">
+	<static>true</static>
         <include>
         <uri>models/aws_robomaker_retail_DoorB_01</uri>
         </include>
@@ -700,6 +788,7 @@
 	</model>
 
 	<model name="RetailShopFloor_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_RetailShopFloor_01</uri>
         </include>
@@ -707,6 +796,7 @@
 	</model>
 
 	<model name="TabletB_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -714,6 +804,7 @@
 	</model>
 
 	<model name="TabletB_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -721,6 +812,7 @@
 	</model>
 
 	<model name="TabletB_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -728,6 +820,7 @@
 	</model>
 
 	<model name="TabletB_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -735,6 +828,7 @@
 	</model>
 
 	<model name="TabletB_01_005">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -742,6 +836,7 @@
 	</model>
 
 	<model name="TabletB_01_006">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -749,6 +844,7 @@
 	</model>
 
 	<model name="TabletB_01_007">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -756,6 +852,7 @@
 	</model>
 
 	<model name="TabletB_01_008">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -763,6 +860,7 @@
 	</model>
 
 	<model name="TabletB_01_009">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -770,6 +868,7 @@
 	</model>
 
 	<model name="TabletB_01_010">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -777,6 +876,7 @@
 	</model>
 
 	<model name="TabletB_01_011">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -784,6 +884,7 @@
 	</model>
 
 	<model name="TabletB_01_012">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_TabletB_01</uri>
         </include>
@@ -791,6 +892,7 @@
 	</model>
 
 	<model name="Tablet_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Tablet_01</uri>
         </include>
@@ -798,6 +900,7 @@
 	</model>
 
 	<model name="Tablet_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Tablet_01</uri>
         </include>
@@ -805,6 +908,7 @@
 	</model>
 
 	<model name="Tablet_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Tablet_01</uri>
         </include>
@@ -812,6 +916,7 @@
 	</model>
 
 	<model name="Tablet_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Tablet_01</uri>
         </include>
@@ -819,6 +924,7 @@
 	</model>
 
 	<model name="Tablet_01_005">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Tablet_01</uri>
         </include>
@@ -826,6 +932,7 @@
 	</model>
 
 	<model name="Tablet_01_006">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Tablet_01</uri>
         </include>
@@ -833,6 +940,7 @@
 	</model>
 
 	<model name="Tablet_01_007">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Tablet_01</uri>
         </include>
@@ -840,12 +948,14 @@
 	</model>
 
 	<model name="Tablet_01_008">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Tablet_01</uri>
         </include>
         <pose frame="">-3.636550 1.163816 1.177895 0.513308 -0.000001 3.110062</pose>
 	</model>
 	<model name="Holder_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -853,6 +963,7 @@
 	</model>
 
 	<model name="Holder_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -860,6 +971,7 @@
 	</model>
 
 	<model name="Holder_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -867,6 +979,7 @@
 	</model>
 
 	<model name="Holder_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -874,6 +987,7 @@
 	</model>
 
 	<model name="Holder_01_005">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -881,6 +995,7 @@
 	</model>
 
 	<model name="Holder_01_006">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -888,6 +1003,7 @@
 	</model>
 
 	<model name="Holder_01_007">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -895,6 +1011,7 @@
 	</model>
 
 	<model name="Holder_01_008">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -902,6 +1019,7 @@
 	</model>
 
 	<model name="Holder_01_009">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -909,6 +1027,7 @@
 	</model>
 
 	<model name="Holder_01_010">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -916,6 +1035,7 @@
 	</model>
 
 	<model name="Holder_01_011">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -923,6 +1043,7 @@
 	</model>
 
 	<model name="Holder_01_012">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -930,6 +1051,7 @@
 	</model>
 
 	<model name="Holder_01_013">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -937,6 +1059,7 @@
 	</model>
 
 	<model name="Holder_01_014">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -944,6 +1067,7 @@
 	</model>
 
 	<model name="Holder_01_015">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -951,6 +1075,7 @@
 	</model>
 
 	<model name="Holder_01_016">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -958,6 +1083,7 @@
 	</model>
 
 	<model name="Holder_01_017">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -965,6 +1091,7 @@
 	</model>
 
 	<model name="Holder_01_018">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -972,6 +1099,7 @@
 	</model>
 
 	<model name="Holder_01_019">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -979,6 +1107,7 @@
 	</model>
 
 	<model name="Holder_01_020">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Holder_01</uri>
         </include>
@@ -986,6 +1115,7 @@
 	</model>
 
 	<model name="Horologe_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Horologe_01</uri>
         </include>
@@ -997,6 +1127,7 @@
 
 
        <model name="RetailShopWall_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_RetailShopWall_01</uri>
         </include>
@@ -1004,6 +1135,7 @@
 	</model>
 
 	<model name="LightA_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_LightA_01</uri>
         </include>
@@ -1011,6 +1143,7 @@
 	</model>
 
 	<model name="LightA_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_LightA_01</uri>
         </include>
@@ -1018,6 +1151,7 @@
 	</model>
 
 	<model name="LightA_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_LightA_01</uri>
         </include>
@@ -1025,6 +1159,7 @@
 	</model>
 
 	<model name="LightA_01_004">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_LightA_01</uri>
         </include>
@@ -1032,6 +1167,7 @@
 	</model>
 
 	<model name="LightA_01_005">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_LightA_01</uri>
         </include>
@@ -1039,6 +1175,7 @@
 	</model>
 
 	<model name="MagicCube_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_MagicCube_01</uri>
         </include>
@@ -1046,6 +1183,7 @@
 	</model>
 
 	<model name="MagicCube_01_002">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_MagicCube_01</uri>
         </include>
@@ -1053,6 +1191,7 @@
 	</model>
 
 	<model name="MagicCube_01_003">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_MagicCube_01</uri>
         </include>
@@ -1062,6 +1201,7 @@
 
 
 	<model name="Spotlight_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_Spotlight_01</uri>
         </include>
@@ -1069,6 +1209,7 @@
 	</model>
 
 	<model name="ShopWindow_01_001">
+	<static>true</static>
         <include>
             <uri>models/aws_robomaker_retail_ShopWindow_01</uri>
         </include>
