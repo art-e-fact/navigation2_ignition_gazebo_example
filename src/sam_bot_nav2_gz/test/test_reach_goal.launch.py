@@ -97,6 +97,7 @@ class TestHelloWorldProcess(unittest.TestCase):
 class TestProcOutputAfterShutdown(unittest.TestCase):
     def test_exit_code(self, rosbag_filepath):
         print(rosbag_filepath)
+
         make_chart(
             rosbag_filepath,
             "/odom.pose.pose.position.x",

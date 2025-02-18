@@ -8,6 +8,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 import launch_testing.actions
 import launch_testing.markers
 import pytest
+from artefacts_toolkit.gazebo import gz
 
 
 # This function specifies the processes to be run for our test
@@ -44,3 +45,10 @@ class TestHelloWorldProcess(unittest.TestCase):
         # It captures the outputs of the processes launched in generate_test_description()
         # Refer to the documentation for further details.
         proc_output.assertWaitFor("Creating bond timer", timeout=300, stream="stdout")
+
+
+@launch_testing.post_shutdown_test()
+class TestProcOutputAfterShutdown(unittest.TestCase):
+    def test_exit_code(self, rosbag_filepath):
+      print("######")
+      gz.kill_gazebo()
