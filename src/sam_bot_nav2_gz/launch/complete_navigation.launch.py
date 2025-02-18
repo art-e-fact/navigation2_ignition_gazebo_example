@@ -19,7 +19,7 @@ from launch.events.process import ProcessIO
 from launch.event_handlers import OnProcessIO
 
 # Create event handler that waits for an output message and then returns actions
-def on_matching_output(matcher: str, result: launch.SomeActionsType):
+def on_matching_output(matcher: str, result: launch.SomeEntitiesType):
     def on_output(event: ProcessIO):
         for line in event.text.decode().splitlines():
             if matcher in line:
