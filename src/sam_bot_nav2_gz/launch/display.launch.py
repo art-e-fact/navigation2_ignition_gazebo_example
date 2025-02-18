@@ -74,25 +74,25 @@ def generate_launch_description():
     #   see: https://github.com/ros2/launch/issues/545
     # This code is form taken ros_gz_sim and modified to work with shell=False
     #   see: https://github.com/gazebosim/ros_gz/blob/ros2/ros_gz_sim/launch/gz_sim.launch.py.in
-    gz_env = {'GZ_SIM_SYSTEM_PLUGIN_PATH':
-           ':'.join([os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', default=''),
-                     os.environ.get('LD_LIBRARY_PATH', default='')])},
-        #    'IGN_GAZEBO_SYSTEM_PLUGIN_PATH':  # TODO(CH3): To support pre-garden. Deprecated.
-        #               ':'.join([os.environ.get('IGN_GAZEBO_SYSTEM_PLUGIN_PATH', default=''),
-        #                         os.environ.get('LD_LIBRARY_PATH', default='')])}
+    gz_env = {
+        'GZ_SIM_SYSTEM_PLUGIN_PATH': ':'.join([
+            os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', ''),
+            os.environ.get('LD_LIBRARY_PATH', '')
+        ])
+    }                        
     gazebo = [
         ExecuteProcess(
             condition=launch.conditions.IfCondition(run_headless),
-            cmd=['ruby', FindExecutable(name="gz"), 'sim',  '-r', '-v', gz_verbosity, '-s', '--headless-rendering', world_path],
+            cmd=[FindExecutable(name="gz"), 'sim', '-r', '-v', gz_verbosity, '-s', '--headless-rendering', world_path],
             output='screen',
-            additional_env=gz_env, # type: ignore
+            additional_env=gz_env,
             shell=False,
         ),
         ExecuteProcess(
             condition=launch.conditions.UnlessCondition(run_headless),
-            cmd=['ruby', FindExecutable(name="gz"), 'sim',  '-r', '-v', gz_verbosity, world_path],
+            cmd=[FindExecutable(name="gz"), 'sim', '-r', '-v', gz_verbosity, world_path],
             output='screen',
-            additional_env=gz_env, # type: ignore
+            additional_env=gz_env,
             shell=False,
         )
     ]
