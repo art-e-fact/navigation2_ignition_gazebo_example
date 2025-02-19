@@ -12,6 +12,7 @@ import pytest
 from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
 from artefacts_toolkit.config import get_artefacts_param
+from artefacts_toolkit.gazebo import gz
 
 
 # This function specifies the processes to be run for our test
@@ -100,6 +101,8 @@ class TestHelloWorldProcess(unittest.TestCase):
 class TestProcOutputAfterShutdown(unittest.TestCase):
     def test_exit_code(self, rosbag_filepath):
         print(rosbag_filepath)
+        gz.kill_gazebo()
+
         make_chart(
             rosbag_filepath,
             "/odom.pose.pose.position.x",
