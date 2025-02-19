@@ -2,7 +2,7 @@
 # Navigation2 (Ignition) Gazebo Example
 
 
-[![artefacts_ci](https://app.artefacts.com/api/artefacts/navigation2-ignition-example/badges/nav2.png?branch=main)](https://app.artefacts.com/artefacts/navigation2-ignition-example)
+[![artefacts_ci](https://app.artefacts.com/api/artefacts/navigation2-ignition-example/badges/all.png?branch=main)](https://app.artefacts.com/artefacts/navigation2-ignition-example)
 
 Minimal example ROS2 project to use Navigation2 with (Ignition) Gazebo. Based on the official Gazebo Classic example: [tutorial](https://navigation.ros.org/setup_guides/index.html), [code](https://github.com/ros-planning/navigation2_tutorials/tree/master/sam_bot_description)
 
@@ -10,14 +10,14 @@ Minimal example ROS2 project to use Navigation2 with (Ignition) Gazebo. Based on
 
 
 ## Requirements
- - ROS 2 Humble
- - Gazebo Fortress
+ - ROS 2 Jazzy
+ - Gazebo Harmonic
  - [Navigation 2](https://navigation.ros.org/build_instructions/index.html#install)
 
 ## Setup and build
 ```
 # Install Nav2 dependencies
-sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup
+sudo apt install ros-jazzy-navigation2 ros-jazzy-nav2-bringup
 
 # Import source dependencies
 pip3 install vcstool
@@ -27,7 +27,7 @@ vcs import --input deps.repos src
 rosdep install -y -r -i  --from-paths . 
 
 # Make sure ROS2 is sourced (assuming bash, please replace extension as needed)
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 
 # Build
 colcon build
