@@ -89,13 +89,20 @@ def generate_test_description():
 
 # This is our test fixture. Each method is a test case.
 # These run alongside the processes specified in generate_test_description()
-class TestHelloWorldProcess(unittest.TestCase):
-    def test_read_stdout(self, proc_output):
+class TestReachGoal(unittest.TestCase):
+    def test_nav2_started(self, proc_output):
+        try:
+            proc_output.assertWaitFor("Nav2 active!", timeout=120, stream="stdout")
+        except AssertionError as e:
+            # replace the exception message with a more informative one
+            raise AssertionError("Nav2 apparently failed to start") from e
+
+    def test_reached_goal(self, proc_output):
         """Check the logs to see if the navigation task is completed"""
         # 'proc_output' is an object added automatically by the launch_testing framework.
         # It captures the outputs of the processes launched in generate_test_description()
         # Refer to the documentation for further details.
-        proc_output.assertWaitFor("Goal succeeded!", timeout=800, stream="stdout")
+        proc_output.assertWaitFor("Goal succeeded!", timeout=240, stream="stdout")
 
 
 @launch_testing.post_shutdown_test()
