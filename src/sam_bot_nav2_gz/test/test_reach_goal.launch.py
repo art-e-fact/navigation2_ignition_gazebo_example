@@ -11,12 +11,17 @@ import launch_testing.markers
 import pytest
 from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
+from artefacts_toolkit.config import get_artefacts_param
 
 
 # This function specifies the processes to be run for our test
 @pytest.mark.launch_test
 @launch_testing.markers.keep_alive
 def generate_test_description():
+    try:
+        world = get_artefacts_param("launch", "world")
+    except FileNotFoundError:
+        world = "empty.world"
     launch_navigation_stack = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -27,7 +32,7 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("run_headless", "True")],
+        launch_arguments=[("run_headless", "True"), ("world_file", world)],
     )
 
     reach_goal = Node(

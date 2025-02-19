@@ -3,20 +3,25 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch_testing.actions import ReadyToTest
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 import launch_testing.actions
 import launch_testing.markers
 import pytest
-from artefacts_toolkit.rosbag import rosbag
+from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
+from artefacts_toolkit.config import get_artefacts_param
 
 
 # This function specifies the processes to be run for our test
 @pytest.mark.launch_test
 @launch_testing.markers.keep_alive
 def generate_test_description():
+    try:
+        world = get_artefacts_param("launch", "world")
+    except FileNotFoundError:
+        world = "empty.world"
     launch_navigation_stack = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -27,7 +32,7 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("run_headless", "True")],
+        launch_arguments=[("run_headless", "True"), ("world_file", world)],
     )
 
     follow_waypoints = Node(
@@ -37,14 +42,44 @@ def generate_test_description():
     )
 
     topics = ["/odom"]
+    metrics = ["/distance_from_start_gt", "/distance_from_start_est", "/odometry_error"]
+    camera_topics = ["/sky_cam"]
+    sim_topics = ["/world/dynamic_pose/info"]
     bag_recorder, rosbag_filepath = rosbag.get_bag_recorder(
-            topics, use_sim_time=True
+            topics + sim_topics + metrics + camera_topics, use_sim_time=True
         )
 
+    # Gazebo ros bridge
+    gz_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        parameters=[{
+            "config_file": os.path.join(
+                "src",
+                "sam_bot_nav2_gz",
+                "test",
+                 "bridge.yaml"
+                )}],
+        output="screen",
+        )
+
+    test_odometry_node = ExecuteProcess(
+        cmd=[
+            "python3",
+            os.path.join(
+                "src",
+                "sam_bot_nav2_gz",
+                "test",
+                "test_odometry_node.py"
+            ),
+        ]
+    )
     return LaunchDescription(
         [
             launch_navigation_stack,
             follow_waypoints,
+            test_odometry_node,
+            gz_bridge,
             bag_recorder,
             ReadyToTest(),
         ]
@@ -72,3 +107,5 @@ class TestProcOutputAfterShutdown(unittest.TestCase):
             field_unit="m",
             chart_name="odometry_position",
         )
+        image_topics.extract_camera_image(rosbag_filepath, "/sky_cam")
+        image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.webm")
