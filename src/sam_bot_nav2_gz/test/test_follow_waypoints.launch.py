@@ -110,14 +110,21 @@ class TestFollowWaypoints(unittest.TestCase):
         # 'proc_output' is an object added automatically by the launch_testing framework.
         # It captures the outputs of the processes launched in generate_test_description()
         # Refer to the documentation for further details.
-        proc_output.assertWaitFor("Goal succeeded!", timeout=300, stream="stdout")
+        try:
+            proc_output.assertWaitFor("Goal succeeded!", timeout=300, stream="stdout")
+        except AssertionError as e:
+            # replace the exception message with a more informative one
+            raise AssertionError("Failed to complete waypoint sequence") from e
 
 @launch_testing.post_shutdown_test()
 class TestProcOutputAfterShutdown(unittest.TestCase):
 
     def test_no_skipped_waypoint(self, proc_output):
         for i in range(8):
-            assertInStdout(proc_output, f"Arrived at {i}'th waypoint", None)
+            try:
+                assertInStdout(proc_output, f"Arrived at {i}'th waypoint", None)
+            except AssertionError as e:
+                raise AssertionError(f"Failed to reach waypoint {i}") from e
 
     def test_exit_code(self, rosbag_filepath):
         print(rosbag_filepath)
