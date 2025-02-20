@@ -11,12 +11,19 @@ import launch_testing.markers
 import pytest
 from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
+from artefacts_toolkit.config import get_artefacts_param
 
 
 # This function specifies the processes to be run for our test
 @pytest.mark.launch_test
 @launch_testing.markers.keep_alive
 def generate_test_description():
+    try:
+        world = get_artefacts_param("launch", "world")
+    except FileNotFoundError:
+        world = "empty.world"
+
+    run_headless = LaunchConfiguration("run_headless")
     launch_navigation_stack = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -27,7 +34,7 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("run_headless", "True")],
+        launch_arguments=[("run_headless", run_headless), ("world_file", world)],
     )
 
     reach_goal = Node(
@@ -72,6 +79,11 @@ def generate_test_description():
 
     return LaunchDescription(
         [
+            DeclareLaunchArgument(
+                name="run_headless",
+                default_value="True",
+                description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
+            ),
             launch_navigation_stack,
             reach_goal,
             test_odometry_node,
@@ -84,13 +96,25 @@ def generate_test_description():
 
 # This is our test fixture. Each method is a test case.
 # These run alongside the processes specified in generate_test_description()
-class TestHelloWorldProcess(unittest.TestCase):
-    def test_read_stdout(self, proc_output):
+class TestReachGoal(unittest.TestCase):
+    def test_nav2_started(self, proc_output):
+        try:
+            proc_output.assertWaitFor("Nav2 active!", timeout=120, stream="stdout")
+        except AssertionError as e:
+            # replace the exception message with a more informative one
+            raise AssertionError("Nav2 apparently failed to start") from e
+
+    def test_reached_goal(self, proc_output):
         """Check the logs to see if the navigation task is completed"""
         # 'proc_output' is an object added automatically by the launch_testing framework.
         # It captures the outputs of the processes launched in generate_test_description()
         # Refer to the documentation for further details.
-        proc_output.assertWaitFor("Goal succeeded!", timeout=800, stream="stdout")
+        try:
+            proc_output.assertWaitFor("Goal succeeded!", timeout=240, stream="stdout")
+        except AssertionError as e:
+            # replace the exception message with a more informative one
+            raise AssertionError("Goal was not reached") from e
+
 
 
 @launch_testing.post_shutdown_test()

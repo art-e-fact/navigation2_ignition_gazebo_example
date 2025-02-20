@@ -118,6 +118,7 @@ def main():
 
     # Wait for navigation to fully activate, since autostarting nav2
     navigator.waitUntilNav2Active(localizer="smoother_server")
+    print('Nav2 active!')
 
     # sanity check a valid path exists
     # path = navigator.getPath(initial_pose, goal_pose)

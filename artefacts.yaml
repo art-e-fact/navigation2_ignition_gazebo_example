@@ -4,7 +4,24 @@ project: artefacts/navigation2-ignition-example
 
 jobs:
 
-  all: # Overall job name
+  basic: # Only checks that things are loading
+    type: test
+    package:
+      docker:
+        build:
+          dockerfile: ./Dockerfile
+    runtime:
+      simulator: gazebo:fortress
+      framework: ros2:humble
+    timeout: 5 #minutes
+    scenarios:
+      defaults: # Global to all scenarios, and overriden in specific scenarios.
+        output_dirs: ["output"]
+      settings:
+        - name: bringup
+          ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
+
+  nav2:
     type: test
     package:
       docker:
@@ -21,9 +38,9 @@ jobs:
           - /odometry_error
           - /distance_from_start_gt
           - /distance_from_start_est
+        params:
+          launch/world: ["bookstore.sdf", "empty.sdf"]
       settings:
-        - name: bringup
-          ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
         - name: reach_goal
           ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
         - name: follow_waypoints

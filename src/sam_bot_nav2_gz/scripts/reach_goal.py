@@ -44,6 +44,7 @@ def main():
 
     # Wait for navigation to fully activate, since autostarting nav2
     navigator.waitUntilNav2Active(localizer="smoother_server")
+    print('Nav2 active!')
 
     # If desired, you can change or load the map as well
     # navigator.changeMap('/path/to/map.yaml')
@@ -58,7 +59,7 @@ def main():
     goal_pose.header.frame_id = 'map'
     goal_pose.header.stamp = navigator.get_clock().now().to_msg()
     goal_pose.pose.position.x = 0.8
-    goal_pose.pose.position.y = 0.5
+    goal_pose.pose.position.y = -0.5
     goal_pose.pose.orientation.w = 1.0
 
     # sanity check a valid path exists

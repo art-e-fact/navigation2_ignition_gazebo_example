@@ -40,6 +40,7 @@ def generate_launch_description():
     navigation_ready_message = "Creating bond timer"
 
     run_headless = LaunchConfiguration("run_headless")
+    world_file = LaunchConfiguration("world_file")
 
     # Including launchfiles with execute process because i didn't find another way to wait for a certain messages befor starting the next launchfile
     bringup = ExecuteProcess(
@@ -57,6 +58,7 @@ def generate_launch_description():
             "use_rviz:=false",
             ["run_headless:=", run_headless],
             "use_localization:=false",
+            ["world_file:=", world_file]
         ],
         shell=False,
         output="screen",
@@ -168,6 +170,10 @@ def generate_launch_description():
                 name="run_headless",
                 default_value="False",
                 description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
+            ),
+            DeclareLaunchArgument(
+                name="world_file",
+                default_value="empty.sdf",
             ),
             bringup,
             waiting_toolbox,

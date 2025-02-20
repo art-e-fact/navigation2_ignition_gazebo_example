@@ -45,6 +45,8 @@ class TestOdometry(Node):
 
     def gt_callback(self, msg: PoseArray):
         #self.get_logger().info("Ground truth message received")
+        if len(msg.poses) == 0:
+            return
         if self.gt_start_location is None:
             self.gt_start_location = msg.poses[0].position
         self.current_location = Point(

@@ -19,6 +19,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 import launch_ros
 import os
+from launch.substitutions import PathJoinSubstitution
 
 
 def generate_launch_description():
@@ -29,8 +30,6 @@ def generate_launch_description():
         pkg_share, "src/description/sam_bot_description.urdf"
     )
     default_rviz_config_path = os.path.join(pkg_share, "rviz/urdf_config.rviz")
-    world_path = os.path.join(pkg_share, "world/empty.sdf")
-    gz_models_path = os.path.join(pkg_share, "models")
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     use_localization = LaunchConfiguration("use_localization")
@@ -38,6 +37,10 @@ def generate_launch_description():
     log_level = LaunchConfiguration("log_level")
     gz_verbosity = LaunchConfiguration("gz_verbosity")
     run_headless = LaunchConfiguration("run_headless")
+    world_file_name = LaunchConfiguration("world_file")
+    gz_models_path = ":".join([pkg_share, os.path.join(pkg_share, "models")])
+    #gz_models_path = os.path.join(pkg_share, "models")
+    world_path = PathJoinSubstitution([pkg_share, "world", world_file_name])
 
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
@@ -192,10 +195,6 @@ def generate_launch_description():
                 name="IGN_GAZEBO_RESOURCE_PATH",
                 value=gz_models_path,
             ),
-            SetEnvironmentVariable(
-                name="IGN_GAZEBO_MODEL_PATH",
-                value=gz_models_path,
-            ),
             DeclareLaunchArgument(
                 name="model",
                 default_value=default_model_path,
@@ -210,6 +209,10 @@ def generate_launch_description():
                 name="run_headless",
                 default_value="False",
                 description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
+            ),
+            DeclareLaunchArgument(
+                name="world_file",
+                default_value="empty.sdf",
             ),
             DeclareLaunchArgument(
                 name="rvizconfig",
