@@ -22,6 +22,8 @@ def generate_test_description():
         world = get_artefacts_param("launch", "world")
     except FileNotFoundError:
         world = "empty.world"
+
+    run_headless = LaunchConfiguration("run_headless")
     launch_navigation_stack = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -32,7 +34,7 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("run_headless", "True"), ("world_file", world)],
+        launch_arguments=[("run_headless", run_headless), ("world_file", world)],
     )
 
     reach_goal = Node(
@@ -77,6 +79,11 @@ def generate_test_description():
 
     return LaunchDescription(
         [
+            DeclareLaunchArgument(
+                name="run_headless",
+                default_value="True",
+                description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
+            ),
             launch_navigation_stack,
             reach_goal,
             test_odometry_node,
