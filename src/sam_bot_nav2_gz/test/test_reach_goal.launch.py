@@ -3,7 +3,8 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch_testing.actions import ReadyToTest
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, ExecuteProcess
+from launch.actions import IncludeLaunchDescription, ExecuteProcess, DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 import launch_testing.actions
@@ -22,6 +23,8 @@ def generate_test_description():
         world = get_artefacts_param("launch", "world")
     except FileNotFoundError:
         world = "empty.world"
+
+    run_headless = LaunchConfiguration("run_headless")
     launch_navigation_stack = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -32,7 +35,7 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("run_headless", "True"), ("world_file", world)],
+        launch_arguments=[("run_headless", run_headless), ("world_file", world)],
     )
 
     reach_goal = Node(
@@ -77,6 +80,11 @@ def generate_test_description():
 
     return LaunchDescription(
         [
+            DeclareLaunchArgument(
+                name="run_headless",
+                default_value="True",
+                description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
+            ),
             launch_navigation_stack,
             reach_goal,
             test_odometry_node,
