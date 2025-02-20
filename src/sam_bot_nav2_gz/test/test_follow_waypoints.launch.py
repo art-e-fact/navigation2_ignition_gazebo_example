@@ -8,6 +8,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 import launch_testing.actions
 import launch_testing.markers
+from launch_testing.asserts import assertInStdout
 import pytest
 from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
@@ -91,7 +92,7 @@ def generate_test_description():
 class TestFollowWaypoints(unittest.TestCase):
     def test_nav2_started(self, proc_output):
         try:
-            proc_output.assertWaitFor("Nav2 active!", timeout=120, stream="stdout")
+            proc_output.assertWaitFor("Nav2 active!", timeout=100, stream="stdout")
         except AssertionError as e:
             # replace the exception message with a more informative one
             raise AssertionError("Nav2 apparently failed to start") from e
@@ -101,10 +102,15 @@ class TestFollowWaypoints(unittest.TestCase):
         # 'proc_output' is an object added automatically by the launch_testing framework.
         # It captures the outputs of the processes launched in generate_test_description()
         # Refer to the documentation for further details.
-        proc_output.assertWaitFor("Goal succeeded!", timeout=800, stream="stdout")
+        proc_output.assertWaitFor("Goal succeeded!", timeout=300, stream="stdout")
 
 @launch_testing.post_shutdown_test()
 class TestProcOutputAfterShutdown(unittest.TestCase):
+
+    def test_no_skipped_waypoint(self, proc_output):
+        for i in range(8):
+            assertInStdout(proc_output, f"Arrived at {i}'th waypoint", None)
+
     def test_exit_code(self, rosbag_filepath):
         print(rosbag_filepath)
         make_chart(
