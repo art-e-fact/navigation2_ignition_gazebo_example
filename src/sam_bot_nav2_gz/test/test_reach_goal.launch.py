@@ -110,7 +110,12 @@ class TestReachGoal(unittest.TestCase):
         # 'proc_output' is an object added automatically by the launch_testing framework.
         # It captures the outputs of the processes launched in generate_test_description()
         # Refer to the documentation for further details.
-        proc_output.assertWaitFor("Goal succeeded!", timeout=240, stream="stdout")
+        try:
+            proc_output.assertWaitFor("Goal succeeded!", timeout=240, stream="stdout")
+        except AssertionError as e:
+            # replace the exception message with a more informative one
+            raise AssertionError("Goal was not reached") from e
+
 
 
 @launch_testing.post_shutdown_test()
