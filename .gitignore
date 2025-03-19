@@ -7,3 +7,4 @@ src/ros_gz
 artefacts-client
 .vscode
 .DS_Store
+rosbag2

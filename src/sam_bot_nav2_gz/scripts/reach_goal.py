@@ -44,6 +44,7 @@ def main():
 
     # Wait for navigation to fully activate, since autostarting nav2
     navigator.waitUntilNav2Active(localizer="smoother_server")
+    print('Nav2 active!')
 
     # If desired, you can change or load the map as well
     # navigator.changeMap('/path/to/map.yaml')
