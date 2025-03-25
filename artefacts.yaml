@@ -40,6 +40,8 @@ jobs:
           - /distance_from_start_est
         params:
           launch/world: ["bookstore.sdf", "empty.sdf"]
+          amcl/update_min_a: [0.2, 0.05]
+          amcl/update_min_d: [0.25, 0.05]
       settings:
         - name: reach_goal
           ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
