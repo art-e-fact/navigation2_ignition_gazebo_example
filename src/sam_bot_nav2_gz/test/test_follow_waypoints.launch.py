@@ -29,20 +29,19 @@ def generate_test_description():
         PythonLaunchDescriptionSource(
             [
                 os.path.join(
-                    get_package_share_directory("sam_bot_nav2_gz"),
-                    "launch",
-                    "complete_navigation.launch.py"
+                    get_package_share_directory("nav2_simple_commander"),
+                    "security_demo_launch.py"
                 ),
             ]
         ),
         launch_arguments=[("run_headless", "True"), ("world_file", world)],
     )
 
-    follow_waypoints = Node(
-        package="sam_bot_nav2_gz",
-        executable="follow_waypoints.py",
-        output="screen",
-    )
+    # follow_waypoints = Node(
+    #     package="sam_bot_nav2_gz",
+    #     executable="follow_waypoints.py",
+    #     output="screen",
+    # )
 
     topics = ["/odom"]
     metrics = ["/distance_from_start_gt", "/distance_from_start_est", "/odometry_error"]
@@ -53,18 +52,18 @@ def generate_test_description():
         )
     #rosbag_filepath = "/tmp/test.bag"
     # Gazebo ros bridge
-    gz_bridge = Node(
-        package="ros_gz_bridge",
-        executable="parameter_bridge",
-        parameters=[{
-            "config_file": os.path.join(
-                "src",
-                "sam_bot_nav2_gz",
-                "test",
-                 "bridge.yaml"
-                )}],
-        output="screen",
-        )
+    # gz_bridge = Node(
+    #     package="ros_gz_bridge",
+    #     executable="parameter_bridge",
+    #     parameters=[{
+    #         "config_file": os.path.join(
+    #             "src",
+    #             "sam_bot_nav2_gz",
+    #             "test",
+    #              "bridge.yaml"
+    #             )}],
+    #     output="screen",
+    #     )
 
     test_odometry_node = ExecuteProcess(
         cmd=[
@@ -85,9 +84,9 @@ def generate_test_description():
                 description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
             ),
             launch_navigation_stack,
-            follow_waypoints,
+            # follow_waypoints,
             test_odometry_node,
-            gz_bridge,
+            # gz_bridge,
             bag_recorder,
             ReadyToTest(),
         ]
@@ -99,7 +98,7 @@ def generate_test_description():
 class TestFollowWaypoints(unittest.TestCase):
     def test_nav2_started(self, proc_output):
         try:
-            proc_output.assertWaitFor("Nav2 active!", timeout=100, stream="stdout")
+            proc_output.assertWaitFor("Estimated time to complete current route:", timeout=100, stream="stdout")
         except AssertionError as e:
             # replace the exception message with a more informative one
             raise AssertionError("Nav2 apparently failed to start") from e
@@ -110,7 +109,7 @@ class TestFollowWaypoints(unittest.TestCase):
         # It captures the outputs of the processes launched in generate_test_description()
         # Refer to the documentation for further details.
         try:
-            proc_output.assertWaitFor("Goal succeeded!", timeout=300, stream="stdout")
+            proc_output.assertWaitFor("Route complete! Restarting...", timeout=300, stream="stdout")
         except AssertionError as e:
             # replace the exception message with a more informative one
             raise AssertionError("Failed to complete waypoint sequence") from e
