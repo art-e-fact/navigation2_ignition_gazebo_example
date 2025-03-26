@@ -22,7 +22,11 @@
   <exec_depend>ros_gz_sim</exec_depend>
   <exec_depend>gz_ros2_control</exec_depend>
   <exec_depend>topic_tools</exec_depend>
-  
+  <exec_depend>rqt-tf-tree</exec_depend>
+  <exec_depend>navigation2</exec_depend>
+  <exec_depend>nav2-bringup</exec_depend>
+  <exec_depend>tf2-tools</exec_depend>
+
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <test_depend>launch_testing</test_depend>

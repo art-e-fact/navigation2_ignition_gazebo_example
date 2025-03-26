@@ -149,7 +149,7 @@
 
   <gazebo reference="imu_link">
     <sensor name="imu_sensor" type="imu">
-      <frame_id>imu_link</frame_id>
+      <gz_frame_id>imu_link</gz_frame_id>
       <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu">
       </plugin>
 
@@ -219,7 +219,22 @@
     <child link="imu_link"/>
     <origin xyz="0 0 0.01"/>
   </joint>
-
+  <!-- <ros2_control name="GazeboSimSystem" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+    <joint name="slider_to_cart">
+      <command_interface name="effort">
+        <param name="min">-1000</param>
+        <param name="max">1000</param>
+      </command_interface>
+      <state_interface name="position">
+        <param name="initial_value">1.0</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+  </ros2_control> -->
   <ros2_control name="GazeboSimSystem" type="system">
     <hardware>
       <plugin>gz_ros2_control/GazeboSimSystem</plugin>
@@ -243,9 +258,17 @@
   </ros2_control>
 
 
-  <gazebo>
-    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+  <!-- <gazebo>
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <parameters>$(find sam_bot_nav2_gz)/config/diff_drive_controller_velocity.yaml</parameters>
+    </plugin>
+  </gazebo> -->
+
+  <gazebo>
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find sam_bot_nav2_gz)/config/diff_drive_controller_velocity.yaml</parameters>
+      <!-- <robot_param>robot_description</robot_param>
+      <robot_param_node>robot_state_publisher</robot_param_node> -->
     </plugin>
   </gazebo>
 
@@ -282,11 +305,11 @@
 
   <gazebo reference="lidar_link">
     <sensor name="lidar" type="gpu_lidar">
-      <frame_id>lidar_link</frame_id>
+      <gz_frame_id>lidar_link</gz_frame_id>
       <topic>scan</topic>
       <always_on>true</always_on>
       <visualize>true</visualize>
-      <update_rate>5</update_rate>
+      <update_rate>1</update_rate>
       <ray>
         <scan>
           <horizontal>

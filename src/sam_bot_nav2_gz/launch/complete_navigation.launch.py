@@ -1,22 +1,23 @@
 import launch
-from launch_ros.actions import Node
 from launch.actions import (
-    ExecuteProcess,
     DeclareLaunchArgument,
+    ExecuteProcess,
     LogInfo,
     RegisterEventHandler,
     TimerAction,
 )
 from launch.conditions import IfCondition
+from launch.event_handlers import OnProcessIO
+from launch.events.process import ProcessIO
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     LaunchConfiguration,
-    PathJoinSubstitution,
     NotSubstitution,
+    PathJoinSubstitution,
 )
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.actions import Node, SetParameter
 from launch_ros.substitutions import FindPackageShare
-from launch.events.process import ProcessIO
-from launch.event_handlers import OnProcessIO
+
 
 # Create event handler that waits for an output message and then returns actions
 def on_matching_output(matcher: str, result: launch.SomeEntitiesType):
@@ -130,7 +131,7 @@ def generate_launch_description():
                     LogInfo(msg="SLAM Toolbox loaded. Starting navigation..."),
                     # TODO Debug: Navigation fails to start if it's launched right after the slam_toolbox
                     TimerAction(
-                        period=20.0,
+                        period=0.0,
                         actions=[navigation],
                     ),
                     rviz_node,
@@ -153,6 +154,7 @@ def generate_launch_description():
 
     return launch.LaunchDescription(
         [
+            SetParameter(name="use_sim_time", value=True),
             DeclareLaunchArgument(
                 "params_file",
                 default_value=[FindPackageShare("sam_bot_nav2_gz"), "/config/nav2_params.yaml"],
@@ -179,5 +181,8 @@ def generate_launch_description():
             waiting_toolbox,
             waiting_navigation,
             waiting_success,
+            # toolbox,
+            # navigation,
+            # rviz_node,
         ]
     )

@@ -43,7 +43,7 @@ def main():
     # navigator.lifecycleStartup()
 
     # Wait for navigation to fully activate, since autostarting nav2
-    navigator.waitUntilNav2Active(localizer="smoother_server")
+    # navigator.waitUntilNav2Active(localizer="smoother_server")
     print('Nav2 active!')
 
     # If desired, you can change or load the map as well

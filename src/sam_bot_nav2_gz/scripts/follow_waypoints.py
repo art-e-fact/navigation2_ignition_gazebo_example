@@ -100,6 +100,24 @@ def main():
     rclpy.init()
     navigator = BasicNavigator()
 
+    import time
+    first_clock_msg_received = False
+    start_time = time.time()  # System time for timeout
+    
+    while not first_clock_msg_received:
+        rclpy.spin_once(navigator, timeout_sec=0.1)
+        
+        current_time = navigator.get_clock().now()
+        if current_time.nanoseconds > 0:
+            first_clock_msg_received = True
+            print(f"Clock synchronized! Time: {current_time}")
+        
+        # Safety timeout (5 seconds)
+        if time.time() - start_time > 5.0:
+            print("Warning: Timed out waiting for clock sync")
+            break
+    
+
     def create_pose(transform):
         pose = PoseStamped()
         pose.header.frame_id = 'map'
@@ -116,8 +134,21 @@ def main():
     goal_poses = list(map(create_pose, waypoints["waypoints"]))
 
 
+    # Set our demo's initial pose
+    initial_pose = PoseStamped()
+    initial_pose.header.frame_id = 'map'
+    initial_pose.header.stamp = navigator.get_clock().now().to_msg()
+    initial_pose.pose.position.x = 0.0
+    initial_pose.pose.position.y = 0.0
+    initial_pose.pose.orientation.z = 0.0
+    initial_pose.pose.orientation.w = 1.0
+    navigator.setInitialPose(initial_pose)
+    print(f"Initial pose: {initial_pose}")
+
+    print('Waiting for navigator to start...')
     # Wait for navigation to fully activate, since autostarting nav2
     navigator.waitUntilNav2Active(localizer="smoother_server")
+    # navigator.lifecycleStartup()
     print('Nav2 active!')
 
     # sanity check a valid path exists
@@ -137,6 +168,7 @@ def main():
         # Do something with the feedback
         i = i + 1
         feedback = navigator.getFeedback()
+        print('Feedback: ' + str(feedback))
 
         if feedback and i % 5 == 0:
             print('Executing current waypoint: ' +
