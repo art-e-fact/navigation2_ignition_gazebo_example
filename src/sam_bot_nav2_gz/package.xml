@@ -26,6 +26,8 @@
   <exec_depend>navigation2</exec_depend>
   <exec_depend>nav2-bringup</exec_depend>
   <exec_depend>tf2-tools</exec_depend>
+  <exec_depend>image-transport-plugins</exec_depend>
+  <exec_depend>image-transport</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

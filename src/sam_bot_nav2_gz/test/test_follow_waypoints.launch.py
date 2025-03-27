@@ -29,8 +29,9 @@ def generate_test_description():
         PythonLaunchDescriptionSource(
             [
                 os.path.join(
-                    get_package_share_directory("nav2_simple_commander"),
-                    "security_demo_launch.py"
+                    get_package_share_directory("sam_bot_nav2_gz"),
+                    "launch",
+                    "waypoint_follower_example_launch.py"
                 ),
             ]
         ),
