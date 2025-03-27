@@ -45,3 +45,28 @@ jobs:
           ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
         - name: follow_waypoints
           ros_testfile: "src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py"
+
+  quick:
+    type: test
+    package:
+      docker:
+        build:
+          dockerfile: ./Dockerfile
+    runtime:
+      simulator: gazebo:fortress
+      framework: ros2:humble
+    timeout: 5 #minutes
+    scenarios:
+      defaults: # Global to all scenarios, and overriden in specific scenarios.
+        output_dirs: ["output"]
+        metrics:
+          - /odometry_error
+          - /distance_from_start_gt
+          - /distance_from_start_est
+        params:
+          launch/world: "empty.sdf"
+      settings:
+        # - name: reach_goal
+        #   ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
+        - name: follow_waypoints
+          ros_testfile: "src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py"
