@@ -128,7 +128,7 @@ def rosbag_data():
     # NOTE: Same as https://github.com/art-e-fact/artefacts-toolkit-rosbag/blob/main/artefacts_toolkit_rosbag/rosbag.py
     #   so far i couldn't find a way to get the command as string. Maybe we can add it if it's useful
     yyyymmddhhmmss = datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
-    rosbag_filepath = os.path.join("output", "/rosbag2_" + yyyymmddhhmmss)
+    rosbag_filepath = os.path.join("output", "rosbag2_" + yyyymmddhhmmss)
     rosbag_cmd = (
         ["ros2", "bag", "record"]
         + topics + sim_topics + metrics + camera_topics
@@ -141,7 +141,7 @@ def rosbag_data():
         cmd=rosbag_cmd, name="RosBag", universal_newlines=True
     )
 
-    yield {"filepath": rosbag_filepath}
+    yield {"filepath": rosbag_filepath, "process": monitored_process}
 
     # Stop rosbag recording
     monitored_process.terminate()
@@ -233,21 +233,27 @@ def global_teardown(request, rosbag_data):
     # This code runs after all tests complete
     print("\n=== Running global teardown ===")
 
-    # Extract the rosbag filepath
-    rosbag_filepath = rosbag_data["filepath"]
+    try:
+        # Extract the rosbag filepath
+        rosbag_filepath = rosbag_data["filepath"]
+        print(f"Processing rosbag at: {rosbag_filepath}")
 
-    # Generate charts from recorded data
-    make_chart(
-        rosbag_filepath,
-        "/odom.pose.pose.position.x",
-        "/odom.pose.pose.position.y",
-        field_unit="m",
-        chart_name="odometry_position",
-    )
+        # Generate charts from recorded data
+        make_chart(
+            rosbag_filepath,
+            "/odom.pose.pose.position.x",
+            "/odom.pose.pose.position.y",
+            field_unit="m",
+            chart_name="odometry_position",
+        )
 
-    # Extract media from recorded data
-    image_topics.extract_camera_image(rosbag_filepath, "/sky_cam")
-    image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.webm")
+        # Extract media from recorded data
+        image_topics.extract_camera_image(rosbag_filepath, "/sky_cam")
+        image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.webm")
 
-    # Any other cleanup operations
-    print("=== Global teardown completed ===")
+        # Any other cleanup operations
+        print("=== Global teardown completed ===")
+    except Exception as e:
+        print(f"Error in global teardown: {e}")
+        # Still run gazebo cleanup even if chart generation fails
+        gz.kill_gazebo()
