@@ -53,7 +53,7 @@ jobs:
     package:
       docker:
         build:
-          dockerfile: ./Dockerfile
+          dockerfile: ./docker/Dockerfile
     runtime:
       simulator: gazebo:fortress
       framework: null
@@ -71,4 +71,4 @@ jobs:
         # - name: reach_goal
         #   ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
         - name: follow_waypoints
-          run: python3 -m pytest src/sam_bot_nav2_gz/test/test_follow_waypoints.py --html=output/report.html --self-contained-html -s
+          run: python3 -m pytest src/sam_bot_nav2_gz/test/test_follow_waypoints.py --html=output/report.html --self-contained-html
