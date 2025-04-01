@@ -14,7 +14,6 @@ RUN pip3 install --break-system-packages \
       numpy
 
 RUN pip install -r src/sam_bot_nav2_gz/requirements.txt
-RUN pip install -r requirements.txt
 
 RUN source /opt/ros/jazzy/setup.bash --extend && colcon build --symlink-install
 
