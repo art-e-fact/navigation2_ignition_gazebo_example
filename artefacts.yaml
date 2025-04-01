@@ -3,7 +3,7 @@ version: 0.1.0
 project: artefacts/navigation2-ignition-example
 
 jobs:
-  quick:
+  nav2:
     type: test
     package:
       docker:
