@@ -19,9 +19,10 @@ import tempfile
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (AppendEnvironmentVariable, DeclareLaunchArgument, ExecuteProcess,
-                            IncludeLaunchDescription, OpaqueFunction, RegisterEventHandler)
+                            IncludeLaunchDescription, OpaqueFunction, RegisterEventHandler, EmitEvent)
 from launch.conditions import IfCondition
-from launch.event_handlers import OnShutdown
+from launch.event_handlers import OnProcessExit, OnShutdown
+from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
@@ -124,6 +125,14 @@ def generate_launch_description():
         emulate_tty=True,
         output='screen',
     )
+    
+    # Register an event handler to shutdown everything when the demo node exits
+    shutdown_on_demo_exit = RegisterEventHandler(
+        OnProcessExit(
+            target_action=demo_cmd,
+            on_exit=[EmitEvent(event=Shutdown(reason='Waypoint follower demo completed'))]
+        )
+    )
 
     set_env_vars_resources2 = AppendEnvironmentVariable(
             'GZ_SIM_RESOURCE_PATH',
@@ -143,4 +152,5 @@ def generate_launch_description():
     ld.add_action(rviz_cmd)
     ld.add_action(bringup_cmd)
     ld.add_action(demo_cmd)
+    ld.add_action(shutdown_on_demo_exit)
     return ld
