@@ -14,7 +14,6 @@ from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
 from artefacts_toolkit.config import get_artefacts_param
 
-
 # This function specifies the processes to be run for our test
 @pytest.mark.launch_test
 @launch_testing.markers.keep_alive

@@ -15,6 +15,29 @@ from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
 from artefacts_toolkit.config import get_artefacts_param
 
+ARTEFACTS_PARAMS_FILE = os.environ.get(
+    "ARTEFACTS_SCENARIO_PARAMS_FILE", "scenario_params.yaml"
+)
+
+def merge_ros_params_files(source, override, destination):
+    """Merge two ROS2 yaml parameter files into one, overriding the values in the first one with the values in `override`"""
+    import yaml
+
+    with open(source, "r") as f:
+        source_params = yaml.safe_load(f)
+
+    with open(override, "r") as f:
+        override_params = yaml.safe_load(f)
+
+    # Merge the parameters
+    for key, value in override_params.items():
+        if key in source_params:
+            source_params[key].update(value)
+        else:
+            source_params[key] = value
+    # Write the merged parameters to the destination file
+    with open(destination, "w") as f:
+        yaml.dump(source_params, f)
 
 # This function specifies the processes to be run for our test
 @pytest.mark.launch_test
@@ -26,6 +49,9 @@ def generate_test_description():
         world = "empty.world"
 
     run_headless = LaunchConfiguration("run_headless")
+    source_params_file = "src/sam_bot_nav2_gz/config/nav2_params.yaml"
+    new_params_file = "all_params.yaml"
+    merge_ros_params_files(source_params_file, ARTEFACTS_PARAMS_FILE, new_params_file)
     launch_navigation_stack = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -36,7 +62,11 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("run_headless", run_headless), ("world_file", world)],
+        launch_arguments=[
+            ("run_headless", run_headless),
+            ("world_file", world),
+            ("params_file", new_params_file),
+            ],
     )
 
     follow_waypoints = Node(
