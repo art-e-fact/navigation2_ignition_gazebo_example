@@ -18,129 +18,163 @@ import tempfile
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import (AppendEnvironmentVariable, DeclareLaunchArgument, ExecuteProcess,
-                            IncludeLaunchDescription, OpaqueFunction, RegisterEventHandler, EmitEvent)
+from launch.actions import (
+    AppendEnvironmentVariable,
+    DeclareLaunchArgument,
+    ExecuteProcess,
+    IncludeLaunchDescription,
+    OpaqueFunction,
+    RegisterEventHandler,
+    EmitEvent,
+)
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit, OnShutdown
 from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
+from launch.substitutions import PathJoinSubstitution
 
 
 def generate_launch_description():
-    nav2_bringup_dir = get_package_share_directory('nav2_bringup')
-    sim_dir = get_package_share_directory('nav2_minimal_tb4_sim')
-    desc_dir = get_package_share_directory('nav2_minimal_tb4_description')
-
-    robot_sdf = os.path.join(desc_dir, 'urdf', 'standard', 'turtlebot4.urdf.xacro')
-    world = os.path.join(sim_dir, 'worlds', 'depot.sdf')
-    map_yaml_file = os.path.join(nav2_bringup_dir, 'maps', 'depot.yaml')
-
     # Launch configuration variables
-    use_rviz = LaunchConfiguration('use_rviz')
-    headless = LaunchConfiguration('headless')
+    world_file_name = LaunchConfiguration("world_file")
+    use_rviz = LaunchConfiguration("use_rviz")
+    headless = LaunchConfiguration("headless")
+
+    nav2_bringup_dir = get_package_share_directory("nav2_bringup")
+    sim_dir = get_package_share_directory('nav2_minimal_tb4_sim')
+    desc_dir = get_package_share_directory("nav2_minimal_tb4_description")
+    test_pkg_dir = get_package_share_directory('sam_bot_nav2_gz')
+
+    robot_sdf = os.path.join(desc_dir, "urdf", "standard", "turtlebot4.urdf.xacro")
+    world = PathJoinSubstitution([test_pkg_dir, "worlds", world_file_name])
+    map_yaml_file = os.path.join(nav2_bringup_dir, "maps", "depot.yaml")
+
 
     # Declare the launch arguments
     declare_use_rviz_cmd = DeclareLaunchArgument(
-        'use_rviz', default_value='True', description='Whether to start RVIZ'
+        "use_rviz", default_value="True", description="Whether to start RVIZ"
     )
 
     declare_simulator_cmd = DeclareLaunchArgument(
-        'headless', default_value='False', description='Whether to execute gzclient)'
+        "headless", default_value="False", description="Whether to execute gzclient)"
+    )
+
+    declare_world_file_cmd = DeclareLaunchArgument(
+        name="world_file",
+        default_value="depot.sdf",
+        description="Name of the world file to load",
     )
 
     # start the simulation
-    world_sdf = tempfile.mktemp(prefix='nav2_', suffix='.sdf')
+    world_sdf = tempfile.mktemp(prefix="nav2_", suffix=".sdf")
+    print(
+        f"Temporary world file created at {world_sdf}. This will be removed on shutdown."
+    )
     world_sdf_xacro = ExecuteProcess(
-        cmd=['xacro', '-o', world_sdf, ['headless:=', headless], world])
+        cmd=["xacro", "-o", world_sdf, ["headless:=", headless], world]
+    )
     start_gazebo_server_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory('ros_gz_sim'), 'launch',
-                         'gz_sim.launch.py')),
-        launch_arguments={'gz_args': ['-r -s ', world_sdf]}.items())
+            os.path.join(
+                get_package_share_directory("ros_gz_sim"), "launch", "gz_sim.launch.py"
+            )
+        ),
+        launch_arguments={"gz_args": ["-r -s ", world_sdf]}.items(),
+    )
 
-    remove_temp_sdf_file = RegisterEventHandler(event_handler=OnShutdown(
-        on_shutdown=[
-            OpaqueFunction(function=lambda _: os.remove(world_sdf))
-        ]))
+    remove_temp_sdf_file = RegisterEventHandler(
+        event_handler=OnShutdown(
+            on_shutdown=[OpaqueFunction(function=lambda _: os.remove(world_sdf))]
+        )
+    )
 
     set_env_vars_resources = AppendEnvironmentVariable(
-            'GZ_SIM_RESOURCE_PATH',
-            os.path.join(sim_dir, 'worlds'))
+        "GZ_SIM_RESOURCE_PATH", os.path.join(sim_dir, "worlds")
+    )
     start_gazebo_client_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory('ros_gz_sim'),
-                         'launch',
-                         'gz_sim.launch.py')
+            os.path.join(
+                get_package_share_directory("ros_gz_sim"), "launch", "gz_sim.launch.py"
+            )
         ),
-        condition=IfCondition(PythonExpression(
-            ['not ', headless])),
-        launch_arguments={'gz_args': ['-v4 -g ']}.items(),
+        condition=IfCondition(PythonExpression(["not ", headless])),
+        launch_arguments={"gz_args": ["-v4 -g "]}.items(),
     )
 
     spawn_robot_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(sim_dir, 'launch', 'spawn_tb4.launch.py')),
-        launch_arguments={'use_sim_time': 'True',
-                          'robot_sdf': robot_sdf,
-                          'x_pose': '-8.0',
-                          'y_pose': '0.0',
-                          'z_pose': '0.0',
-                          'roll': '0.0',
-                          'pitch': '0.0',
-                          'yaw': '0.0'}.items())
+            os.path.join(sim_dir, "launch", "spawn_tb4.launch.py")
+        ),
+        launch_arguments={
+            "use_sim_time": "True",
+            "robot_sdf": robot_sdf,
+            "x_pose": "-8.0",
+            "y_pose": "0.0",
+            "z_pose": "0.0",
+            "roll": "0.0",
+            "pitch": "0.0",
+            "yaw": "0.0",
+        }.items(),
+    )
 
     start_robot_state_publisher_cmd = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='robot_state_publisher',
-        output='screen',
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        name="robot_state_publisher",
+        output="screen",
         parameters=[
-            {'use_sim_time': True, 'robot_description': Command(['xacro', ' ', robot_sdf])}
-        ]
+            {
+                "use_sim_time": True,
+                "robot_description": Command(["xacro", " ", robot_sdf]),
+            }
+        ],
     )
 
     # start the visualization
     rviz_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(nav2_bringup_dir, 'launch', 'rviz_launch.py')
+            os.path.join(nav2_bringup_dir, "launch", "rviz_launch.py")
         ),
         condition=IfCondition(use_rviz),
-        launch_arguments={'namespace': ''}.items(),
+        launch_arguments={"namespace": ""}.items(),
     )
 
     # start navigation
     bringup_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(nav2_bringup_dir, 'launch', 'bringup_launch.py')
+            os.path.join(nav2_bringup_dir, "launch", "bringup_launch.py")
         ),
-        launch_arguments={'map': map_yaml_file}.items(),
+        launch_arguments={"map": map_yaml_file}.items(),
     )
 
     # start the demo autonomy task
     demo_cmd = Node(
-        package='sam_bot_nav2_gz',
-        executable='example_waypoint_follower.py',
+        package="sam_bot_nav2_gz",
+        executable="example_waypoint_follower.py",
         emulate_tty=True,
-        output='screen',
+        output="screen",
     )
-    
+
     # Register an event handler to shutdown everything when the demo node exits
     shutdown_on_demo_exit = RegisterEventHandler(
         OnProcessExit(
             target_action=demo_cmd,
-            on_exit=[EmitEvent(event=Shutdown(reason='Waypoint follower demo completed'))]
+            on_exit=[
+                EmitEvent(event=Shutdown(reason="Waypoint follower demo completed"))
+            ],
         )
     )
 
     set_env_vars_resources2 = AppendEnvironmentVariable(
-            'GZ_SIM_RESOURCE_PATH',
-            str(Path(os.path.join(desc_dir)).parent.resolve()))
+        "GZ_SIM_RESOURCE_PATH", str(Path(os.path.join(desc_dir)).parent.resolve())
+    )
 
     ld = LaunchDescription()
     ld.add_action(declare_use_rviz_cmd)
     ld.add_action(declare_simulator_cmd)
+    ld.add_action(declare_world_file_cmd)
     ld.add_action(world_sdf_xacro)
     ld.add_action(remove_temp_sdf_file)
     ld.add_action(set_env_vars_resources)
