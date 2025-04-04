@@ -19,6 +19,15 @@ ARTEFACTS_PARAMS_FILE = os.environ.get(
     "ARTEFACTS_SCENARIO_PARAMS_FILE", "scenario_params.yaml"
 )
 
+def deep_merge_dicts(source, override):
+    """Recursively merge two dictionaries, with values from `override` taking precedence over `source`"""
+    for key, value in override.items():
+        if isinstance(value, dict) and key in source:
+            source[key] = deep_merge_dicts(source[key], value)
+        else:
+            source[key] = value
+    return source
+
 def merge_ros_params_files(source, override, destination):
     """Merge two ROS2 yaml parameter files into one, overriding the values in the first one with the values in `override`"""
     import yaml
@@ -29,15 +38,9 @@ def merge_ros_params_files(source, override, destination):
     with open(override, "r") as f:
         override_params = yaml.safe_load(f)
 
-    # Merge the parameters
-    for key, value in override_params.items():
-        if key in source_params:
-            source_params[key].update(value)
-        else:
-            source_params[key] = value
-    # Write the merged parameters to the destination file
+    merged_params = deep_merge_dicts(source_params, override_params)
     with open(destination, "w") as f:
-        yaml.dump(source_params, f)
+        yaml.dump(merged_params, f)
 
 # This function specifies the processes to be run for our test
 @pytest.mark.launch_test
