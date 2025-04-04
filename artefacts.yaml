@@ -21,16 +21,16 @@ jobs:
           - /distance_from_start_gt
           - /distance_from_start_est
         params:
-          launch/world: "empty.sdf"
+          launch/world: "depot.sdf"
       settings:
         # - name: reach_goal
         #   ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
         - name: follow_waypoints
           run: >
             python3 -m pytest 
-              src/sam_bot_nav2_gz/test/test_follow_waypoints.py 
-              --html=output/report.html 
-              --self-contained-html 
-              -s &&
+            src/sam_bot_nav2_gz/test/test_follow_waypoints.py 
+            --html=output/report.html 
+            --self-contained-html 
+            -s &&
             pkill -f gz &&
-            pkill -f rivz
+            pkill -f rviz

@@ -67,7 +67,7 @@ def navigation_stack():
     try:
         world = get_artefacts_param("launch", "world")
     except FileNotFoundError:
-        world = "empty.sdf"  # Make sure this is a valid filename with extension
+        world = "depot.sdf"  # Make sure this is a valid filename with extension
 
     # Build the ros2 launch command
     launch_cmd = [
