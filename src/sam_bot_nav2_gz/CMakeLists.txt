@@ -25,7 +25,7 @@ find_package(rclpy REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 install(
-  DIRECTORY src scripts launch rviz config world models
+  DIRECTORY scripts launch world models
   DESTINATION share/${PROJECT_NAME}
 )
 
@@ -34,6 +34,7 @@ install(PROGRAMS
   scripts/reach_goal.py
   scripts/follow_waypoints.py
   scripts/example_waypoint_follower.py
+  scripts/test_odometry_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -90,6 +90,7 @@ def navigation_stack():
         sigkill_timeout="600.0",
     )
 
+
 @pytest.fixture(scope="module")
 def rosbag_recording():
     topics = ["/odom"]
@@ -100,20 +101,32 @@ def rosbag_recording():
         topics + sim_topics + metrics + camera_topics, use_sim_time=True
     )
     return {
-        'bag_recorder': bag_recorder,
-        'rosbag_filepath': rosbag_filepath,
+        "bag_recorder": bag_recorder,
+        "rosbag_filepath": rosbag_filepath,
     }
+
+
+@pytest.fixture(scope="module")
+def odometry_node():
+    return launch.actions.ExecuteProcess(
+        name="odometry_node",
+        cmd=["ros2", "run", "sam_bot_nav2_gz", "test_odometry_node.py"],
+        shell=True,
+        cached_output=True,
+        output="both",
+    )
+
 
 # This function specifies the processes to be run for our test.
 @launch_pytest.fixture(
     scope="module"
 )  # Set the scope so the processes are not killed after each test
-def launch_description(navigation_stack, rosbag_recording):
-    
+def launch_description(navigation_stack, rosbag_recording, odometry_node):
     return launch.LaunchDescription(
         [
             navigation_stack,
             rosbag_recording["bag_recorder"],
+            odometry_node,
             # Tell launch when to start the test
             # If no ReadyToTest action is added, one will be appended automatically.
             launch_pytest.actions.ReadyToTest(),
