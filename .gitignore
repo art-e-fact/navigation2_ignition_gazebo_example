@@ -8,3 +8,4 @@ artefacts-client
 .vscode
 .DS_Store
 rosbag2
+.venv
