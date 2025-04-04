@@ -7,6 +7,7 @@ import launch
 import launch_pytest
 import launch_testing
 from launch_pytest.tools import process as process_tools
+from launch_ros.actions import Node
 
 import pytest
 from artefacts_toolkit.chart import make_chart
@@ -36,20 +37,6 @@ def rosbag_data():
         + ["-o", rosbag_filepath, "--storage", "mcap"]
     )
 
-    test_talker_node_cmd = [
-        "ros2",
-        "topic",
-        "pub",
-        "-r",
-        "1",
-        "--once",
-        "--wait-matching-subscriptions",
-        "0",
-        "/test_talker",
-        "std_msgs/msg/String",
-        "--",
-        "\"{data: 'Recording...'}\"",
-    ]
     print(f"Recording to {rosbag_filepath} with command: {' '.join(rosbag_cmd)}")
     return launch.actions.ExecuteProcess(
         name="rosbag2",
@@ -117,16 +104,32 @@ def odometry_node():
     )
 
 
+@pytest.fixture(scope="module")
+def gz_bridge_node():
+    """Bridge extra gazebo topics to ros2."""
+    return Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        arguments=[
+            "/sky_cam@sensor_msgs/msg/Image@ignition.msgs.Image",
+        ],
+        output="screen",
+    )
+
+
 # This function specifies the processes to be run for our test.
 @launch_pytest.fixture(
     scope="module"
 )  # Set the scope so the processes are not killed after each test
-def launch_description(navigation_stack, rosbag_recording, odometry_node):
+def launch_description(
+    navigation_stack, rosbag_recording, odometry_node, gz_bridge_node
+):
     return launch.LaunchDescription(
         [
             navigation_stack,
             rosbag_recording["bag_recorder"],
             odometry_node,
+            gz_bridge_node,
             # Tell launch when to start the test
             # If no ReadyToTest action is added, one will be appended automatically.
             launch_pytest.actions.ReadyToTest(),

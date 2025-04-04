@@ -15,7 +15,7 @@ jobs:
     timeout: 5 #minutes
     scenarios:
       defaults: # Global to all scenarios, and overriden in specific scenarios.
-        output_dirs: ["output"]
+        output_dirs: ["output", "rosbags"]
         metrics:
           - /odometry_error
           - /distance_from_start_gt
