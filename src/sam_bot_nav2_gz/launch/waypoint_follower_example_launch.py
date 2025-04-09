@@ -43,14 +43,12 @@ def generate_launch_description():
     headless = LaunchConfiguration("headless")
 
     nav2_bringup_dir = get_package_share_directory("nav2_bringup")
-    sim_dir = get_package_share_directory('nav2_minimal_tb4_sim')
+    sim_dir = get_package_share_directory("nav2_minimal_tb4_sim")
     desc_dir = get_package_share_directory("nav2_minimal_tb4_description")
-    test_pkg_dir = get_package_share_directory('sam_bot_nav2_gz')
+    test_pkg_dir = get_package_share_directory("sam_bot_nav2_gz")
 
     robot_sdf = os.path.join(desc_dir, "urdf", "standard", "turtlebot4.urdf.xacro")
     world = PathJoinSubstitution([test_pkg_dir, "worlds", world_file_name])
-    map_yaml_file = os.path.join(nav2_bringup_dir, "maps", "depot.yaml")
-
 
     # Declare the launch arguments
     declare_use_rviz_cmd = DeclareLaunchArgument(
@@ -146,7 +144,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(nav2_bringup_dir, "launch", "bringup_launch.py")
         ),
-        launch_arguments={"map": map_yaml_file}.items(),
+        launch_arguments={"slam": "True"}.items(),
     )
 
     # start the demo autonomy task
