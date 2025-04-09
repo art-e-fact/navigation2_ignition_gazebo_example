@@ -135,7 +135,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(nav2_bringup_dir, "launch", "rviz_launch.py")
         ),
-        condition=IfCondition(use_rviz),
+        condition=IfCondition(PythonExpression([use_rviz, " and not ", headless])),
         launch_arguments={"namespace": ""}.items(),
     )
 

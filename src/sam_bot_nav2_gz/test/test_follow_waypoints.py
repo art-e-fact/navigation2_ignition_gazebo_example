@@ -63,7 +63,7 @@ def navigation_stack():
         "sam_bot_nav2_gz",
         "waypoint_follower_example_launch.py",
         f"world_file:={world}",
-        "run_headless:=True",
+        "headless:=True",
     ]
     print(f"Starting navigation stack with command: {' '.join(launch_cmd)}")
 
