@@ -34,3 +34,4 @@ jobs:
             -s &&
             pkill -f gz &&
             pkill -f rviz
+

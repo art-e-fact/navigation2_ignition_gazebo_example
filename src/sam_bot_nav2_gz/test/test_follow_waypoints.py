@@ -193,4 +193,4 @@ def generate_charts(request, rosbag_recording):
         chart_name="odometry_position",
     )
     image_topics.extract_camera_image(rosbag_filepath, "/sky_cam")
-    image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.webm")
+    image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.mp4")

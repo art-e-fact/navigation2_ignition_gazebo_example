@@ -74,11 +74,18 @@ artefacts run all
 
 # Run test remotely
 artefacts run-remote all --description "Test Navigation2"
+```
+### Run test locally with Docker
 
-# Run test locally with Docker
-docker build -t nav2-gz .
-# ARTEFACTS_KEY can be generated at the project-settings page of the Artefacts CI dashboard
-docker run --rm -e ARTEFACTS_JOB_NAME=all -e ARTEFACTS_KEY=${ARTEFACTS_KEY} nav2-gz
+1. Build container
+```sh
+docker/build.sh
+```
+2. Save `.env.sample` as `.env` and fill the missing variables
+    - ARTEFACTS_KEY can be generated at the project-settings page of the Artefacts CI dashboard
+3. Run the selected tests in docker
+```sh
+docker run --rm --env-file=.env -e ARTEFACTS_JOB_NAME=nav2 nav2-gz
 ```
 
 ## Visualize navigation with **Rerun.io** (experimental)

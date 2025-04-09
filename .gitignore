@@ -9,3 +9,4 @@ artefacts-client
 .DS_Store
 rosbag2
 .venv
+.env

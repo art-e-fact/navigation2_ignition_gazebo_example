@@ -60,7 +60,6 @@ fi
 
 docker run \
     "${DOCKER_OPTIONS[@]}" \
-    "${ISAAC_OPTIONS[@]}" \
     nav2-gz \
     "${CMD_ARGS[@]}"
 
