@@ -213,6 +213,21 @@ def test_nav2_ready(navigation_stack, launch_context):
     )
 
 @pytest.mark.launch(fixture=launch_description)
+def test_executed_all_waypoints(navigation_stack, waypoints, launch_context):
+    """Check if the robot executed all waypoints."""
+
+    waypoints_count = len(waypoints["waypoints"])
+    def validate_output(output):
+        for i in range(waypoints_count):
+            assert f"Executing current waypoint: {i + 1}/{waypoints_count}" in output, (
+                f'process never printed "Executing current waypoint: {i + 1}/{waypoints_count}"'
+            )
+    process_tools.assert_output_sync(
+        launch_context, navigation_stack, validate_output, timeout=99999999
+    )
+
+
+@pytest.mark.launch(fixture=launch_description)
 def test_followed_waypoints(navigation_stack, launch_context):
     """Check if the robot followed the waypoints."""
 
