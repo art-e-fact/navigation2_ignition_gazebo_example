@@ -13,27 +13,32 @@
 # limitations under the License.
 
 import os
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
     AppendEnvironmentVariable,
     DeclareLaunchArgument,
+    EmitEvent,
     ExecuteProcess,
     IncludeLaunchDescription,
     OpaqueFunction,
     RegisterEventHandler,
-    EmitEvent,
+    SetEnvironmentVariable,
 )
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit, OnShutdown
 from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, LaunchConfiguration, PythonExpression
+from launch.substitutions import (
+    Command,
+    LaunchConfiguration,
+    PathJoinSubstitution,
+    PythonExpression,
+)
 from launch_ros.actions import Node
-from launch.substitutions import PathJoinSubstitution
 
 
 def generate_launch_description():
@@ -63,16 +68,14 @@ def generate_launch_description():
 
     declare_world_file_cmd = DeclareLaunchArgument(
         name="world_file",
-        default_value="depot.sdf",
+        default_value="arena.sdf",
         description="Name of the world file to load",
     )
 
     declare_waypoints_path_cmd = DeclareLaunchArgument(
         name="waypoints_path",
         description="Path to the waypoints YAML",
-        default_value=PathJoinSubstitution(
-            [test_pkg_dir, "waypoints", "depot.yaml"]
-        ),
+        default_value=PathJoinSubstitution([test_pkg_dir, "waypoints", "arena.yaml"]),
     )
 
     # start the simulation
@@ -184,7 +187,14 @@ def generate_launch_description():
         "GZ_SIM_RESOURCE_PATH", str(Path(os.path.join(desc_dir)).parent.resolve())
     )
 
+    gz_models_path = ":".join([test_pkg_dir, os.path.join(test_pkg_dir, "models")])
+    gz_resource_env = SetEnvironmentVariable(
+        name="GZ_SIM_RESOURCE_PATH",
+        value=gz_models_path,
+    )
+
     ld = LaunchDescription()
+    ld.add_action(gz_resource_env)
     ld.add_action(declare_use_rviz_cmd)
     ld.add_action(declare_simulator_cmd)
     ld.add_action(declare_world_file_cmd)

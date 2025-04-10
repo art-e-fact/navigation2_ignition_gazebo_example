@@ -19,12 +19,12 @@
       filename="gz-sim-user-commands-system"
       name="gz::sim::systems::UserCommands">
     </plugin>
-  <xacro:unless value="$(arg headless)">
-    <plugin
-      filename="gz-sim-scene-broadcaster-system"
-      name="gz::sim::systems::SceneBroadcaster">
-    </plugin>
-  </xacro:unless>
+    <xacro:unless value="$(arg headless)">
+      <plugin
+        filename="gz-sim-scene-broadcaster-system"
+        name="gz::sim::systems::SceneBroadcaster">
+      </plugin>
+    </xacro:unless>
     <plugin
       filename="gz-sim-sensors-system"
       name="gz::sim::systems::Sensors">
