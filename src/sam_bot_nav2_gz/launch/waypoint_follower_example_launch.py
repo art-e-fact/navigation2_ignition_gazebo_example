@@ -121,7 +121,7 @@ def generate_launch_description():
         launch_arguments={
             "use_sim_time": "True",
             "robot_sdf": robot_sdf,
-            "x_pose": "-8.0",
+            "x_pose": "0.0",
             "y_pose": "0.0",
             "z_pose": "0.0",
             "roll": "0.0",

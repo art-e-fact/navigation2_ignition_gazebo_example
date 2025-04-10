@@ -22,6 +22,7 @@
     <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact">
     </plugin>
     <scene>
+      <grid>false</grid>
       <ambient>1.0 1.0 1.0</ambient>
       <background>0.8 0.8 0.8</background>
     </scene>
@@ -71,7 +72,7 @@
     <model name="sky_cam">
       <static>true</static>
       <link name="camera_link">
-        <pose>0 0 10 1.57 1.57 0</pose>
+        <pose>2 0 10 1.57 1.57 0</pose>
         <sensor name="sky_cam" type="camera">
           <camera>
             <horizontal_fov>1.047</horizontal_fov>
@@ -94,7 +95,7 @@
 
     <include>
         <uri>TurtlebotArena</uri>
-        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <pose>2.0 0.0 0.0 0 0 0</pose>
     </include>
 
   </world>
