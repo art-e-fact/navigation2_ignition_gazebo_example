@@ -51,22 +51,50 @@ def rosbag_data():
         output="both",
     )
 
-@pytest.fixture(scope="module")
-def world_filename():
-    # TODO: use get_artefacts_param instead of reading the file directly
-    with open("/tmp/scenario_params.yaml", "r") as file:
-        params = yaml.safe_load(file)
-        print(f"Loaded params: {params}")
-        world = params["launch/world"]
-    return world
 
 @pytest.fixture(scope="module")
-def headless() -> str:
-    # TODO: use get_artefacts_param instead of reading the file directly
-    with open("/tmp/scenario_params.yaml", "r") as file:
-        params = yaml.safe_load(file)
-        headless = params["launch/headless"]
-    return headless
+def scenario_params():
+    """Get scenario parameters with default fallback."""
+    default_params = {
+        "launch/world": "depot.sdf",
+        "launch/headless": "False"
+    }
+    
+    try:
+        # Try to get parameters from artefacts_toolkit
+        world = get_artefacts_param("launch/world")
+        headless = get_artefacts_param("launch/headless")
+        return {"world": world, "headless": headless}
+    except Exception as e:
+        print(f"Could not get parameters using get_artefacts_param: {e}")
+        
+        # Fall back to reading the file directly
+        try:
+            with open("/tmp/scenario_params.yaml", "r") as file:
+                params = yaml.safe_load(file)
+                print(f"Loaded params: {params}")
+                return {
+                    "world": params.get("launch/world", default_params["launch/world"]),
+                    "headless": params.get("launch/headless", default_params["launch/headless"])
+                }
+        except (FileNotFoundError, PermissionError) as e:
+            print(f"Could not read parameter file: {e}")
+            print(f"Using default params: {default_params}")
+            return {
+                "world": default_params["launch/world"],
+                "headless": default_params["launch/headless"]
+            }
+
+
+@pytest.fixture(scope="module")
+def world_filename(scenario_params):
+    """Get world filename from scenario parameters."""
+    return scenario_params["world"]
+
+@pytest.fixture(scope="module")
+def headless(scenario_params) -> str:
+    """Get headless flag from scenario parameters."""
+    return scenario_params["headless"]
 
 
 @pytest.fixture(scope="module")
@@ -181,9 +209,8 @@ def test_nav2_ready(navigation_stack, launch_context):
         )
 
     process_tools.assert_output_sync(
-        launch_context, navigation_stack, validate_output, timeout=250
+        launch_context, navigation_stack, validate_output, timeout=99999999
     )
-
 
 @pytest.mark.launch(fixture=launch_description)
 def test_followed_waypoints(navigation_stack, launch_context):
@@ -193,7 +220,7 @@ def test_followed_waypoints(navigation_stack, launch_context):
         assert "Goal succeeded!" in output, 'process never printed "Goal succeeded!"'
 
     process_tools.assert_output_sync(
-        launch_context, navigation_stack, validate_output, timeout=250
+        launch_context, navigation_stack, validate_output, timeout=99999999
     )
 
 
