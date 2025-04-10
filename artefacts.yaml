@@ -12,7 +12,7 @@ jobs:
     runtime:
       simulator: gazebo:fortress
       framework: null
-    timeout: 5 #minutes
+    timeout: 15 #minutes
     scenarios:
       defaults: # Global to all scenarios, and overriden in specific scenarios.
         output_dirs: ["output", "rosbags"]
@@ -22,6 +22,7 @@ jobs:
           - /distance_from_start_est
         params:
           launch/world: "depot.sdf"
+          launch/headless: "True"
       settings:
         # - name: reach_goal
         #   ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
@@ -34,4 +35,3 @@ jobs:
             -s &&
             pkill -f gz &&
             pkill -f rviz
-

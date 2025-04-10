@@ -25,7 +25,7 @@ find_package(rclpy REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 install(
-  DIRECTORY scripts launch worlds models
+  DIRECTORY scripts launch worlds models waypoints
   DESTINATION share/${PROJECT_NAME}
 )
 

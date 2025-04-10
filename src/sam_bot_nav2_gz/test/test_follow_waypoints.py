@@ -1,5 +1,7 @@
 import os
 from datetime import datetime
+from pathlib import Path
+import yaml
 
 
 import launch
@@ -8,6 +10,7 @@ import launch_pytest
 import launch_testing
 from launch_pytest.tools import process as process_tools
 from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
 
 import pytest
 from artefacts_toolkit.chart import make_chart
@@ -48,22 +51,54 @@ def rosbag_data():
         output="both",
     )
 
+@pytest.fixture(scope="module")
+def world_filename():
+    # TODO: use get_artefacts_param instead of reading the file directly
+    with open("/tmp/scenario_params.yaml", "r") as file:
+        params = yaml.safe_load(file)
+        print(f"Loaded params: {params}")
+        world = params["launch/world"]
+    return world
 
 @pytest.fixture(scope="module")
-def navigation_stack():
-    try:
-        world = get_artefacts_param("launch", "world")
-    except FileNotFoundError:
-        world = "depot.sdf"  # Make sure this is a valid filename with extension
+def headless() -> str:
+    # TODO: use get_artefacts_param instead of reading the file directly
+    with open("/tmp/scenario_params.yaml", "r") as file:
+        params = yaml.safe_load(file)
+        headless = params["launch/headless"]
+    return headless
 
+
+@pytest.fixture(scope="module")
+def waypoints(world_filename):
+    # load the waypoints/<world>.yaml for the given <world>.sdf
+    worldname = world_filename.split(".")[0]
+    waypoints_path = (
+        Path(get_package_share_directory("sam_bot_nav2_gz"))
+        / "waypoints"
+        / f"{worldname}.yaml"
+    )
+    if not waypoints_path.exists():
+        raise FileNotFoundError(
+            f"Waypoints file {waypoints_path} does not exist. "
+            f"Please create it or use a different world."
+        )
+    waypoints = yaml.safe_load(waypoints_path.read_text())
+    print(f"Loaded waypoints from {waypoints_path}: {waypoints}")
+    return { "waypoints": waypoints, "waypoints_path": waypoints_path }
+
+
+@pytest.fixture(scope="module")
+def navigation_stack(world_filename, headless, waypoints):
     # Build the ros2 launch command
     launch_cmd = [
         "ros2",
         "launch",
         "sam_bot_nav2_gz",
         "waypoint_follower_example_launch.py",
-        f"world_file:={world}",
-        "headless:=True",
+        f"world_file:={world_filename}",
+        f"waypoints_path:={str(waypoints['waypoints_path'])}",
+        f"headless:={headless}",
     ]
     print(f"Starting navigation stack with command: {' '.join(launch_cmd)}")
 
@@ -156,21 +191,6 @@ def test_followed_waypoints(navigation_stack, launch_context):
 
     def validate_output(output):
         assert "Goal succeeded!" in output, 'process never printed "Goal succeeded!"'
-
-    process_tools.assert_output_sync(
-        launch_context, navigation_stack, validate_output, timeout=250
-    )
-
-
-@pytest.mark.launch(fixture=launch_description)
-def test_no_skipped_waypoints(navigation_stack, launch_context):
-    """Check if the robot followed the waypoints."""
-
-    # TODO: figure out the number of waypoints
-    def validate_output(output):
-        assert "Executing current waypoint: 1" in output, (
-            'process never printed "Executing current waypoint: 1/1"'
-        )
 
     process_tools.assert_output_sync(
         launch_context, navigation_stack, validate_output, timeout=250

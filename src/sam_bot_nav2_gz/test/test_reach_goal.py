@@ -23,7 +23,7 @@ def generate_test_description():
     try:
         world = get_artefacts_param("launch", "world")
     except FileNotFoundError:
-        world = "empty.world"
+        world = "empty.sdf"
 
     run_headless = LaunchConfiguration("run_headless")
     launch_navigation_stack = IncludeLaunchDescription(

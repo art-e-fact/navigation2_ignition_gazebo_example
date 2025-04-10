@@ -40,7 +40,7 @@
     <model name="sky_cam">
       <static>true</static>
       <link name="camera_link">
-        <pose>0 0 10 1.57 1.57 0</pose>
+        <pose>0 0 15 1.57 1.57 0</pose>
         <sensor name="sky_cam" type="camera">
           <camera>
             <horizontal_fov>1.047</horizontal_fov>

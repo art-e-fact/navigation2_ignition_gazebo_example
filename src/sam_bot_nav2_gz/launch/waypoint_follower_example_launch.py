@@ -39,6 +39,8 @@ from launch.substitutions import PathJoinSubstitution
 def generate_launch_description():
     # Launch configuration variables
     world_file_name = LaunchConfiguration("world_file")
+    waypoints_path = LaunchConfiguration("waypoints_path")
+
     use_rviz = LaunchConfiguration("use_rviz")
     headless = LaunchConfiguration("headless")
 
@@ -63,6 +65,14 @@ def generate_launch_description():
         name="world_file",
         default_value="depot.sdf",
         description="Name of the world file to load",
+    )
+
+    declare_waypoints_path_cmd = DeclareLaunchArgument(
+        name="waypoints_path",
+        description="Path to the waypoints YAML",
+        default_value=PathJoinSubstitution(
+            [test_pkg_dir, "waypoints", "depot.yaml"]
+        ),
     )
 
     # start the simulation
@@ -153,6 +163,11 @@ def generate_launch_description():
         executable="example_waypoint_follower.py",
         emulate_tty=True,
         output="screen",
+        parameters=[
+            {
+                "waypoints_path": waypoints_path,
+            }
+        ],
     )
 
     # Register an event handler to shutdown everything when the demo node exits
@@ -173,6 +188,7 @@ def generate_launch_description():
     ld.add_action(declare_use_rviz_cmd)
     ld.add_action(declare_simulator_cmd)
     ld.add_action(declare_world_file_cmd)
+    ld.add_action(declare_waypoints_path_cmd)
     ld.add_action(world_sdf_xacro)
     ld.add_action(remove_temp_sdf_file)
     ld.add_action(set_env_vars_resources)
