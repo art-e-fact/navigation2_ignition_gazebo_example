@@ -20,50 +20,11 @@ from artefacts_toolkit.gazebo import gz
 from artefacts_toolkit.rosbag import image_topics, rosbag
 
 
-@pytest.fixture
-def rosbag_data():
-    """Create and start a rosbag recorder for the test."""
-    topics = ["/odom"]
-    metrics = ["/distance_from_start_gt", "/distance_from_start_est", "/odometry_error"]
-    camera_topics = ["/sky_cam"]
-    sim_topics = ["/world/dynamic_pose/info"]
-
-    # Clear previous rosbag data
-    # NOTE: This is a workaround until artefacts will skip old files by default
-    if os.path.exists("rosbags"):
-        shutil.rmtree("rosbags")
-    os.makedirs("rosbags", exist_ok=True)
-
-    # NOTE: Same as https://github.com/art-e-fact/artefacts-toolkit-rosbag/blob/main/artefacts_toolkit_rosbag/rosbag.py
-    #   so far i couldn't find a way to get the command as string. Maybe we can add it if it's useful
-    yyyymmddhhmmss = datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
-    rosbag_filepath = os.path.join("output", "rosbag2_" + yyyymmddhhmmss)
-    rosbag_cmd = (
-        ["ros2", "bag", "record"]
-        + topics
-        + sim_topics
-        + metrics
-        + camera_topics
-        + ["-o", rosbag_filepath, "--storage", "mcap"]
-    )
-
-    print(f"Recording to {rosbag_filepath} with command: {' '.join(rosbag_cmd)}")
-    return launch.actions.ExecuteProcess(
-        name="rosbag2",
-        # cmd=["echo", "Recording..."],
-        cmd=rosbag_cmd,
-        # cmd=test_talker_node_cmd,
-        shell=True,
-        cached_output=True,
-        output="both",
-    )
-
-
 @pytest.fixture(scope="module")
 def scenario_params():
     """Get scenario parameters with default fallback."""
     default_params = {
-        "launch/world": "depot.sdf",
+        "launch/world": "arena.sdf",
         "launch/headless": "False"
     }
     
@@ -125,6 +86,13 @@ def waypoints(world_filename):
 
 @pytest.fixture(scope="module")
 def navigation_stack(world_filename, headless, waypoints):
+    # Clear previous rosbag data
+    # NOTE: This is a workaround until artefacts will skip old files by default
+    rosbags_dir = Path("rosbags")
+    if rosbags_dir.exists():
+        shutil.rmtree(rosbags_dir)
+    os.makedirs(rosbags_dir, exist_ok=True)
+
     # Build the ros2 launch command
     launch_cmd = [
         "ros2",
