@@ -30,7 +30,7 @@ def generate_test_description():
         PythonLaunchDescriptionSource(
             [
                 os.path.join(
-                    get_package_share_directory("sam_bot_nav2_gz"),
+                    get_package_share_directory("nav2_gz_testing"),
                     "launch",
                     "complete_navigation.launch.py"
                 ),
@@ -40,7 +40,7 @@ def generate_test_description():
     )
 
     reach_goal = Node(
-        package="sam_bot_nav2_gz",
+        package="nav2_gz_testing",
         executable="reach_goal.py",
         output="screen",
     )
@@ -60,7 +60,7 @@ def generate_test_description():
         parameters=[{
             "config_file": os.path.join(
                 "src",
-                "sam_bot_nav2_gz",
+                "nav2_gz_testing",
                 "test",
                  "bridge.yaml"
                 )}],
@@ -72,7 +72,7 @@ def generate_test_description():
             "python3",
             os.path.join(
                 "src",
-                "sam_bot_nav2_gz",
+                "nav2_gz_testing",
                 "test",
                 "test_odometry_node.py"
             ),

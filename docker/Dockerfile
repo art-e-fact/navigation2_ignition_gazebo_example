@@ -13,7 +13,7 @@ RUN pip3 install --break-system-packages \
       fastcov \
       numpy
 
-RUN pip install -r src/sam_bot_nav2_gz/requirements.txt
+RUN pip install -r src/nav2_gz_testing/requirements.txt
 
 RUN source /opt/ros/jazzy/setup.bash --extend && colcon build --symlink-install
 

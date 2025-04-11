@@ -34,7 +34,7 @@ def main():
     navigator = BasicNavigator()
 
     default_waypoints_path = Path(
-        get_package_share_directory("sam_bot_nav2_gz"),
+        get_package_share_directory("nav2_gz_testing"),
         "waypoints",
         "depot.yaml",
     )

@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from pathlib import Path
 import yaml
+import shutil
 
 
 import launch
@@ -26,6 +27,12 @@ def rosbag_data():
     metrics = ["/distance_from_start_gt", "/distance_from_start_est", "/odometry_error"]
     camera_topics = ["/sky_cam"]
     sim_topics = ["/world/dynamic_pose/info"]
+
+    # Clear previous rosbag data
+    # NOTE: This is a workaround until artefacts will skip old files by default
+    if os.path.exists("rosbags"):
+        shutil.rmtree("rosbags")
+    os.makedirs("rosbags", exist_ok=True)
 
     # NOTE: Same as https://github.com/art-e-fact/artefacts-toolkit-rosbag/blob/main/artefacts_toolkit_rosbag/rosbag.py
     #   so far i couldn't find a way to get the command as string. Maybe we can add it if it's useful
@@ -102,7 +109,7 @@ def waypoints(world_filename):
     # load the waypoints/<world>.yaml for the given <world>.sdf
     worldname = world_filename.split(".")[0]
     waypoints_path = (
-        Path(get_package_share_directory("sam_bot_nav2_gz"))
+        Path(get_package_share_directory("nav2_gz_testing"))
         / "waypoints"
         / f"{worldname}.yaml"
     )
@@ -122,7 +129,7 @@ def navigation_stack(world_filename, headless, waypoints):
     launch_cmd = [
         "ros2",
         "launch",
-        "sam_bot_nav2_gz",
+        "nav2_gz_testing",
         "waypoint_follower_example_launch.py",
         f"world_file:={world_filename}",
         f"waypoints_path:={str(waypoints['waypoints_path'])}",
@@ -160,7 +167,7 @@ def rosbag_recording():
 def odometry_node():
     return launch.actions.ExecuteProcess(
         name="odometry_node",
-        cmd=["ros2", "run", "sam_bot_nav2_gz", "test_odometry_node.py"],
+        cmd=["ros2", "run", "nav2_gz_testing", "test_odometry_node.py"],
         shell=True,
         cached_output=True,
         output="both",

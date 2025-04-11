@@ -9,12 +9,12 @@
     </physics>
     <plugin name='gz::sim::systems::Physics' filename='gz-sim-physics-system'/>
     <plugin name='gz::sim::systems::UserCommands' filename='gz-sim-user-commands-system'/>
-    <xacro:unless value="$(arg headless)">
+    <!-- <xacro:unless value="$(arg headless)"> -->
       <plugin
         filename="gz-sim-scene-broadcaster-system"
         name="gz::sim::systems::SceneBroadcaster">
       </plugin>
-    </xacro:unless>
+    <!-- </xacro:unless> -->
     <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
       <render_engine>ogre2</render_engine>
     </plugin>

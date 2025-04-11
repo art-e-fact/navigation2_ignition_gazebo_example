@@ -52,7 +52,7 @@ def generate_launch_description():
     nav2_bringup_dir = get_package_share_directory("nav2_bringup")
     sim_dir = get_package_share_directory("nav2_minimal_tb4_sim")
     desc_dir = get_package_share_directory("nav2_minimal_tb4_description")
-    test_pkg_dir = get_package_share_directory("sam_bot_nav2_gz")
+    test_pkg_dir = get_package_share_directory("nav2_gz_testing")
 
     robot_sdf = os.path.join(desc_dir, "urdf", "standard", "turtlebot4.urdf.xacro")
     world = PathJoinSubstitution([test_pkg_dir, "worlds", world_file_name])
@@ -68,14 +68,14 @@ def generate_launch_description():
 
     declare_world_file_cmd = DeclareLaunchArgument(
         name="world_file",
-        default_value="arena.sdf",
+        default_value="bookstore.sdf",
         description="Name of the world file to load",
     )
 
     declare_waypoints_path_cmd = DeclareLaunchArgument(
         name="waypoints_path",
         description="Path to the waypoints YAML",
-        default_value=PathJoinSubstitution([test_pkg_dir, "waypoints", "arena.yaml"]),
+        default_value=PathJoinSubstitution([test_pkg_dir, "waypoints", "bookstore.yaml"]),
     )
 
     # start the simulation
@@ -162,7 +162,7 @@ def generate_launch_description():
 
     # start the demo autonomy task
     demo_cmd = Node(
-        package="sam_bot_nav2_gz",
+        package="nav2_gz_testing",
         executable="example_waypoint_follower.py",
         emulate_tty=True,
         output="screen",
