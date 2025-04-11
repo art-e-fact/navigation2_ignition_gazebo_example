@@ -68,14 +68,14 @@ def generate_launch_description():
 
     declare_world_file_cmd = DeclareLaunchArgument(
         name="world_file",
-        default_value="bookstore.sdf",
+        default_value="arena.sdf",
         description="Name of the world file to load",
     )
 
     declare_waypoints_path_cmd = DeclareLaunchArgument(
         name="waypoints_path",
         description="Path to the waypoints YAML",
-        default_value=PathJoinSubstitution([test_pkg_dir, "waypoints", "bookstore.yaml"]),
+        default_value=str(Path(test_pkg_dir) / "waypoints" / "arena.yaml"),
     )
 
     # start the simulation

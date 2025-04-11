@@ -19,10 +19,6 @@ Minimal example ROS2 project to use Navigation2 with (Ignition) Gazebo. Based on
 # Install Nav2 dependencies
 sudo apt install ros-jazzy-navigation2 ros-jazzy-nav2-bringup
 
-# Import source dependencies
-pip3 install vcstool
-vcs import --input deps.repos src
-
 # Install rosrep dependencies
 rosdep install -y -r -i  --from-paths . 
 
@@ -36,27 +32,19 @@ colcon build
 source install/setup.bash
 ```
 
-## Run examples
+## Run example
 ```
-# Launch Gazebo, RViz, and Navigation2
-ros2 launch nav2_gz_testing complete_navigation.launch.py
-
-# Set goal poses in RViz or run a navigation example:
-ros2 run nav2_gz_testing follow_waypoints.py
-ros2 run nav2_gz_testing reach_goal.py
+ros2 run nav2_gz_testing example_waypoint_follower.py
 ```
 
-## Run tests with **launch_testing**
-
-You will need to pip install the `artefacts-toolkit` package to run the tests. 
-
+## Run tests with **pytest** locally
+First install the python dependencies. See the [Jazzy docs](https://docs.ros.org/en/jazzy/How-To-Guides/Using-Python-Packages.html#installing-via-a-virtual-environment) for instructions to set up Python virtual environments with ROS 2 Jazzy.
+```sh
+pip install -r src/nav2_gz_testing/requirements.txt
 ```
-# Start one of the tests with
-# if using a virtualenv you may need to add the path to the python packages to make it available in the ROS2 environment:
-# export PYTHONPATH=$PYTHONPATH:$HOME/.pyenv/versions/[venv-name]/lib/python3.10/site-packages
-launch_test src/nav2_gz_testing/test/test_bringup.launch.py
-launch_test src/nav2_gz_testing/test/test_reach_goal.launch.py
-launch_test src/nav2_gz_testing/test/test_follow_waypoints.launch.py
+And run the tests with standard pytest
+```
+pytest src/nav2_gz_testing/test/test_follow_waypoints.py -s
 ```
 
 
@@ -70,10 +58,10 @@ You will need to pip install the `artefacts-toolkit` and `artefacts-cli` package
 
 ```
 # Run test locally
-artefacts run all
+artefacts run nav2
 
 # Run test remotely
-artefacts run-remote all --description "Test Navigation2"
+artefacts run-remote nav2 --description "Test Navigation2"
 ```
 ### Run test locally with Docker
 
@@ -87,17 +75,3 @@ docker/build.sh
 ```sh
 docker run --rm --env-file=.env -e ARTEFACTS_JOB_NAME=nav2 nav2-gz
 ```
-
-## Visualize navigation with **Rerun.io** (experimental)
-For more info, see: https://www.rerun.io/docs/howto/ros2-nav-turtlebot
-```
-cd rerun
-# create a virtual env and install dependencies
-python3 -m venv rr-venv
-source rr-venv/bin/activate
-pip install -r requirements
-# Run rerun node
-python run-rerun.py
-```
-![Screenshot from 2023-03-27 20-42-32](https://user-images.githubusercontent.com/2298371/228792085-66837913-32fe-4506-9624-673424328ea4.png)
-
