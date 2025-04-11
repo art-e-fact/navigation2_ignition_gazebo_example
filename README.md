@@ -4,10 +4,9 @@
 
 [![artefacts_ci](https://app.artefacts.com/api/artefacts/navigation2-ignition-example/badges/nav2.png?branch=main)](https://app.artefacts.com/artefacts/navigation2-ignition-example)
 
-Minimal example ROS2 project to use Navigation2 with (Ignition) Gazebo. Based on the official Gazebo Classic example: [tutorial](https://navigation.ros.org/setup_guides/index.html), [code](https://github.com/ros-planning/navigation2_tutorials/tree/master/sam_bot_description)
+Minimal example for testing a Nav2 project with Gazebo Sim.
 
-[gz-nav2-tb3.webm](https://user-images.githubusercontent.com/2298371/226628768-818a7c3f-e5e1-49c6-b819-112c2cfa668b.webm)
-
+https://github.com/user-attachments/assets/05dcb944-e6c9-42af-bff3-862eba04e53e
 
 ## Requirements
  - ROS 2 Jazzy
