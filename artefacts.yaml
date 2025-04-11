@@ -24,8 +24,6 @@ jobs:
           launch/world: ["arena.sdf", "bookstore.sdf", "depot.sdf"]
           launch/headless: "True"
       settings:
-        # - name: reach_goal
-        #   ros_testfile: "src/nav2_gz_testing/test/test_reach_goal.launch.py"
         - name: follow_waypoints
           run: >
             python3 -m pytest 
