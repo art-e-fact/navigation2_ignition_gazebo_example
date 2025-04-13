@@ -19,7 +19,7 @@ https://github.com/user-attachments/assets/05dcb944-e6c9-42af-bff3-862eba04e53e
 sudo apt install ros-jazzy-navigation2 ros-jazzy-nav2-bringup
 
 # Install rosrep dependencies
-rosdep install -y -r -i  --from-paths . 
+rosdep install -y -r -i --from-paths . 
 
 # Make sure ROS2 is sourced (assuming bash, please replace extension as needed)
 source /opt/ros/jazzy/setup.bash
@@ -69,8 +69,9 @@ artefacts run-remote nav2 --description "Test Navigation2"
 docker/build.sh
 ```
 2. Save `.env.sample` as `.env` and fill the missing variables
-    - ARTEFACTS_KEY can be generated at the project-settings page of the Artefacts CI dashboard
+    - ARTEFACTS_KEY can be generated at the project-settings page of the [Artefacts CI dashboard](https://app.artefacts.com/)
 3. Run the selected tests in docker
 ```sh
 docker run --rm --env-file=.env -e ARTEFACTS_JOB_NAME=nav2 nav2-gz
 ```
+ - You can change the `headless` setting to `False` in the `artefacts.yaml` to run the tests with GUI

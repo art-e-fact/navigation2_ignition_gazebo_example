@@ -4,7 +4,6 @@ xhost +local:root
 
 DOCKER_OPTIONS=(
     -it --rm
-    # --gpus all 
     --name="nav2-gz"
     --network=host --ipc=host
     --env="DISPLAY"
