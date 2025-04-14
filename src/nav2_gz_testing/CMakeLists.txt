@@ -31,8 +31,6 @@ install(
 
 # Install Python executables
 install(PROGRAMS
-  scripts/reach_goal.py
-  scripts/follow_waypoints.py
   scripts/example_waypoint_follower.py
   scripts/test_odometry_node.py
   DESTINATION lib/${PROJECT_NAME}
