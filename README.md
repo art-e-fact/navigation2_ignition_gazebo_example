@@ -47,7 +47,6 @@ pytest src/nav2_gz_testing/test/test_follow_waypoints.py -s
 ```
 
 
-
 ## Run tests with **Artefacts CI**
  1. Set up a new Artefacts CI project. Instructions: https://docs.artefacts.com/latest/
  2. Replace the project name in the `artefacts.yaml` with the name of your project
