@@ -61,6 +61,8 @@ artefacts run nav2
 # Run test remotely
 artefacts run-remote nav2 --description "Test Navigation2"
 ```
+ - You can change the `headless` setting to `False` in the `artefacts.yaml` to run the tests with GUI
+ 
 ### Run test locally with Docker
 
 1. Build container
@@ -73,4 +75,5 @@ docker/build.sh
 ```sh
 docker run --rm --env-file=.env -e ARTEFACTS_JOB_NAME=nav2 nav2-gz
 ```
- - You can change the `headless` setting to `False` in the `artefacts.yaml` to run the tests with GUI
+
+More about running in docker: [docker/README.md](docker/README.md)
