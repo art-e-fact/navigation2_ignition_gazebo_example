@@ -30,6 +30,7 @@ jobs:
             src/nav2_gz_testing/test/test_follow_waypoints.py 
             --html=output/report.html 
             --self-contained-html 
+            --junit-xml=output/tests_junit.xml
             -s &&
             pkill -f gz &&
             pkill -f rviz
