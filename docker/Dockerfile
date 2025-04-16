@@ -9,10 +9,6 @@ RUN apt-get update && \
     rosdep install --from-paths src --ignore-src -r -y && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --break-system-packages \
-      fastcov \
-      numpy
-
 RUN pip install -r src/nav2_gz_testing/requirements.txt
 
 RUN source /opt/ros/jazzy/setup.bash --extend && colcon build --symlink-install
