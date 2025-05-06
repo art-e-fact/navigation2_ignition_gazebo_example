@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(sam_bot_nav2_gz)
+project(nav2_gz_testing)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -25,14 +25,14 @@ find_package(rclpy REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 install(
-  DIRECTORY src scripts launch rviz config world models
+  DIRECTORY scripts launch worlds models waypoints
   DESTINATION share/${PROJECT_NAME}
 )
 
 # Install Python executables
 install(PROGRAMS
-  scripts/reach_goal.py
-  scripts/follow_waypoints.py
+  scripts/example_waypoint_follower.py
+  scripts/test_odometry_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

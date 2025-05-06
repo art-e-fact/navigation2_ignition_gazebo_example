@@ -1,7 +1,6 @@
-
-<?xml version="1.0" ?>
-
-<sdf version="1.8">
+<?xml version="1.0"?>
+<sdf version="1.6" xmlns:xacro="http://www.ros.org/wiki/xacro" xmlns:experimental="http://sdformat.org/schemas/experimental">
+  <xacro:arg name="headless" default="true"/>
   <world name="collision_test">
     <physics name='1ms' type='ignored'>
       <max_step_size>0.001</max_step_size>
@@ -10,7 +9,7 @@
     </physics>
     <plugin name='gz::sim::systems::Physics' filename='gz-sim-physics-system'/>
     <plugin name='gz::sim::systems::UserCommands' filename='gz-sim-user-commands-system'/>
-    <plugin name='gz::sim::systems::SceneBroadcaster' filename='gz-sim-scene-broadcaster-system'/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
     <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
       <render_engine>ogre2</render_engine>
     </plugin>
@@ -18,6 +17,7 @@
     <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact">
     </plugin>
     <scene>
+      <grid>false</grid>
       <ambient>1.0 1.0 1.0</ambient>
       <background>0.8 0.8 0.8</background>
     </scene>
@@ -67,7 +67,7 @@
     <model name="sky_cam">
       <static>true</static>
       <link name="camera_link">
-        <pose>0 0 10 1.57 1.57 0</pose>
+        <pose>2 0 10 1.57 1.57 0</pose>
         <sensor name="sky_cam" type="camera">
           <camera>
             <horizontal_fov>1.047</horizontal_fov>
@@ -90,8 +90,9 @@
 
     <include>
         <uri>TurtlebotArena</uri>
-        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <pose>2.0 0.0 0.0 0 0 0</pose>
     </include>
 
   </world>
 </sdf>
+

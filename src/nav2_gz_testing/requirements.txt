@@ -1,2 +1,4 @@
 artefacts_cli
 artefacts_toolkit>=0.4.0
+pytest
+pytest-html

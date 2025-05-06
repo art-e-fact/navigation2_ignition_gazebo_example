@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>sam_bot_nav2_gz</name>
+  <name>nav2_gz_testing</name>
   <version>1.0.0</version>
   <description>Nav2 Example with (Ignition) Gazebo</description>
   <maintainer email="azazdeaz@gmail.com">Andras Polgar</maintainer>
@@ -22,10 +22,17 @@
   <exec_depend>ros_gz_sim</exec_depend>
   <exec_depend>gz_ros2_control</exec_depend>
   <exec_depend>topic_tools</exec_depend>
-  
+  <exec_depend>rqt_tf_tree</exec_depend>
+  <exec_depend>navigation2</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>tf2_tools</exec_depend>
+  <exec_depend>image_transport_plugins</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <test_depend>launch_testing</test_depend>
+  <test_depend>launch_pytest</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

@@ -3,45 +3,34 @@ version: 0.1.0
 project: artefacts/navigation2-ignition-example
 
 jobs:
-
-  basic: # Only checks that things are loading
-    type: test
-    package:
-      docker:
-        build:
-          dockerfile: ./Dockerfile
-    runtime:
-      simulator: gazebo:fortress
-      framework: ros2:humble
-    timeout: 5 #minutes
-    scenarios:
-      defaults: # Global to all scenarios, and overriden in specific scenarios.
-        output_dirs: ["output"]
-      settings:
-        - name: bringup
-          ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
-
   nav2:
     type: test
     package:
       docker:
         build:
-          dockerfile: ./Dockerfile
+          dockerfile: ./docker/Dockerfile
     runtime:
       simulator: gazebo:fortress
-      framework: ros2:humble
-    timeout: 5 #minutes
+      framework: null
+    timeout: 15 #minutes
     scenarios:
       defaults: # Global to all scenarios, and overriden in specific scenarios.
-        output_dirs: ["output"]
+        output_dirs: ["output", "rosbags"]
         metrics:
           - /odometry_error
           - /distance_from_start_gt
           - /distance_from_start_est
         params:
-          launch/world: ["bookstore.sdf", "empty.sdf"]
+          launch/world: ["arena.sdf", "bookstore.sdf", "depot.sdf"]
+          launch/headless: "True"
       settings:
-        - name: reach_goal
-          ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
         - name: follow_waypoints
-          ros_testfile: "src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py"
+          run: >
+            python3 -m pytest 
+            src/nav2_gz_testing/test/test_follow_waypoints.py 
+            --html=output/report.html 
+            --self-contained-html 
+            --junit-xml=output/tests_junit.xml
+            -s &&
+            pkill -f gz &&
+            pkill -f rviz
