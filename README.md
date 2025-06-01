@@ -16,8 +16,8 @@ Minimal example ROS2 project to use Navigation2 with (Ignition) Gazebo. Based on
 
 ## Setup and build
 ```
-# Install Nav2 dependencies
-sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup
+# Install Nav2 dependencies & others
+sudo apt install ros-humble-navigation2 ros-humble-nav2-bringup ros-humble-rosbag2-storage-mcap
 
 # Import source dependencies
 pip3 install vcstool
@@ -70,15 +70,15 @@ You will need to pip install the `artefacts-toolkit` and `artefacts-cli` package
 
 ```
 # Run test locally
-artefacts run all
+artefacts run nav2
 
 # Run test remotely
-artefacts run-remote all --description "Test Navigation2"
+artefacts run-remote nav2 --description "Test Navigation2"
 
 # Run test locally with Docker
 docker build -t nav2-gz .
 # ARTEFACTS_KEY can be generated at the project-settings page of the Artefacts CI dashboard
-docker run --rm -e ARTEFACTS_JOB_NAME=all -e ARTEFACTS_KEY=${ARTEFACTS_KEY} nav2-gz
+docker run --rm -e ARTEFACTS_JOB_NAME=nav2 -e ARTEFACTS_KEY=${ARTEFACTS_KEY} nav2-gz
 ```
 
 ## Visualize navigation with **Rerun.io** (experimental)
@@ -93,4 +93,3 @@ pip install -r requirements
 python run-rerun.py
 ```
 ![Screenshot from 2023-03-27 20-42-32](https://user-images.githubusercontent.com/2298371/228792085-66837913-32fe-4506-9624-673424328ea4.png)
-
