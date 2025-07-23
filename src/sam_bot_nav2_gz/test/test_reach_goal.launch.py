@@ -14,6 +14,15 @@ from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
 from artefacts_toolkit.config import get_artefacts_param
 
+# show python sys path
+import sys
+print("Python sys path:", sys.path)
+# add current directory to path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+print("Python sys path:", sys.path)
+from gazebo import Gazebo
+
+
 
 # This function specifies the processes to be run for our test
 @pytest.mark.launch_test
@@ -54,18 +63,18 @@ def generate_test_description():
         )
 
     # Gazebo ros bridge
-    gz_bridge = Node(
-        package="ros_gz_bridge",
-        executable="parameter_bridge",
-        parameters=[{
-            "config_file": os.path.join(
-                "src",
-                "sam_bot_nav2_gz",
-                "test",
-                 "bridge.yaml"
-                )}],
-        output="screen",
-        )
+    #gz_bridge = Node(
+    #    package="ros_gz_bridge",
+    #    executable="parameter_bridge",
+    #    parameters=[{
+    #        "config_file": os.path.join(
+    #            "src",
+    #            "sam_bot_nav2_gz",
+    #            "test",
+    #             "bridge.yaml"
+    #            )}],
+    #    output="screen",
+    #    )
 
     test_odometry_node = ExecuteProcess(
         cmd=[
@@ -78,6 +87,8 @@ def generate_test_description():
             ),
         ]
     )
+    gz_interface = Gazebo(recording_path="recording.mcap")
+    gz_interface.start()
 
     return LaunchDescription(
         [
@@ -89,11 +100,11 @@ def generate_test_description():
             launch_navigation_stack,
             reach_goal,
             test_odometry_node,
-            gz_bridge,
+            #gz_bridge,
             bag_recorder,
             ReadyToTest(),
         ]
-    ), { "rosbag_filepath": rosbag_filepath}
+        ), { "rosbag_filepath": rosbag_filepath, "gz_interface": gz_interface}
 
 
 # This is our test fixture. Each method is a test case.
@@ -106,13 +117,14 @@ class TestReachGoal(unittest.TestCase):
             # replace the exception message with a more informative one
             raise AssertionError("Nav2 apparently failed to start") from e
 
-    def test_reached_goal(self, proc_output):
+    def test_reached_goal(self, proc_output, gz_interface):
         """Check the logs to see if the navigation task is completed"""
         # 'proc_output' is an object added automatically by the launch_testing framework.
         # It captures the outputs of the processes launched in generate_test_description()
         # Refer to the documentation for further details.
         try:
             proc_output.assertWaitFor("Goal succeeded!", timeout=240, stream="stdout")
+            assert gz_interface.get("sam_bot") > 0
         except AssertionError as e:
             # replace the exception message with a more informative one
             raise AssertionError("Goal was not reached") from e
@@ -121,7 +133,7 @@ class TestReachGoal(unittest.TestCase):
 
 @launch_testing.post_shutdown_test()
 class TestProcOutputAfterShutdown(unittest.TestCase):
-    def test_exit_code(self, rosbag_filepath):
+    def test_exit_code(self, rosbag_filepath, gz_interface):
         print(rosbag_filepath)
         make_chart(
             rosbag_filepath,
@@ -130,5 +142,9 @@ class TestProcOutputAfterShutdown(unittest.TestCase):
             field_unit="m",
             chart_name="odometry_position",
         )
+        final_pose = gz_interface.get("sam_bot")
+        print(final_pose)
+        assert final_pose.position["x"] > 10000.0
+        gz_interface.stop()
         image_topics.extract_camera_image(rosbag_filepath, "/sky_cam")
         image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.webm")
