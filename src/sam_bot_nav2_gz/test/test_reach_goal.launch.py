@@ -19,7 +19,7 @@ from artefacts_toolkit.config import get_artefacts_param
 @launch_testing.markers.keep_alive
 def generate_test_description():
     try:
-        world = get_artefacts_param("launch", "world")
+        world = get_artefacts_param("launch", "world", default="empty.sdf")
     except FileNotFoundError:
         world = "empty.sdf"
 
@@ -120,13 +120,13 @@ class TestReachGoal(unittest.TestCase):
 @launch_testing.post_shutdown_test()
 class TestProcOutputAfterShutdown(unittest.TestCase):
     def test_exit_code(self, rosbag_filepath):
-        print(rosbag_filepath)
         make_chart(
             rosbag_filepath,
             "/odom.pose.pose.position.x",
             "/odom.pose.pose.position.y",
             field_unit="m",
             chart_name="odometry_position",
+            output_format="csv"
         )
         image_topics.extract_camera_image(rosbag_filepath, "/sky_cam")
         image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.webm")

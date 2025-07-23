@@ -47,9 +47,9 @@ def merge_ros_params_files(source, override, destination):
 @launch_testing.markers.keep_alive
 def generate_test_description():
     try:
-        world = get_artefacts_param("launch", "world")
+        world = get_artefacts_param("launch", "world", default="empty.sdf")
     except FileNotFoundError:
-        world = "empty.world"
+        world = "empty.sdf"
 
     run_headless = LaunchConfiguration("run_headless")
     source_params_file = "src/sam_bot_nav2_gz/config/nav2_params.yaml"
@@ -167,6 +167,7 @@ class TestProcOutputAfterShutdown(unittest.TestCase):
             "/odom.pose.pose.position.y",
             field_unit="m",
             chart_name="odometry_position",
+            output_format="csv"
         )
         image_topics.extract_camera_image(rosbag_filepath, "/sky_cam")
         image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.webm")
