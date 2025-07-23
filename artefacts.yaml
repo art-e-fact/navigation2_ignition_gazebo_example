@@ -40,7 +40,7 @@ jobs:
           - /distance_from_start_est
         params:
           launch/world: ["empty.sdf"]
-          controller_server/controller_frequency: [1.0, 30.0]
+          controller_server/controller_frequency: [0.3, 1.0, 10.0, 30.0]
       settings:
         - name: reach_goal
           ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
