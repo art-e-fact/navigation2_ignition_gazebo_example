@@ -14,6 +14,9 @@ from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
 from artefacts_toolkit.config import get_artefacts_param
 
+ARTEFACTS_PARAMS_FILE = os.environ.get(
+    "ARTEFACTS_SCENARIO_PARAMS_FILE", "scenario_params.yaml"
+)
 def deep_merge_dicts(source, override):
     """Recursively merge two dictionaries, with values from `override` taking precedence over `source`"""
     for key, value in override.items():
