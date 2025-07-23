@@ -21,7 +21,7 @@ def generate_test_description():
     try:
         world = get_artefacts_param("launch", "world")
     except FileNotFoundError:
-        world = "empty.world"
+        world = "empty.sdf"
 
     run_headless = LaunchConfiguration("run_headless")
     launch_navigation_stack = IncludeLaunchDescription(
@@ -81,8 +81,8 @@ def generate_test_description():
         [
             DeclareLaunchArgument(
                 name="run_headless",
-                default_value="True",
-                description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
+                default_value="False",
+                description="Start GZ in headless mode and don't start RViz (overrides use_rviz)",
             ),
             launch_navigation_stack,
             reach_goal,

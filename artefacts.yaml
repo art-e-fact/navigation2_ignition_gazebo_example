@@ -42,8 +42,7 @@ jobs:
           launch/world: ["empty.sdf"]
           controller_server/controller_frequency: [1.0, 30.0]
       settings:
-        #- name: reach_goal
-        #  ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
+        - name: reach_goal
+          ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
         - name: follow_waypoints
           ros_testfile: "src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py"
-
