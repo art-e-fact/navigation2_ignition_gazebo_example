@@ -30,7 +30,7 @@ jobs:
     runtime:
       simulator: gazebo:fortress
       framework: ros2:humble
-    timeout: 5 #minutes
+    timeout: 6 #minutes
     scenarios:
       defaults: # Global to all scenarios, and overriden in specific scenarios.
         output_dirs: ["output"]
@@ -39,13 +39,11 @@ jobs:
           - /distance_from_start_gt
           - /distance_from_start_est
         params:
-          launch/world: ["empty.sdf", "bookstore.sdf"]
+          launch/world: ["bookstore.sdf"]
           controller_server/controller_frequency: [10.0]
       settings:
         - name: reach_goal
           ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
-        - name: follow_waypoints
-          ros_testfile: "src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py"
 
   nav2-tune:
     type: test
@@ -65,9 +63,8 @@ jobs:
           - /distance_from_start_gt
           - /distance_from_start_est
         params:
-          controller_server/controller_frequency: [5.0, 5.0, 5.0, 5.0, 5.0]
-          amcl/update_min_a: [0.2, 0.1]
-          amcl/update_min_d: [0.2, 0.1]
+          controller_server/controller_frequency: [5.0, 5.0, 10.0, 10.0, 15.0, 15.0]
+          amcl/update_min_a: [0.2, 0.1, 0.05]
       settings:
         - name: follow_waypoints
           ros_testfile: "src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py"

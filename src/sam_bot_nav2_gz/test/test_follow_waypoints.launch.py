@@ -115,7 +115,7 @@ def generate_test_description():
         [
             DeclareLaunchArgument(
                 name="run_headless",
-                default_value="True",
+                default_value="False",
                 description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
             ),
             launch_navigation_stack,
