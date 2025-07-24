@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import subprocess
 import re
 import math
@@ -7,35 +8,33 @@ import threading
 from typing import Dict, Optional
 from xml.etree import ElementTree as ET
 import sys
-sys.path = sys.path + ['/usr/lib/python3/dist-packages']
+#sys.path = sys.path + ['/usr/lib/python3/dist-packages']
 from mcap_protobuf.writer import Writer
-from gz.msgs10.pose_v_pb2 import Pose_V
-from gz.transport13 import Node
+#from gz.msgs10.pose_v_pb2 import Pose_V
+#from gz.transport13 import Node
 
-
-class Pose:
-    def __init__(self, name: str, position: Dict[str, float], orientation: Dict[str, float]):
-        self.name = name
-        self.position = position
-        self.orientation = orientation
-
-    def distance_to(self, other: "Pose") -> float:
-        dx = self.position.get("x", 0) - other.position.get("x", 0)
-        dy = self.position.get("y", 0) - other.position.get("y", 0)
-        dz = self.position.get("z", 0) - other.position.get("z", 0)
-        return math.sqrt(dx*dx + dy*dy + dz*dz)
-
-    def is_near(self, other: "Pose", threshold: float = 0.5) -> bool:
-        return self.distance_to(other) < threshold
+import rclpy
+from rclpy.node import Node as ROSNode
+from geometry_msgs.msg import TransformStamped
+import math
+import time
+from typing import Dict, Optional
+from gz_interfaces.srv import GetTransform  # Define this service as shown below
 
 
 
-class Gazebo:
-    def __init__(self, recording_path: str = None):
-        self.poses: Dict[str, Pose] = {}
-        self.node = Node()
-        world_name = "collision_test"
-        self.topic_dynamicposes = f"/world/{world_name}/dynamic_pose/info"
+class GazeboROSNode(ROSNode):
+    def __init__(self):
+        super().__init__('gazebo_pose_listener')
+        recording_path = "/tmp/recording.mcap"
+        self.transforms = {}
+        world_name = "worldWrapper"
+        self.subscription = self.create_subscription(
+            TransformStamped,
+            f'/world/{world_name}/pose',
+            self.transform_cb,
+            10
+        )
         self._recording = False
         self._mcap_writer = None
         self._mcap_file = None
@@ -43,75 +42,54 @@ class Gazebo:
             self._mcap_file = open(recording_path, "wb")
             self._mcap_writer = Writer(self._mcap_file)
             self._recording = True
-        self.node.subscribe(Pose_V, self.topic_dynamicposes, self.posev_cb)
- 
+        self.srv = self.create_service(GetPose, 'get_pose', self.handle_get_transform)
+
     def update_pose(self, name: str, position: Dict[str, float], orientation: Dict[str, float]):
         self.poses[name] = Pose(name, position, orientation)
 
-    def get(self, name: str) -> Optional[Pose]:
+    def get(self, name: str) -> Optional[TransformStamped]:
         return self.poses.get(name)
 
-    def posev_cb(self, msg: Pose_V):
+    def transform_cb(self, msg: TransformStamped):
+        name = msg.child_frame_id
+        self.transforms[name] = msg
+        self.get_logger().info(f"Received transform for {name}: {msg.transform}")
         if self._recording and self._mcap_writer:
             now = int(time.time() * 1e9)
             self._mcap_writer.write_message(
-                topic=self.topic_dynamicposes,
+                topic='/world/worldWrapper/pose',
                 message=msg,
                 log_time=now,
-                publish_time=now, # do we compute from msg.header.stamp instead?, or even a sim time topic?
+                publish_time=now,
             )
-            print("wrote 1 message")
-        for pose_msg in msg.pose:
-            name = pose_msg.name
-            position = {
-                "x": getattr(pose_msg.position, "x", 0.0),
-                "y": getattr(pose_msg.position, "y", 0.0),
-                "z": getattr(pose_msg.position, "z", 0.0),
-            }
-            orientation = {
-                "x": getattr(pose_msg.orientation, "x", 0.0),
-                "y": getattr(pose_msg.orientation, "y", 0.0),
-                "z": getattr(pose_msg.orientation, "z", 0.0),
-                "w": getattr(pose_msg.orientation, "w", 1.0),
-            }
-            self.update_pose(name, position, orientation)
 
-    def start(self):
-        self._running = True
-        self._thread = threading.Thread(target=self._spin_loop, daemon=True)
-        self._thread.start()
+    def handle_get_transform(self, request, response):
+        tf = self.transforms.get(request.name)
+        if tf is not None:
+            response.found = True
+            response.transform = tf
+        else:
+            response.found = False
+        return response
+ 
 
-    def stop(self):
-        self._running = False
-        if hasattr(self, "_thread"):
-            self._thread.join()
-
-        if self._recording:
-            if self._mcap_file:
-                self._mcap_writer.finish()
-                self._mcap_file.close()
-            self._recording = False
-
-    def _spin_loop(self):
-        while self._running:
-            time.sleep(0.001)
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python recorder.py <output.mcap>")
-        sys.exit(1)
-
-    output_path = sys.argv[1]
-    gz = Gazebo(recording_path=output_path)
-    gz.start()
-    print(f"Recording simulation to {output_path}. Press Ctrl+C to stop.")
-
+    rclpy.init()
+    if len(sys.argv) > 1:
+        recording_path = sys.argv[1]
+    node = GazeboROSNode(recording_path=recording_path)
     try:
-        while True:
-            time.sleep(1)
+        rclpy.spin(node)
     except KeyboardInterrupt:
-        print("Stopping recording...")
-        gz.stop()
+        pass
+    finally:
+        if node._mcap_file:
+            node._mcap_file.close()
+        node.destroy_node()
+        rclpy.shutdown()
 
+if __name__ == "__main__":
+    main()
 if __name__ == "__main__":
     main()

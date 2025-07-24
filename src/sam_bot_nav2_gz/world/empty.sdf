@@ -22,6 +22,14 @@
       <background>0.8 0.8 0.8</background>
     </scene>
 
+      <model name="worldWrapper">
+<plugin
+        filename="gz-sim-pose-publisher-system"
+        name="gz::sim::systems::PosePublisher">
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        <publish_nested_model_pose>true</publish_nested_model_pose>
+        <static_publisher>false</static_publisher>
+      </plugin>
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
       <pose>0 0 10 0 0 0</pose>
@@ -35,7 +43,6 @@
       </attenuation>
       <direction>-0.5 0.1 -0.9</direction>
     </light>
-
     <model name="ground_plane">
       <static>true</static>
       <link name="link">
@@ -93,5 +100,6 @@
         <pose>0.0 0.0 0.0 0 0 0</pose>
     </include>
 
+  </model>
   </world>
 </sdf>
