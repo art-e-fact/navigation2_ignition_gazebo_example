@@ -39,7 +39,7 @@ jobs:
           - /distance_from_start_gt
           - /distance_from_start_est
         params:
-          launch/world: ["empty.sdf"]
+          launch/world: ["empty.sdf", "bookstore.sdf"]
           controller_server/controller_frequency: [10.0]
       settings:
         - name: reach_goal
@@ -65,8 +65,9 @@ jobs:
           - /distance_from_start_gt
           - /distance_from_start_est
         params:
-          launch/world: ["empty.sdf"]
-          controller_server/controller_frequency: [0.1, 1.0, 10.0, 30.0]
+          controller_server/controller_frequency: [5.0, 5.0, 5.0, 5.0, 5.0]
+          amcl/update_min_a: [0.2, 0.1]
+          amcl/update_min_d: [0.2, 0.1]
       settings:
         - name: follow_waypoints
           ros_testfile: "src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py"
@@ -90,7 +91,7 @@ jobs:
           - /distance_from_start_est
         params:
           launch/world: ["empty.sdf"]
-          controller_server/controller_frequency: [10.0, 10.0, 10.0, 10.0, 10.0, 10.0]
+          controller_server/controller_frequency: [20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0, 20.0]
       settings:
         - name: follow_waypoints
           ros_testfile: "src/sam_bot_nav2_gz/test/test_follow_waypoints.launch.py"
