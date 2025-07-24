@@ -14,17 +14,45 @@ from artefacts_toolkit.rosbag import rosbag, image_topics
 from artefacts_toolkit.chart import make_chart
 from artefacts_toolkit.config import get_artefacts_param
 
+ARTEFACTS_PARAMS_FILE = os.environ.get(
+    "ARTEFACTS_SCENARIO_PARAMS_FILE", "scenario_params.yaml"
+)
+def deep_merge_dicts(source, override):
+    """Recursively merge two dictionaries, with values from `override` taking precedence over `source`"""
+    for key, value in override.items():
+        if isinstance(value, dict) and key in source:
+            source[key] = deep_merge_dicts(source[key], value)
+        else:
+            source[key] = value
+    return source
+
+def merge_ros_params_files(source, override, destination):
+    """Merge two ROS2 yaml parameter files into one, overriding the values in the first one with the values in `override`"""
+    import yaml
+
+    with open(source, "r") as f:
+        source_params = yaml.safe_load(f)
+
+    with open(override, "r") as f:
+        override_params = yaml.safe_load(f)
+
+    merged_params = deep_merge_dicts(source_params, override_params)
+    with open(destination, "w") as f:
+        yaml.dump(merged_params, f)
 
 # This function specifies the processes to be run for our test
 @pytest.mark.launch_test
 @launch_testing.markers.keep_alive
 def generate_test_description():
     try:
-        world = get_artefacts_param("launch", "world")
+        world = get_artefacts_param("launch", "world", default="empty.sdf")
     except FileNotFoundError:
-        world = "empty.world"
+        world = "empty.sdf"
 
     run_headless = LaunchConfiguration("run_headless")
+    source_params_file = "src/sam_bot_nav2_gz/config/nav2_params.yaml"
+    new_params_file = "all_params.yaml"
+    merge_ros_params_files(source_params_file, ARTEFACTS_PARAMS_FILE, new_params_file)
     launch_navigation_stack = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -35,7 +63,11 @@ def generate_test_description():
                 ),
             ]
         ),
-        launch_arguments=[("run_headless", run_headless), ("world_file", world)],
+        launch_arguments=[
+            ("run_headless", run_headless),
+            ("world_file", world),
+            ("params_file", new_params_file),
+            ],
     )
 
     reach_goal = Node(
@@ -82,8 +114,8 @@ def generate_test_description():
         [
             DeclareLaunchArgument(
                 name="run_headless",
-                default_value="True",
-                description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
+                default_value="False",
+                description="Start GZ in headless mode and don't start RViz (overrides use_rviz)",
             ),
             launch_navigation_stack,
             reach_goal,
@@ -100,7 +132,7 @@ def generate_test_description():
 class TestReachGoal(unittest.TestCase):
     def test_nav2_started(self, proc_output):
         try:
-            proc_output.assertWaitFor("Nav2 active!", timeout=120, stream="stdout")
+            proc_output.assertWaitFor("Nav2 active!", timeout=100, stream="stdout")
         except AssertionError as e:
             # replace the exception message with a more informative one
             raise AssertionError("Nav2 apparently failed to start") from e
@@ -121,13 +153,13 @@ class TestReachGoal(unittest.TestCase):
 @launch_testing.post_shutdown_test()
 class TestProcOutputAfterShutdown(unittest.TestCase):
     def test_exit_code(self, rosbag_filepath):
-        print(rosbag_filepath)
         make_chart(
             rosbag_filepath,
             "/odom.pose.pose.position.x",
             "/odom.pose.pose.position.y",
             field_unit="m",
             chart_name="odometry_position",
+            output_format="csv"
         )
         image_topics.extract_camera_image(rosbag_filepath, "/sky_cam")
         image_topics.extract_video(rosbag_filepath, "/sky_cam", "output/sky_cam.webm")
