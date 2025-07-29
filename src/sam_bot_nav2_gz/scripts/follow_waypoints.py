@@ -18,87 +18,19 @@ from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
 import rclpy
 from rclpy.duration import Duration
 import yaml
-
-
-waypoints = yaml.safe_load('''
-waypoints:
-  - position:
-      x: 0.8006443977355957
-      y: 0.5491957664489746
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: -0.0055409271259092485
-      w: 0.9999846489454652
-  - position:
-      x: 1.8789787292480469
-      y: 0.5389942526817322
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.010695864295550759
-      w: 0.9999427976074288
-  - position:
-      x: 3.0792641639709473
-      y: 0.6118782758712769
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.01899610435153287
-      w: 0.9998195577300264
-  - position:
-      x: 3.8347740173339844
-      y: 0.012513279914855957
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: -0.7548200584119721
-      w: 0.6559319167558071
-  - position:
-      x: 3.084421157836914
-      y: -0.5701640844345093
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: -0.9998472894684893
-      w: 0.01747563282157926
-  - position:
-      x: 2.19096302986145
-      y: -0.609535813331604
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.9999322787364863
-      w: 0.011637780753125607
-  - position:
-      x: 0.8946757316589355
-      y: -0.5464844703674316
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.9850211921086874
-      w: 0.1724333236262069
-  - position:
-      x: -0.14899730682373047
-      y: -0.011111736297607422
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.7179595085705036
-      w: 0.6960848684271199
-''')
+import os
 
 def main():
     rclpy.init()
     navigator = BasicNavigator()
+
+    # Load waypoints from YAML file
+    waypoints_file = os.path.join(os.path.dirname(__file__), '..', 'test', 'waypoints.yaml')
+    if not os.path.exists(waypoints_file):
+        waypoints_file = 'src/sam_bot_nav2_gz/test/waypoints.yaml'
+    
+    with open(waypoints_file, 'r') as f:
+        waypoints = yaml.safe_load(f)
 
     def create_pose(transform):
         pose = PoseStamped()

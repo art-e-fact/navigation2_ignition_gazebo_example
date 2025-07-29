@@ -25,7 +25,7 @@ find_package(rclpy REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 install(
-  DIRECTORY src scripts launch rviz config world models
+  DIRECTORY src scripts launch rviz config world models test
   DESTINATION share/${PROJECT_NAME}
 )
 
