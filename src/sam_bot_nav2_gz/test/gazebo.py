@@ -42,7 +42,7 @@ class GazeboROSNode(ROSNode):
             self._mcap_file = open(recording_path, "wb")
             self._mcap_writer = Writer(self._mcap_file)
             self._recording = True
-        self.srv = self.create_service(GetPose, 'get_pose', self.handle_get_transform)
+        self.srv = self.create_service(GetTransform, 'get_transform', self.handle_get_transform)
 
     def update_pose(self, name: str, position: Dict[str, float], orientation: Dict[str, float]):
         self.poses[name] = Pose(name, position, orientation)
