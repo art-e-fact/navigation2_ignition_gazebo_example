@@ -3,3 +3,8 @@
   ros_type_name: "geometry_msgs/msg/PoseArray"
   gz_type_name: "ignition.msgs.Pose_V"
   direction: GZ_TO_ROS 
+- ros_topic_name: "/world/worldWrapper/pose"
+  gz_topic_name: "/world/worldWrapper/pose"
+  ros_type_name: "geometry_msgs/msg/TransformStamped"
+  gz_type_name: "ignition.msgs.Pose"
+  direction: GZ_TO_ROS
