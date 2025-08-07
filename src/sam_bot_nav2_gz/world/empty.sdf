@@ -14,6 +14,12 @@
     <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
       <render_engine>ogre2</render_engine>
     </plugin>
+<!-- Enhanced Scene Broadcaster Plugin -->
+    <plugin
+      filename="libgz-enhanced-scene-broadcaster.so"
+      name="ignition::gazebo::systems::EnhancedSceneBroadcaster">
+      <dynamic_pose_hertz>60</dynamic_pose_hertz>
+    </plugin>
     
     <plugin filename="libignition-gazebo-contact-system.so" name="ignition::gazebo::systems::Contact">
     </plugin>
