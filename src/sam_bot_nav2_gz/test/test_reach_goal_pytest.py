@@ -2,13 +2,29 @@ import os
 import pytest
 import rclpy
 from ament_index_python.packages import get_package_share_directory
+import launch
+from launch.substitutions import (
+    Command,
+    FindExecutable,
+    LaunchConfiguration,
+    NotSubstitution,
+    AndSubstitution,
+)
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, ExecuteProcess, DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 import launch_pytest
+import launch_ros
 from launch_pytest.tools import process as process_tools
+from launch.substitutions import PathJoinSubstitution
+from launch.actions import (
+    ExecuteProcess,
+    DeclareLaunchArgument,
+    RegisterEventHandler,
+    SetEnvironmentVariable,
+)
 from artefacts_toolkit.config import get_artefacts_param
 import sys
 import os
@@ -89,10 +105,6 @@ def launch_description(reach_goal_proc):
     )
 
  
-    topics = ["/odom"]
-    metrics = ["/distance_from_start_gt", "/distance_from_start_est", "/odometry_error"]
-    camera_topics = ["/sky_cam"]
-    sim_topics = ["/world/dynamic_pose/info"]
 
     # Gazebo ros bridge
     gz_bridge = Node(
@@ -108,30 +120,110 @@ def launch_description(reach_goal_proc):
         output="screen",
         )
 
-    test_odometry_node = ExecuteProcess(
-        cmd=[
-            "python3",
-            os.path.join(
-                "src",
-                "sam_bot_nav2_gz",
-                "test",
-                "test_odometry_node.py"
-            ),
-        ]
+    gz_env = {'GZ_SIM_SYSTEM_PLUGIN_PATH':
+           ':'.join([os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', default=''),
+                     os.environ.get('LD_LIBRARY_PATH', default='')]),
+           'IGN_GAZEBO_SYSTEM_PLUGIN_PATH':  # TODO(CH3): To support pre-garden. Deprecated.
+                      ':'.join([os.environ.get('IGN_GAZEBO_SYSTEM_PLUGIN_PATH', default=''),
+                                os.environ.get('LD_LIBRARY_PATH', default='')])}
+    log_level = LaunchConfiguration("log_level")
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    gz_verbosity = LaunchConfiguration("gz_verbosity")
+    pkg_share = launch_ros.substitutions.FindPackageShare(
+        package="sam_bot_nav2_gz"
+    ).find("sam_bot_nav2_gz")
+    default_model_path = os.path.join(
+        pkg_share, "src/description/sam_bot_description.urdf"
     )
+    run_headless = LaunchConfiguration("run_headless")
+    world_file_name = LaunchConfiguration("world_file")
+    gz_models_path = ":".join([pkg_share, os.path.join(pkg_share, "models")])
+    #gz_models_path = os.path.join(pkg_share, "models")
+    world_path = PathJoinSubstitution([pkg_share, "world", world_file_name])
+    gazebo = [
+        ExecuteProcess(
+            condition=launch.conditions.IfCondition(run_headless),
+            cmd=['ruby', FindExecutable(name="ign"), 'gazebo',  '-r', '-v', gz_verbosity, '-s', '--headless-rendering', world_path],
+            output='screen',
+            additional_env=gz_env, # type: ignore
+            shell=False,
+        ),
+        ExecuteProcess(
+            condition=launch.conditions.UnlessCondition(run_headless),
+            cmd=['ruby', FindExecutable(name="ign"), 'gazebo',  '-r', '-v', gz_verbosity, world_path],
+            output='screen',
+            additional_env=gz_env, # type: ignore
+            shell=False,
+        )
+    ]
+
+    spawn_entity = Node(
+        package="ros_gz_sim",
+        executable="create",
+        output="screen",
+        arguments=[
+            "-name",
+            "sam_bot",
+            "-topic",
+            "robot_description",
+            "-z",
+            "1.0",
+            "-x",
+            "-2.0",
+            "--ros-args",
+            "--log-level",
+            log_level,
+        ],
+        parameters=[{"use_sim_time": use_sim_time}],
+    )
+
 
     return LaunchDescription(
         [
+            SetEnvironmentVariable(
+                name="IGN_GAZEBO_RESOURCE_PATH",
+                value=gz_models_path,
+            ),
+            DeclareLaunchArgument(
+                "gz_verbosity",
+                default_value="3",
+                description="Verbosity level for Ignition Gazebo (0~4).",
+            ),
+            DeclareLaunchArgument(
+                "gz_args",
+                default_value="",
+                description="Extra args for Gazebo (ie. '-s' for running headless)",
+            ),
+            DeclareLaunchArgument(
+                name="world_file",
+                default_value="empty.sdf",
+            ),
             DeclareLaunchArgument(
                 name="run_headless",
                 default_value="False",
-                description="Start GZ in headless mode and don't start RViz (overrides use_rviz)",
+                description="Start GZ in hedless mode and don't start RViz (overrides use_rviz)",
             ),
-            launch_navigation_stack,
-            reach_goal_proc,
-            test_odometry_node,
+            DeclareLaunchArgument(
+                name="use_sim_time",
+                default_value="True",
+                description="Flag to enable use_sim_time",
+            ),
+            DeclareLaunchArgument(
+                name="log_level",
+                default_value="warn",
+                description="The level of logging that is applied to all ROS 2 nodes launched by this script.",
+            ),
+            #DeclareLaunchArgument(
+            #    name="run_headless",
+            #    default_value="False",
+            #    description="Start GZ in headless mode and don't start RViz (overrides use_rviz)",
+            #),
+            #launch_navigation_stack,
+            *gazebo,
+            spawn_entity,
+            #reach_goal_proc,
             gz_bridge,
-            #bag_recorder,
+            launch_pytest.actions.ReadyToTest()
         ]
     )
 
@@ -168,7 +260,7 @@ def test_reached_goal(reach_goal_proc,launch_context, sim):
 
     # Get the reach_goal process from the launch context
     process_tools.wait_for_output_sync(
-        launch_context, reach_goal_proc, validate_goal_output, timeout=40)
+        launch_context, reach_goal_proc, validate_goal_output, timeout=10)
     
     # Additional assertion using simulation state
     goal_coordinates = (2.0, 3.0)  # Example goal coordinates - adjust as needed
