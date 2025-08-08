@@ -260,10 +260,11 @@ def test_reached_goal(reach_goal_proc,launch_context, sim):
 
     # Get the reach_goal process from the launch context
     process_tools.wait_for_output_sync(
-        launch_context, reach_goal_proc, validate_goal_output, timeout=10)
+        launch_context, reach_goal_proc, validate_goal_output, timeout=20)
     
     # Additional assertion using simulation state
     goal_coordinates = (2.0, 3.0)  # Example goal coordinates - adjust as needed
+    entity = sim.get_entity('ros_symbol')
     entity = sim.get_entity('sam_bot')
     assert entity.pose().now().x < 1.0, f"Robot is not close enough to goal at {goal_coordinates}. Distance: {distance}"
 

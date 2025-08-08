@@ -1,10 +1,10 @@
 - ros_topic_name: "/world/collision_test/enhanced_dynamic_pose/info"
   gz_topic_name: "/world/collision_test/enhanced_dynamic_pose/info"
-  ros_type_name: "geometry_msgs/msg/PoseArray"
-  gz_type_name: "ignition.msgs.Pose_V"
+  ros_type_name: "geometry_msgs/msg/TransformStamped"
+  gz_type_name: "ignition.msgs.Pose"
   direction: GZ_TO_ROS
 - ros_topic_name: "/world/collision_test/enhanced_pose/info"
   gz_topic_name: "/world/collision_test/enhanced_pose/info"
-  ros_type_name: "geometry_msgs/msg/PoseArray"
-  gz_type_name: "ignition.msgs.Pose_V"
+  ros_type_name: "geometry_msgs/msg/TransformStamped"
+  gz_type_name: "ignition.msgs.Pose"
   direction: GZ_TO_ROS
