@@ -218,7 +218,7 @@ def launch_description(reach_goal_proc):
             #    default_value="False",
             #    description="Start GZ in headless mode and don't start RViz (overrides use_rviz)",
             #),
-            #launch_navigation_stack,
+            #launch_navigation_stack",
             *gazebo,
             spawn_entity,
             #reach_goal_proc,
@@ -259,12 +259,14 @@ def test_reached_goal(reach_goal_proc,launch_context, sim):
         return output and 'Goal succeeded!' in output
 
     # Get the reach_goal process from the launch context
-    process_tools.wait_for_output_sync(
-        launch_context, reach_goal_proc, validate_goal_output, timeout=20)
+    process_tools.wait_for_output_sync(launch_context, reach_goal_proc, validate_goal_output, timeout=5)
     
     # Additional assertion using simulation state
     goal_coordinates = (2.0, 3.0)  # Example goal coordinates - adjust as needed
     entity = sim.get_entity('ros_symbol')
-    entity = sim.get_entity('sam_bot')
-    assert entity.pose().now().x < 1.0, f"Robot is not close enough to goal at {goal_coordinates}. Distance: {distance}"
+    cam = sim.get_entity('sky_cam/camera_link')
+    dist = entity.distance_to(cam).now()
+    assert dist > 1.0, f"Robot is not close enough to camera at {cam.pose().now().x}. Distance: {dist}"
+    assert cam.pose().now().z > 1.0
+    entity.distance_to(cam).to_csv("output/test.csv")
 
