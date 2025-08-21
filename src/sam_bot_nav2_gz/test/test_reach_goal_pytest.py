@@ -203,26 +203,7 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
 
     # Additional assertion using simulation state - wait for entity to be available
     print("Now checking entity state after goal completion...")
-    max_entity_wait = 15.0  # Wait up to 15 seconds for entity
-    entity_wait_interval = 0.5
-    entity_waited = 0.0
-
-    robot = None
-    while entity_waited < max_entity_wait:
-        try:
-            robot = sim.get_entity("sam_bot")
-            break
-        except EntityNotFoundError:
-            print(
-                f"Entity 'sam_bot' not found, waited {entity_waited:.1f}s, continuing to wait..."
-            )
-            time.sleep(entity_wait_interval)
-            entity_waited += entity_wait_interval
-
-    if robot is None:
-        pytest.fail(
-            f"Entity 'sam_bot' not found after waiting {max_entity_wait}s - robot may not have spawned yet"
-        )
+    robot = sim.get_entity("sam_bot")
 
     # Test basic robot operations and debug time references
     robot_pose = robot.pose()
@@ -295,7 +276,7 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
         print("✓ Exported full pose data to output/robot_full_pose.csv")
 
         # 2. Robot x/y position over time (focused on navigation trajectory)
-        robot.pose().to_csv("output/robot_xy_position.csv", columns=["time", "x", "y"])
+        robot.pose().to_csv("output/robot_xy_position.csv", columns=["x", "y"])
         print("✓ Exported x/y position trajectory to output/robot_xy_position.csv")
 
         # 3. Robot velocity over time

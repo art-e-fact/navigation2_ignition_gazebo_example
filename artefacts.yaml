@@ -38,7 +38,7 @@ jobs:
           launch/world: ["empty.sdf"]
       settings:
         - name: reach_goal
-          run: "rm output/*.* && python3 -m pytest  src/sam_bot_nav2_gz/test/test_reach_goal_pytest.py -s --junit-xml output/tests_junit.xml"
+          run: "rm output/*.* ; python3 -m pytest  src/sam_bot_nav2_gz/test/test_reach_goal_pytest.py -s --junit-xml output/tests_junit.xml"
 
   nav2:
     type: test
