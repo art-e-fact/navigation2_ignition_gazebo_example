@@ -252,54 +252,48 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
         print("No time array data available for detailed time debugging")
 
     # Check if robot reached approximately the goal area (using current position)
-    try:
-        current_pose = robot.pose().now()
+    current_pose = robot.pose().now()
+    print(
+        f"Current robot position: x={current_pose.x:.3f}, y={current_pose.y:.3f}, z={current_pose.z:.3f}"
+    )
+
+    goal_x, goal_y = 0.8, -0.5
+
+    # Calculate simple 2D distance to goal
+    import math
+
+    dist = math.sqrt(
+        (current_pose.x - goal_x) ** 2 + (current_pose.y - goal_y) ** 2
+    )
+    print(f"Distance to goal: {dist:.3f}m")
+
+    # Export comprehensive CSV files with debugging
+    print("Exporting robot navigation data...")
+
+    # 1. Full robot pose over time (includes x, y, z, roll, pitch, yaw)
+    robot.pose().to_csv("output/robot_full_pose.csv")
+    print("✓ Exported full pose data to output/robot_full_pose.csv")
+
+    # 2. Robot x/y position over time (focused on navigation trajectory)
+    robot.pose().to_csv("output/robot_xy_position.csv", columns=["x", "y"])
+    print("✓ Exported x/y position trajectory to output/robot_xy_position.csv")
+
+    # 3. Robot velocity over time
+    robot_velocity = robot.velocity()
+    print(
+        f"Velocity data available with {len(robot_velocity._time_array) if hasattr(robot_velocity, '_time_array') else 'unknown'} data points"
+    )
+    robot_velocity.to_csv("output/robot_velocity.csv")
+    print("✓ Exported velocity data to output/robot_velocity.csv")
+
+    # Check if assertion should pass
+    if dist < 2.0:
         print(
-            f"Current robot position: x={current_pose.x:.3f}, y={current_pose.y:.3f}, z={current_pose.z:.3f}"
+            f"✓ Robot successfully reached goal area (distance: {dist:.3f}m < 2.0m)"
         )
+    else:
+        print(f"⚠ Robot not quite at goal (distance: {dist:.3f}m >= 2.0m)")
 
-        goal_x, goal_y = 0.8, -0.5
-
-        # Calculate simple 2D distance to goal
-        import math
-
-        dist = math.sqrt(
-            (current_pose.x - goal_x) ** 2 + (current_pose.y - goal_y) ** 2
-        )
-        print(f"Distance to goal: {dist:.3f}m")
-
-        # Export comprehensive CSV files with debugging
-        print("Exporting robot navigation data...")
-
-        # 1. Full robot pose over time (includes x, y, z, roll, pitch, yaw)
-        robot.pose().to_csv("output/robot_full_pose.csv")
-        print("✓ Exported full pose data to output/robot_full_pose.csv")
-
-        # 2. Robot x/y position over time (focused on navigation trajectory)
-        robot.pose().to_csv("output/robot_xy_position.csv", columns=["x", "y"])
-        print("✓ Exported x/y position trajectory to output/robot_xy_position.csv")
-
-        # 3. Robot velocity over time
-        robot_velocity = robot.velocity()
-        print(
-            f"Velocity data available with {len(robot_velocity._time_array) if hasattr(robot_velocity, '_time_array') else 'unknown'} data points"
-        )
-        robot_velocity.to_csv("output/robot_velocity.csv")
-        print("✓ Exported velocity data to output/robot_velocity.csv")
-
-        # Check if assertion should pass
-        if dist < 2.0:
-            print(
-                f"✓ Robot successfully reached goal area (distance: {dist:.3f}m < 2.0m)"
-            )
-        else:
-            print(f"⚠ Robot not quite at goal (distance: {dist:.3f}m >= 2.0m)")
-
-    except Exception as e:
-        print(f"Error during pose/distance calculation: {e}")
-        import traceback
-
-        traceback.print_exc()
 
     # Note: Skipping distance_to_goal CSV as it requires entity-to-entity distance calculation
     print("✓ Skipped distance to goal CSV (requires entity-to-entity calculation)")
