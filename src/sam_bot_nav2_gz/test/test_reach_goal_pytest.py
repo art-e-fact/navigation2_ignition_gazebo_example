@@ -1,6 +1,7 @@
 import os
 import pytest
 import rclpy
+import json
 from launch.substitutions import (
     LaunchConfiguration,
 )
@@ -140,9 +141,60 @@ def sim():
     util = IgnitionSimStateUtil("collision_test", record_as="output/simulation.mcap")
 
     yield util
+    # csv exports
+    robot = util.get_entity("sam_bot")
+    # Export comprehensive CSV files with debugging
+    print("Exporting robot navigation data...")
+
+    # 1. Full robot pose over time (includes x, y, z, roll, pitch, yaw)
+    robot.pose().to_csv("output/robot_full_pose.csv")
+    print("✓ Exported full pose data to output/robot_full_pose.csv")
+
+    # 2. Robot x/y position over time (focused on navigation trajectory)
+    robot.pose().to_csv("output/robot_xy_position.csv", columns=["x", "y"])
+    print("✓ Exported x/y position trajectory to output/robot_xy_position.csv")
+
+    # 3. Robot velocity over time
+    robot_velocity = robot.velocity()
+    print(
+        f"Velocity data available with {len(robot_velocity._time_array) if hasattr(robot_velocity, '_time_array') else 'unknown'} data points"
+    )
+    robot_velocity.to_csv("output/robot_velocity.csv")
+    print("✓ Exported velocity data to output/robot_velocity.csv")
+
+    goal_x, goal_y = 0.8, -0.5
+
+    # Create waypoint pose for the navigation goal in custom_odom frame
+    goal_waypoint = Pose(
+        x=goal_x, y=goal_y, z=0.0, roll=0.0, pitch=0.0, yaw=0.0, frame="custom_odom"
+    )
+
+    # Calculate distance to goal using the new waypoint feature
+    distance_to_goal_metric = robot.distance_to(goal_waypoint)
+    # Export waypoint distance to CSV
+    distance_to_goal_metric.to_csv("output/robot_distance_to_goal_waypoint.csv")
+    print(
+        "✓ Exported waypoint distance data to output/robot_distance_to_goal_waypoint.csv"
+    )
+
+    # Export robot xy position in custom_odom frame
+    robot.pose(frame_id="custom_odom").to_csv(
+        "output/robot_xy_pose_custom_odom.csv", columns=["x", "y"]
+    )
+    print(
+        "✓ Exported robot xy position in custom_odom frame to output/robot_xy_pose_custom_odom.csv"
+    )
+
+    waypoint_dist = distance_to_goal_metric.now()
 
     # Cleanup
     util.stop_recording()
+
+@pytest.fixture(scope="module")
+def artefacts_metrics():
+    metrics = {}
+    yield metrics
+    json.dump(metrics, open("output/metrics.json", "w"), indent=2)
 
 
 @pytest.mark.launch(fixture=launch_description)
@@ -168,7 +220,7 @@ def test_nav2_started(reach_goal_proc, launch_context):
 
 
 @pytest.mark.launch(fixture=launch_description)
-def test_reached_goal(reach_goal_proc, launch_context, sim):
+def test_reached_goal(reach_goal_proc, launch_context, sim, artefacts_metrics):
     """Check that the navigation goal is reached"""
 
     def validate_goal_output(output):
@@ -190,11 +242,6 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
     # Test basic robot operations and debug time references
     robot_pose = robot.pose()
 
-    # Detailed debugging of pose data structure
-    print("=== POSE DATA DEBUGGING ===")
-    print(f"Robot pose object type: {type(robot_pose)}")
-    print(f"Robot pose object attributes: {dir(robot_pose)}")
-
     # Check different possible time array attributes
     time_attrs = ["_time_array", "time_array", "times", "_times", "timestamps"]
     for attr in time_attrs:
@@ -208,61 +255,8 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
         f"Robot pose data available with {len(robot_pose._time_array) if hasattr(robot_pose, '_time_array') else 'unknown'} data points"
     )
 
-    # Debug entity poses in simulation state util
-    print("=== SIM STATE DEBUGGING ===")
-    if hasattr(sim, "_entity_poses"):
-        sam_bot_data = sim._entity_poses.get("sam_bot", [])
-        print(f"Raw sam_bot data points: {len(sam_bot_data)}")
-        if sam_bot_data:
-            print(f"First data point timestamp: {sam_bot_data[0][0]}")
-            print(f"Last data point timestamp: {sam_bot_data[-1][0]}")
-
-    # Debug time information
-    if hasattr(robot_pose, "_time_array") and len(robot_pose._time_array) > 0:
-        import time as time_module
-
-        current_time = time_module.time()
-        min_time = min(robot_pose._time_array)
-        max_time = max(robot_pose._time_array)
-        print(f"Current wall time: {current_time:.3f}")
-        print(f"Data time range: {min_time:.3f} to {max_time:.3f}")
-        print(f"Time span: {max_time - min_time:.3f} seconds")
-        print(
-            f"Time difference from now: min={current_time - min_time:.3f}s, max={current_time - max_time:.3f}s"
-        )
-    else:
-        print("No time array data available for detailed time debugging")
-
-    # Check if robot reached approximately the goal area (using current position)
-    current_pose = robot.pose().now()
-    print(
-        f"Current robot position: x={current_pose.x:.3f}, y={current_pose.y:.3f}, z={current_pose.z:.3f}"
-    )
-
-    goal_x, goal_y = 0.8, -0.5
-
-    # Export comprehensive CSV files with debugging
-    print("Exporting robot navigation data...")
-
-    # 1. Full robot pose over time (includes x, y, z, roll, pitch, yaw)
-    robot.pose().to_csv("output/robot_full_pose.csv")
-    print("✓ Exported full pose data to output/robot_full_pose.csv")
-
-    # 2. Robot x/y position over time (focused on navigation trajectory)
-    robot.pose().to_csv("output/robot_xy_position.csv", columns=["x", "y"])
-    print("✓ Exported x/y position trajectory to output/robot_xy_position.csv")
-
-    # 3. Robot velocity over time
-    robot_velocity = robot.velocity()
-    print(
-        f"Velocity data available with {len(robot_velocity._time_array) if hasattr(robot_velocity, '_time_array') else 'unknown'} data points"
-    )
-    robot_velocity.to_csv("output/robot_velocity.csv")
-    print("✓ Exported velocity data to output/robot_velocity.csv")
-
     # Test waypoint distance functionality using the new waypoint feature
     print("Testing waypoint distance to navigation goal...")
-
     # Add transform from world to custom_odom frame using robot's initial pose
     # This establishes our own odometry frame to avoid conflict with nav2's odom
     robot_initial_pose = robot.pose().earliest()
@@ -271,31 +265,24 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
     )
     sim.add_transform("world", "custom_odom", robot_initial_pose)
     print("Added world->custom_odom transform for waypoint distance calculation")
+    # Check if robot reached approximately the goal area (using current position)
+    current_pose = robot.pose().now()
+    print(
+        f"Current robot position: x={current_pose.x:.3f}, y={current_pose.y:.3f}, z={current_pose.z:.3f}"
+    )
+
+    goal_x, goal_y = 0.8, -0.5
 
     # Create waypoint pose for the navigation goal in custom_odom frame
     goal_waypoint = Pose(
         x=goal_x, y=goal_y, z=0.0, roll=0.0, pitch=0.0, yaw=0.0, frame="custom_odom"
     )
-
     # Calculate distance to goal using the new waypoint feature
     distance_to_goal_metric = robot.distance_to(goal_waypoint)
     waypoint_dist = distance_to_goal_metric.now()
     # Check if assertion should pass
-    if waypoint_dist < 0.5:
-        print(f"✓ Robot successfully reached goal area (distance: {waypoint_dist:.3f}m < 0.5m)")
-    else:
-        print(f"⚠ Robot not quite at goal (distance: {waypoint_dist:.3f}m >= 0.5m)")
-
-    # Export waypoint distance to CSV
-    distance_to_goal_metric.to_csv("output/robot_distance_to_goal_waypoint.csv")
-    print(
-        "✓ Exported waypoint distance data to output/robot_distance_to_goal_waypoint.csv"
-    )
-
-    # Export robot xy position in custom_odom frame
-    robot.pose(frame_id="custom_odom").to_csv(
-        "output/robot_xy_pose_custom_odom.csv", columns=["x", "y"]
-    )
-    print(
-        "✓ Exported robot xy position in custom_odom frame to output/robot_xy_pose_custom_odom.csv"
+    artefacts_metrics["distance_to_goal"] = waypoint_dist
+    # asserts
+    assert waypoint_dist < 0.5, (
+        f"Robot did not reach close enough to goal, distance: {waypoint_dist:.3f}m"
     )
