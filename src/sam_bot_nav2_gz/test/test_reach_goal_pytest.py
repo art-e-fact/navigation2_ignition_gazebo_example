@@ -1,41 +1,23 @@
 import os
 import pytest
 import rclpy
-import time
-from ament_index_python.packages import get_package_share_directory
-import launch
 from launch.substitutions import (
-    Command,
-    FindExecutable,
     LaunchConfiguration,
-    NotSubstitution,
-    AndSubstitution,
 )
 from launch import LaunchDescription
 from launch.actions import (
     IncludeLaunchDescription,
-    ExecuteProcess,
     DeclareLaunchArgument,
 )
-from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 import launch_pytest
-import launch_ros
 from launch_pytest.tools import process as process_tools
-from launch.substitutions import PathJoinSubstitution
-from launch.actions import (
-    ExecuteProcess,
-    DeclareLaunchArgument,
-    RegisterEventHandler,
-    SetEnvironmentVariable,
-)
 from artefacts_toolkit.config import get_artefacts_param
 import sys
-import os
 
 sys.path.append(os.path.dirname(__file__))
-from sim_state import IgnitionSimStateUtil, EntityNotFoundError
+from sim_state import IgnitionSimStateUtil
 from sim_state.metric_value import Pose
 
 
@@ -209,7 +191,7 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
     robot_pose = robot.pose()
 
     # Detailed debugging of pose data structure
-    print(f"=== POSE DATA DEBUGGING ===")
+    print("=== POSE DATA DEBUGGING ===")
     print(f"Robot pose object type: {type(robot_pose)}")
     print(f"Robot pose object attributes: {dir(robot_pose)}")
 
@@ -227,7 +209,7 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
     )
 
     # Debug entity poses in simulation state util
-    print(f"=== SIM STATE DEBUGGING ===")
+    print("=== SIM STATE DEBUGGING ===")
     if hasattr(sim, "_entity_poses"):
         sam_bot_data = sim._entity_poses.get("sam_bot", [])
         print(f"Raw sam_bot data points: {len(sam_bot_data)}")
@@ -259,12 +241,6 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
 
     goal_x, goal_y = 0.8, -0.5
 
-    # Calculate simple 2D distance to goal
-    import math
-
-    dist = math.sqrt((current_pose.x - goal_x) ** 2 + (current_pose.y - goal_y) ** 2)
-    print(f"Distance to goal: {dist:.3f}m")
-
     # Export comprehensive CSV files with debugging
     print("Exporting robot navigation data...")
 
@@ -283,12 +259,6 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
     )
     robot_velocity.to_csv("output/robot_velocity.csv")
     print("✓ Exported velocity data to output/robot_velocity.csv")
-
-    # Check if assertion should pass
-    if dist < 2.0:
-        print(f"✓ Robot successfully reached goal area (distance: {dist:.3f}m < 2.0m)")
-    else:
-        print(f"⚠ Robot not quite at goal (distance: {dist:.3f}m >= 2.0m)")
 
     # Test waypoint distance functionality using the new waypoint feature
     print("Testing waypoint distance to navigation goal...")
@@ -310,7 +280,11 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
     # Calculate distance to goal using the new waypoint feature
     distance_to_goal_metric = robot.distance_to(goal_waypoint)
     waypoint_dist = distance_to_goal_metric.now()
-    print(f"Distance to goal waypoint: {waypoint_dist:.3f}m")
+    # Check if assertion should pass
+    if waypoint_dist < 0.5:
+        print(f"✓ Robot successfully reached goal area (distance: {waypoint_dist:.3f}m < 0.5m)")
+    else:
+        print(f"⚠ Robot not quite at goal (distance: {waypoint_dist:.3f}m >= 0.5m)")
 
     # Export waypoint distance to CSV
     distance_to_goal_metric.to_csv("output/robot_distance_to_goal_waypoint.csv")
@@ -325,7 +299,3 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
     print(
         "✓ Exported robot xy position in custom_odom frame to output/robot_xy_pose_custom_odom.csv"
     )
-
-    print("All CSV exports completed successfully!")
-    print(f"Simple 2D distance to goal: {dist:.3f}m")
-    print(f"Waypoint distance to goal: {waypoint_dist:.3f}m")
