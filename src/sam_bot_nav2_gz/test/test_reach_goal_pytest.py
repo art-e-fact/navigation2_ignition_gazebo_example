@@ -262,9 +262,7 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
     # Calculate simple 2D distance to goal
     import math
 
-    dist = math.sqrt(
-        (current_pose.x - goal_x) ** 2 + (current_pose.y - goal_y) ** 2
-    )
+    dist = math.sqrt((current_pose.x - goal_x) ** 2 + (current_pose.y - goal_y) ** 2)
     print(f"Distance to goal: {dist:.3f}m")
 
     # Export comprehensive CSV files with debugging
@@ -288,15 +286,46 @@ def test_reached_goal(reach_goal_proc, launch_context, sim):
 
     # Check if assertion should pass
     if dist < 2.0:
-        print(
-            f"✓ Robot successfully reached goal area (distance: {dist:.3f}m < 2.0m)"
-        )
+        print(f"✓ Robot successfully reached goal area (distance: {dist:.3f}m < 2.0m)")
     else:
         print(f"⚠ Robot not quite at goal (distance: {dist:.3f}m >= 2.0m)")
 
+    # Test waypoint distance functionality using the new waypoint feature
+    print("Testing waypoint distance to navigation goal...")
 
-    # Note: Skipping distance_to_goal CSV as it requires entity-to-entity distance calculation
-    print("✓ Skipped distance to goal CSV (requires entity-to-entity calculation)")
+    # Add transform from world to custom_odom frame using robot's initial pose
+    # This establishes our own odometry frame to avoid conflict with nav2's odom
+    robot_initial_pose = robot.pose().earliest()
+    print(
+        f"Robot initial pose: x={robot_initial_pose.x:.3f}, y={robot_initial_pose.y:.3f}, z={robot_initial_pose.z:.3f}"
+    )
+    sim.add_transform("world", "custom_odom", robot_initial_pose)
+    print("Added world->custom_odom transform for waypoint distance calculation")
+
+    # Create waypoint pose for the navigation goal in custom_odom frame
+    goal_waypoint = Pose(
+        x=goal_x, y=goal_y, z=0.0, roll=0.0, pitch=0.0, yaw=0.0, frame="custom_odom"
+    )
+
+    # Calculate distance to goal using the new waypoint feature
+    distance_to_goal_metric = robot.distance_to(goal_waypoint)
+    waypoint_dist = distance_to_goal_metric.now()
+    print(f"Distance to goal waypoint: {waypoint_dist:.3f}m")
+
+    # Export waypoint distance to CSV
+    distance_to_goal_metric.to_csv("output/robot_distance_to_goal_waypoint.csv")
+    print(
+        "✓ Exported waypoint distance data to output/robot_distance_to_goal_waypoint.csv"
+    )
+
+    # Export robot xy position in custom_odom frame
+    robot.pose(frame_id="custom_odom").to_csv(
+        "output/robot_xy_pose_custom_odom.csv", columns=["x", "y"]
+    )
+    print(
+        "✓ Exported robot xy position in custom_odom frame to output/robot_xy_pose_custom_odom.csv"
+    )
 
     print("All CSV exports completed successfully!")
-    print(f"Distance to goal: {dist:.3f}m")
+    print(f"Simple 2D distance to goal: {dist:.3f}m")
+    print(f"Waypoint distance to goal: {waypoint_dist:.3f}m")
