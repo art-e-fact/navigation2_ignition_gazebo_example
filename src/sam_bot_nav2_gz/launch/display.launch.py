@@ -110,7 +110,7 @@ def generate_launch_description():
             "-topic",
             "robot_description",
             "-z",
-            "0.16",
+            "0.151",
             "-x",
             "-2.0",
             "--ros-args",
