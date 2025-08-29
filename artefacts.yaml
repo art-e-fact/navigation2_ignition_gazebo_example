@@ -34,8 +34,12 @@ jobs:
     scenarios:
       defaults: # Global to all scenarios, and overriden in specific scenarios.
         output_dirs: ["output"]
+        output_path: output
+        metrics: "metrics.json"
         params:
           launch/world: ["empty.sdf"]
+          amcl/update_min_a: [0.2, 0.1, 0.05]
+          amcl/update_min_d: [0.2, 0.1 ]
       settings:
         - name: reach_goal
           run: "rm output/*.* ; python3 -m pytest  src/sam_bot_nav2_gz/test/test_reach_goal_pytest.py -s --junit-xml output/tests_junit.xml"
