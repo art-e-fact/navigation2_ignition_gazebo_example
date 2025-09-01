@@ -20,6 +20,7 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 from sim_state import IgnitionSimStateUtil
 from sim_state.metric_value import Pose
+from artefacts_toolkit_testsuite.pytest import metrics_fixture
 
 
 ARTEFACTS_PARAMS_FILE = os.environ.get(
@@ -190,11 +191,7 @@ def sim():
     # Cleanup
     util.stop_recording()
 
-@pytest.fixture(scope="module")
-def artefacts_metrics():
-    metrics = {}
-    yield metrics
-    json.dump(metrics, open("output/metrics.json", "w"), indent=2)
+artefacts_metrics = metrics_fixture()
 
 
 @pytest.mark.launch(fixture=launch_description)
