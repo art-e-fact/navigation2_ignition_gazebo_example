@@ -37,6 +37,34 @@ def deep_merge_dicts(source, override):
             source[key] = value
     return source
 
+def rosify_params(params: dict):
+    """
+    Store `params` in `param_file` and convert to ros2 param file nested format,
+    to be used by the launch file
+    """
+    content = {}
+    for k, v in params.items():
+        try:
+            node, pname = k.split("/")
+        except Exception:
+            print(
+                localise(
+                    "Problem with parameter name. Please ensure params are in the format `node/param`"
+                )
+            )
+            return
+        if node not in content:
+            content[node] = {"ros__parameters": {}}
+        # handles nested keys for params in the form of dot notation
+        current_level = content[node]["ros__parameters"]
+        keys = pname.split(".")
+        for key in keys[:-1]:
+            if key not in current_level:
+                current_level[key] = {}
+            current_level = current_level[key]
+        current_level[keys[-1]] = v
+    return content
+
 
 def merge_ros_params_files(source, override, destination):
     """Merge two ROS2 yaml parameter files into one, overriding the values in the first one with the values in `override`"""
@@ -46,9 +74,10 @@ def merge_ros_params_files(source, override, destination):
         source_params = yaml.safe_load(f)
 
     with open(override, "r") as f:
-        override_params = yaml.safe_load(f)
+        override_param = yaml.safe_load(f)
+        override_params_ros = rosify_params(override_param)
 
-    merged_params = deep_merge_dicts(source_params, override_params)
+    merged_params = deep_merge_dicts(source_params, override_params_ros)
     with open(destination, "w") as f:
         yaml.dump(merged_params, f)
 
@@ -100,7 +129,7 @@ def launch_description(reach_goal_proc, sim):
         launch_arguments=[
             ("run_headless", run_headless),
             ("world_file", world),
-            # ("params_file", new_params_file),
+            ("params_file", os.path.join(repo_root, new_params_file)),
         ],
     )
 

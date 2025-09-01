@@ -38,7 +38,7 @@ jobs:
         metrics: "metrics.json"
         params:
           launch/world: ["empty.sdf"]
-          amcl/update_min_a: [0.2, 0.1, 0.05]
+          amcl/update_min_a: [0.2, ]
           amcl/update_min_d: [0.2, 0.1 ]
       settings:
         - name: reach_goal
