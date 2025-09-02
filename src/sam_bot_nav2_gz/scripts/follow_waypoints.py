@@ -18,6 +18,7 @@ from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
 import rclpy
 from rclpy.duration import Duration
 import yaml
+from rosgraph_msgs.msg import Clock
 
 
 waypoints = yaml.safe_load('''
@@ -96,30 +97,16 @@ waypoints:
       w: 0.6960848684271199
 ''')
 
-waypoints = yaml.safe_load('''
-waypoints:
-  - position:
-      x: 0.8006443977355957
-      y: 0.5491957664489746
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: -0.0055409271259092485
-      w: 0.9999846489454652
-  - position:
-      x: 1.8789787292480469
-      y: 0.5389942526817322
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.010695864295550759
-      w: 0.9999427976074288
-''')
+sim_time = 0.0
+
+def update_sim_time(msg):
+    global sim_time
+    sim_time = msg.clock.sec + msg.clock.nanosec * 1e-9
+
 def main():
     rclpy.init()
     navigator = BasicNavigator()
+    navigator.create_subscription(Clock, '/clock', lambda msg: update_sim_time(msg), 10)
 
     def create_pose(transform):
         pose = PoseStamped()
@@ -162,7 +149,9 @@ def main():
 
         if feedback and i % 5 == 0:
             if current_wp >= 0 and current_wp != feedback.current_waypoint:
-                print(f"Reached waypoint: {current_wp}")
+                print(sim_time)
+                print(navigator.get_clock().now())
+                print(f"Reached waypoint: {current_wp} @{sim_time}")
             current_wp = feedback.current_waypoint
             print('Executing current waypoint: ' +
                   str(feedback.current_waypoint) + '/' + str(len(goal_poses)))
@@ -172,7 +161,7 @@ def main():
             if now - nav_start > Duration(seconds=600):
                 navigator.cancelTask()
 
-    print(f"Reached waypoint: {current_wp}")
+    print(f"Reached waypoint: {current_wp} @{sim_time}")
     # Do something depending on the return code
     result = navigator.getResult()
     if result == TaskResult.SUCCEEDED:

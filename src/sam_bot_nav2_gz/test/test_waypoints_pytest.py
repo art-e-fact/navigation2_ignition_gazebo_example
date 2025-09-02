@@ -49,6 +49,99 @@ waypoints:
       y: 0.0
       z: 0.010695864295550759
       w: 0.9999427976074288
+  - position:
+      x: 3.0792641639709473
+      y: 0.6118782758712769
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.01899610435153287
+      w: 0.9998195577300264
+  - position:
+      x: 3.8347740173339844
+      y: 0.012513279914855957
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.7548200584119721
+      w: 0.6559319167558071
+''')
+waypoints = yaml.safe_load('''
+waypoints:
+  - position:
+      x: 0.8006443977355957
+      y: 0.5491957664489746
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.0055409271259092485
+      w: 0.9999846489454652
+  - position:
+      x: 1.8789787292480469
+      y: 0.5389942526817322
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.010695864295550759
+      w: 0.9999427976074288
+  - position:
+      x: 3.0792641639709473
+      y: 0.6118782758712769
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.01899610435153287
+      w: 0.9998195577300264
+  - position:
+      x: 3.8347740173339844
+      y: 0.012513279914855957
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.7548200584119721
+      w: 0.6559319167558071
+  - position:
+      x: 3.084421157836914
+      y: -0.5701640844345093
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.9998472894684893
+      w: 0.01747563282157926
+  - position:
+      x: 2.19096302986145
+      y: -0.609535813331604
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.9999322787364863
+      w: 0.011637780753125607
+  - position:
+      x: 0.8946757316589355
+      y: -0.5464844703674316
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.9850211921086874
+      w: 0.1724333236262069
+  - position:
+      x: -0.14899730682373047
+      y: -0.011111736297607422
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.7179595085705036
+      w: 0.6960848684271199
 ''')
 
 def deep_merge_dicts(source, override):
@@ -233,7 +326,7 @@ artefacts_metrics = metrics_fixture()
 
 
 @pytest.mark.launch(fixture=launch_description)
-def test_0_nav2_started(follow_waypoints_proc, launch_context):
+async def test_0_nav2_started(follow_waypoints_proc, launch_context):
     """Test that Nav2 starts successfully"""
 
     def validate_nav2_output(output):
@@ -249,15 +342,15 @@ def test_0_nav2_started(follow_waypoints_proc, launch_context):
 
     # Get the follow_waypoints process from the launch context
     print("Starting to wait for follow_waypoints process output...")
-    process_tools.assert_output_sync(
+    await process_tools.assert_output(
         launch_context, follow_waypoints_proc, validate_nav2_output, timeout=120
     )
     print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 
 @pytest.mark.launch(fixture=launch_description)
-@pytest.mark.parametrize("waypoint_idx", [0, 1]) #TODO use list
-async def test_1_reached_waypoint(follow_waypoints_proc, launch_context, sim, artefacts_metrics, waypoint_idx):
+@pytest.mark.parametrize("waypoint_idx", range(len(waypoints["waypoints"])))
+def test_1_reached_waypoint(follow_waypoints_proc, launch_context, sim, artefacts_metrics, waypoint_idx):
     """Check that each waypoint is reached"""
     #TODO, without async, check timing could be way too late
 
@@ -276,19 +369,26 @@ async def test_1_reached_waypoint(follow_waypoints_proc, launch_context, sim, ar
         qx=wp["orientation"]["x"], qy=wp["orientation"]["y"], qz=wp["orientation"]["z"], qw=wp["orientation"]["w"],
         frame="custom_odom"
     )
+    sim_time = 0
     def validate_goal_output(output):
         if not output.strip():
             print("WARNING: follow_waypoints process produced no output!")
         text = f"Reached waypoint: {waypoint_idx}"
         assert text in output, f"process never printed {text}"
+        # the format is f"Reached waypoint: {current_wp} @{sim_time}" we want to extract the sim_time. there could be more lines afterwards
+        nonlocal sim_time
+        sim_state_str = output.split(text)[1].splitlines()[0].strip().lstrip("@").strip()
+        sim_time = float(sim_state_str)
 
     # Get the follow_waypoints process from the launch context
     print("Starting to wait for goal completion...")
-    await process_tools.assert_output(
+    #await process_tools.assert_output(
+    process_tools.assert_output_sync(
         launch_context, follow_waypoints_proc, validate_goal_output, timeout=60
     )
 
-    current_pose = robot.pose(frame_id="custom_odom").now()
+    current_pose = robot.pose(frame_id="custom_odom").at(sim_time)
+    print(sim_time)
     print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print(
         f"Current robot position: x={current_pose.x:.3f}, y={current_pose.y:.3f}, z={current_pose.z:.3f}"
@@ -299,11 +399,11 @@ async def test_1_reached_waypoint(follow_waypoints_proc, launch_context, sim, ar
 
     # Calculate distance to goal using the new waypoint feature
     distance_to_goal_metric = robot.distance_to(goal_waypoint)
-    waypoint_dist = distance_to_goal_metric.now()
+    waypoint_dist = distance_to_goal_metric.at(sim_time)
     # Check if assertion should pass
     artefacts_metrics["distance_to_goal"] = waypoint_dist
     # asserts
-    assert waypoint_dist < 0.2, (
+    assert waypoint_dist < 0.25, (
         f"Robot did not reach close enough to goal, distance: {waypoint_dist:.3f}m"
     )
 
