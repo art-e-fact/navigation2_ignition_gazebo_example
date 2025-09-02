@@ -127,6 +127,7 @@ def main():
     navigator.followWaypoints(goal_poses)
 
     i = 0
+    current_wp = -1
     while not navigator.isTaskComplete():
         ################################################
         #
@@ -139,14 +140,18 @@ def main():
         feedback = navigator.getFeedback()
 
         if feedback and i % 5 == 0:
+            if current_wp >= 0 and current_wp != feedback.current_waypoint:
+                print(f"Reached waypoint: {current_wp}")
+            current_wp = feedback.current_waypoint
             print('Executing current waypoint: ' +
-                  str(feedback.current_waypoint + 1) + '/' + str(len(goal_poses)))
+                  str(feedback.current_waypoint) + '/' + str(len(goal_poses)))
             now = navigator.get_clock().now()
 
             # Some navigation timeout to demo cancellation
             if now - nav_start > Duration(seconds=600):
                 navigator.cancelTask()
 
+    print(f"Reached waypoint: {current_wp}")
     # Do something depending on the return code
     result = navigator.getResult()
     if result == TaskResult.SUCCEEDED:
