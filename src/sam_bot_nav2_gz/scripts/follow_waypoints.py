@@ -96,6 +96,27 @@ waypoints:
       w: 0.6960848684271199
 ''')
 
+waypoints = yaml.safe_load('''
+waypoints:
+  - position:
+      x: 0.8006443977355957
+      y: 0.5491957664489746
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.0055409271259092485
+      w: 0.9999846489454652
+  - position:
+      x: 1.8789787292480469
+      y: 0.5389942526817322
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.010695864295550759
+      w: 0.9999427976074288
+''')
 def main():
     rclpy.init()
     navigator = BasicNavigator()
