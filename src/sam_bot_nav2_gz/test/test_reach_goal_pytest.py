@@ -215,7 +215,6 @@ def sim():
         "✓ Exported robot xy position in custom_odom frame to output/robot_xy_pose_custom_odom.csv"
     )
 
-    waypoint_dist = distance_to_goal_metric.now()
 
     # Cleanup
     util.stop_recording()
@@ -265,21 +264,6 @@ def test_reached_goal(reach_goal_proc, launch_context, sim, artefacts_metrics):
     print("Now checking entity state after goal completion...")
     robot = sim.get_entity("sam_bot")
 
-    # Test basic robot operations and debug time references
-    robot_pose = robot.pose()
-
-    # Check different possible time array attributes
-    time_attrs = ["_time_array", "time_array", "times", "_times", "timestamps"]
-    for attr in time_attrs:
-        if hasattr(robot_pose, attr):
-            val = getattr(robot_pose, attr)
-            print(
-                f"Found {attr}: {type(val)}, length: {len(val) if hasattr(val, '__len__') else 'N/A'}"
-            )
-
-    print(
-        f"Robot pose data available with {len(robot_pose._time_array) if hasattr(robot_pose, '_time_array') else 'unknown'} data points"
-    )
 
     # Test waypoint distance functionality using the new waypoint feature
     print("Testing waypoint distance to navigation goal...")
