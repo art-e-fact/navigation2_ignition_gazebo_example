@@ -1,7 +1,6 @@
 import os
 import pytest
 import rclpy
-import json
 from launch.substitutions import (
     LaunchConfiguration,
 )
@@ -23,51 +22,14 @@ from sim_state.metric_value import Pose
 from artefacts_toolkit_testsuite.pytest import metrics_fixture
 import yaml
 from datetime import datetime
+from artefacts_toolkit_config import merge_ros_params_files
+#Currently requires https://github.com/art-e-fact/artefacts-toolkit-config/pull/8
 
 
 ARTEFACTS_PARAMS_FILE = os.environ.get(
     "ARTEFACTS_SCENARIO_PARAMS_FILE", "scenario_params.yaml"
 )
 
-waypoints = yaml.safe_load('''
-waypoints:
-  - position:
-      x: 0.8006443977355957
-      y: 0.5491957664489746
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: -0.0055409271259092485
-      w: 0.9999846489454652
-  - position:
-      x: 1.8789787292480469
-      y: 0.5389942526817322
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.010695864295550759
-      w: 0.9999427976074288
-  - position:
-      x: 3.0792641639709473
-      y: 0.6118782758712769
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.01899610435153287
-      w: 0.9998195577300264
-  - position:
-      x: 3.8347740173339844
-      y: 0.012513279914855957
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: -0.7548200584119721
-      w: 0.6559319167558071
-''')
 waypoints = yaml.safe_load('''
 waypoints:
   - position:
@@ -144,59 +106,6 @@ waypoints:
       w: 0.6960848684271199
 ''')
 
-def deep_merge_dicts(source, override):
-    """Recursively merge two dictionaries, with values from `override` taking precedence over `source`"""
-    for key, value in override.items():
-        if isinstance(value, dict) and key in source:
-            source[key] = deep_merge_dicts(source[key], value)
-        else:
-            source[key] = value
-    return source
-
-def rosify_params(params: dict):
-    """
-    Store `params` in `param_file` and convert to ros2 param file nested format,
-    to be used by the launch file
-    """
-    content = {}
-    for k, v in params.items():
-        try:
-            node, pname = k.split("/")
-        except Exception:
-            print(
-                localise(
-                    "Problem with parameter name. Please ensure params are in the format `node/param`"
-                )
-            )
-            return
-        if node not in content:
-            content[node] = {"ros__parameters": {}}
-        # handles nested keys for params in the form of dot notation
-        current_level = content[node]["ros__parameters"]
-        keys = pname.split(".")
-        for key in keys[:-1]:
-            if key not in current_level:
-                current_level[key] = {}
-            current_level = current_level[key]
-        current_level[keys[-1]] = v
-    return content
-
-
-def merge_ros_params_files(source, override, destination):
-    """Merge two ROS2 yaml parameter files into one, overriding the values in the first one with the values in `override`"""
-    import yaml
-
-    with open(source, "r") as f:
-        source_params = yaml.safe_load(f)
-
-    with open(override, "r") as f:
-        override_param = yaml.safe_load(f)
-        override_params_ros = rosify_params(override_param)
-
-    merged_params = deep_merge_dicts(source_params, override_params_ros)
-    with open(destination, "w") as f:
-        yaml.dump(merged_params, f)
-
 
 @pytest.fixture(scope="module")
 def follow_waypoints_proc():
@@ -222,7 +131,7 @@ def launch_description(follow_waypoints_proc, sim): #make sure sim is initialize
     new_params_file = "all_params.yaml"
     try:
         merge_ros_params_files(
-            source_params_file, ARTEFACTS_PARAMS_FILE, new_params_file
+            source_params_file, ARTEFACTS_PARAMS_FILE, new_params_file, rosify=True
         )
     except FileNotFoundError:
         pass
@@ -352,7 +261,7 @@ async def test_0_nav2_started(follow_waypoints_proc, launch_context):
 @pytest.mark.parametrize("waypoint_idx", range(len(waypoints["waypoints"])))
 def test_1_reached_waypoint(follow_waypoints_proc, launch_context, sim, artefacts_metrics, waypoint_idx):
     """Check that each waypoint is reached"""
-    #TODO, without async, check timing could be way too late
+    # Somehow the test does not seem to be called before the end of the full waypoints navigation, preventing the use of now()
 
     # Additional assertion using simulation state - wait for entity to be available
     print("Now checking entity state after goal completion...")
