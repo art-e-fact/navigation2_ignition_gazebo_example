@@ -20,7 +20,7 @@ from sim_state.metric_value import Pose
 import yaml
 from datetime import datetime
 from artefacts_toolkit_testsuite.pytest import metrics_fixture
-from artefacts_toolkit_testsuite.nav2 import sim_fixture, assert_nav2_started, assert_nav2_completed
+from artefacts_toolkit_testsuite.nav2 import sim_fixture, assert_nav2_started, assert_nav2_completed, assert_close_to_waypoint
 from artefacts_toolkit_config import merge_ros_params_files
 #Currently requires https://github.com/art-e-fact/artefacts-toolkit-config/pull/8
 
@@ -163,25 +163,8 @@ def test_1_reached_waypoint(follow_waypoints_proc, launch_context, sim, artefact
         launch_context, follow_waypoints_proc, validate_goal_output, timeout=60
     )
 
-    current_pose = robot.pose(frame_id="custom_odom").at(sim_time)
-    print(sim_time)
     print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    print(
-        f"Current robot position: x={current_pose.x:.3f}, y={current_pose.y:.3f}, z={current_pose.z:.3f}"
-    )
-    print(
-        f"Goal waypoint position: x={goal_waypoint.x:.3f}, y={goal_waypoint.y:.3f}, z={goal_waypoint.z:.3f}"
-    )
-
-    # Calculate distance to goal using the new waypoint feature
-    distance_to_goal_metric = robot.distance_to(goal_waypoint)
-    waypoint_dist = distance_to_goal_metric.at(sim_time)
-    # Check if assertion should pass
-    artefacts_metrics["distance_to_goal"] = waypoint_dist
-    # asserts
-    assert waypoint_dist < 0.25, (
-        f"Robot did not reach close enough to goal, distance: {waypoint_dist:.3f}m"
-    )
+    assert_close_to_waypoint(sim, "sam_bot", goal_waypoint, sim_time=sim_time, threshold=0.25, export_csv=False) 
 
 @pytest.mark.launch(fixture=launch_description)
 def test_2_finished_waypoints(follow_waypoints_proc, launch_context, sim, artefacts_metrics):

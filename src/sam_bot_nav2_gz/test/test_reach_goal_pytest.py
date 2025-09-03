@@ -18,7 +18,7 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 from sim_state.metric_value import Pose
 from artefacts_toolkit_testsuite.pytest import metrics_fixture
-from artefacts_toolkit_testsuite.nav2 import sim_fixture, assert_nav2_started, assert_nav2_completed
+from artefacts_toolkit_testsuite.nav2 import sim_fixture, assert_nav2_started, assert_nav2_completed, assert_close_to_waypoint
 from artefacts_toolkit_config import merge_ros_params_files
 #Currently requires https://github.com/art-e-fact/artefacts-toolkit-config/pull/8
 
@@ -125,27 +125,6 @@ def test_reached_goal(reach_goal_proc, launch_context, sim, artefacts_metrics):
     """Check that the navigation goal is reached"""
 
     assert_nav2_completed(reach_goal_proc, launch_context)
-
-    # Additional assertion using simulation state - wait for entity to be available
-    print("Now checking entity state after goal completion...")
-    robot = sim.get_entity("sam_bot")
-
-    # Test waypoint distance functionality using the new waypoint feature
-    print("Testing waypoint distance to navigation goal...")
-    # Add transform from world to custom_odom frame using robot's initial pose
-    # This establishes our own odometry frame to avoid conflict with nav2's odom
-    robot_initial_pose = robot.pose().earliest()
-    print(
-        f"Robot initial pose: x={robot_initial_pose.x:.3f}, y={robot_initial_pose.y:.3f}, z={robot_initial_pose.z:.3f}"
-    )
-    sim.add_transform("world", "custom_odom", robot_initial_pose)
-    print("Added world->custom_odom transform for waypoint distance calculation")
-    # Check if robot reached approximately the goal area (using current position)
-    current_pose = robot.pose().now()
-    print(
-        f"Current robot position: x={current_pose.x:.3f}, y={current_pose.y:.3f}, z={current_pose.z:.3f}"
-    )
-
     goal_x, goal_y = 0.8, -0.5
 
     # Create waypoint pose for the navigation goal in custom_odom frame
@@ -153,18 +132,5 @@ def test_reached_goal(reach_goal_proc, launch_context, sim, artefacts_metrics):
         x=goal_x, y=goal_y, z=0.0, roll=0.0, pitch=0.0, yaw=0.0, frame="custom_odom"
     )
 
-    # Calculate distance to goal using the new waypoint feature
-    distance_to_goal_metric = robot.distance_to(goal_waypoint)
-    waypoint_dist = distance_to_goal_metric.now()
-    # Check if assertion should pass
-    artefacts_metrics["distance_to_goal"] = waypoint_dist
-    # asserts
+    assert_close_to_waypoint(sim, "sam_bot", goal_waypoint, threshold=0.5, export_csv=True)
 
-    # Export waypoint distance to CSV
-    distance_to_goal_metric.to_csv("output/robot_distance_to_goal_waypoint.csv")
-    print(
-        "✓ Exported waypoint distance data to output/robot_distance_to_goal_waypoint.csv"
-    )
-    assert waypoint_dist < 0.5, (
-        f"Robot did not reach close enough to goal, distance: {waypoint_dist:.3f}m"
-    )
