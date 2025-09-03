@@ -130,43 +130,19 @@ def test_1_reached_waypoint(follow_waypoints_proc, launch_context, sim, artefact
     """Check that each waypoint is reached"""
     # Somehow the test does not seem to be called before the end of the full waypoints navigation, preventing the use of now()
 
-    # Additional assertion using simulation state - wait for entity to be available
-    print("Now checking entity state after goal completion...")
-    robot = sim.get_entity("sam_bot")
-
-    # Test waypoint distance functionality using the new waypoint feature
-    print("Testing waypoint distance to navigation goal...")
-    robot_initial_pose = robot.pose().earliest()
-    sim.add_transform("world", "custom_odom", robot_initial_pose)
+    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     wp = waypoints["waypoints"][waypoint_idx]
     # Create waypoint pose for the navigation goal in custom_odom frame
+    sim_time = assert_reached_waypoint(follow_waypoints_proc, launch_context, waypoint_idx)
     goal_waypoint = Pose(
         x=wp["position"]["x"], y=wp["position"]["y"], z=0.0,
         qx=wp["orientation"]["x"], qy=wp["orientation"]["y"], qz=wp["orientation"]["z"], qw=wp["orientation"]["w"],
         frame="custom_odom"
     )
-    sim_time = 0
-    def validate_goal_output(output):
-        if not output.strip():
-            print("WARNING: follow_waypoints process produced no output!")
-        text = f"Reached waypoint: {waypoint_idx}"
-        assert text in output, f"process never printed {text}"
-        # the format is f"Reached waypoint: {current_wp} @{sim_time}" we want to extract the sim_time. there could be more lines afterwards
-        nonlocal sim_time
-        sim_state_str = output.split(text)[1].splitlines()[0].strip().lstrip("@").strip()
-        sim_time = float(sim_state_str)
-
-    # Get the follow_waypoints process from the launch context
-    print("Starting to wait for goal completion...")
-    #await process_tools.assert_output(
-    process_tools.assert_output_sync(
-        launch_context, follow_waypoints_proc, validate_goal_output, timeout=60
-    )
-
-    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     assert_close_to_waypoint(sim, "sam_bot", goal_waypoint, sim_time=sim_time, threshold=0.25, export_csv=False) 
 
 @pytest.mark.launch(fixture=launch_description)
 def test_2_finished_waypoints(follow_waypoints_proc, launch_context, sim, artefacts_metrics):
     """Check that each waypoint is reached"""
     assert_nav2_completed(follow_waypoints_proc, launch_context)
+
