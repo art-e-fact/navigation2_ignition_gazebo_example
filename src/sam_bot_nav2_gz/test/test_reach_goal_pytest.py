@@ -30,7 +30,6 @@ ARTEFACTS_PARAMS_FILE = os.environ.get(
 
 
 
-
 @pytest.fixture(scope="module")
 def reach_goal_proc():
     reach_goal = Node(
@@ -141,20 +140,6 @@ def sim():
     robot_velocity.to_csv("output/robot_velocity.csv")
     print("✓ Exported velocity data to output/robot_velocity.csv")
 
-    goal_x, goal_y = 0.8, -0.5
-
-    # Create waypoint pose for the navigation goal in custom_odom frame
-    goal_waypoint = Pose(
-        x=goal_x, y=goal_y, z=0.0, roll=0.0, pitch=0.0, yaw=0.0, frame="custom_odom"
-    )
-
-    # Calculate distance to goal using the new waypoint feature
-    distance_to_goal_metric = robot.distance_to(goal_waypoint)
-    # Export waypoint distance to CSV
-    distance_to_goal_metric.to_csv("output/robot_distance_to_goal_waypoint.csv")
-    print(
-        "✓ Exported waypoint distance data to output/robot_distance_to_goal_waypoint.csv"
-    )
 
     # Export robot xy position in custom_odom frame
     robot.pose(frame_id="custom_odom").to_csv(
@@ -242,6 +227,12 @@ def test_reached_goal(reach_goal_proc, launch_context, sim, artefacts_metrics):
     # Check if assertion should pass
     artefacts_metrics["distance_to_goal"] = waypoint_dist
     # asserts
+
+    # Export waypoint distance to CSV
+    distance_to_goal_metric.to_csv("output/robot_distance_to_goal_waypoint.csv")
+    print(
+        "✓ Exported waypoint distance data to output/robot_distance_to_goal_waypoint.csv"
+    )
     assert waypoint_dist < 0.5, (
         f"Robot did not reach close enough to goal, distance: {waypoint_dist:.3f}m"
     )
