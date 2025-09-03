@@ -20,7 +20,7 @@ from sim_state.metric_value import Pose
 import yaml
 from datetime import datetime
 from artefacts_toolkit_testsuite.pytest import metrics_fixture
-from artefacts_toolkit_testsuite.nav2 import sim_fixture
+from artefacts_toolkit_testsuite.nav2 import sim_fixture, assert_nav2_started, assert_nav2_completed
 from artefacts_toolkit_config import merge_ros_params_files
 #Currently requires https://github.com/art-e-fact/artefacts-toolkit-config/pull/8
 
@@ -29,6 +29,7 @@ ARTEFACTS_PARAMS_FILE = os.environ.get(
     "ARTEFACTS_SCENARIO_PARAMS_FILE", "scenario_params.yaml"
 )
 
+# used to access simulation state. The one fom nav2 includes generation of basic csvs rendered as charts
 sim = sim_fixture("collision_test", "sam_bot", output_dir="output")
 
 artefacts_metrics = metrics_fixture()
@@ -118,26 +119,9 @@ def launch_description(follow_waypoints_proc, sim): #make sure sim is initialize
 
 
 @pytest.mark.launch(fixture=launch_description)
-async def test_0_nav2_started(follow_waypoints_proc, launch_context):
+def test_nav2_started(follow_waypoints_proc, launch_context):
     """Test that Nav2 starts successfully"""
-
-    def validate_nav2_output(output):
-        print(
-            f"follow_waypoints output: '{output[:200]}...' (truncated)"
-            if len(output) > 200
-            else f"follow_waypoints output: '{output}'"
-        )
-        if not output.strip():
-            print("WARNING: follow_waypoints process produced no output!")
-        # Wait for the complete navigation process, then check if Nav2 was activated
-        assert "Nav2 active!" in output, "process never printed Nav2 active!"
-
-    # Get the follow_waypoints process from the launch context
-    print("Starting to wait for follow_waypoints process output...")
-    await process_tools.assert_output(
-        launch_context, follow_waypoints_proc, validate_nav2_output, timeout=120
-    )
-    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    assert_nav2_started(follow_waypoints_proc, launch_context)
 
 
 @pytest.mark.launch(fixture=launch_description)
@@ -202,10 +186,4 @@ def test_1_reached_waypoint(follow_waypoints_proc, launch_context, sim, artefact
 @pytest.mark.launch(fixture=launch_description)
 def test_2_finished_waypoints(follow_waypoints_proc, launch_context, sim, artefacts_metrics):
     """Check that each waypoint is reached"""
-
-    def validate_goal_output(output):
-        print(f"follow_waypoints output: '{output}'")
-        if not output.strip():
-            print("WARNING: follow_waypoints process produced no output!")
-        assert "Goal succeeded!" in output, "process never printed Goal succeeded!"
-
+    assert_nav2_completed(follow_waypoints_proc, launch_context)

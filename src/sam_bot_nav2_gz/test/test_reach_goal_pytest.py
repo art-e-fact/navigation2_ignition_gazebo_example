@@ -18,7 +18,7 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 from sim_state.metric_value import Pose
 from artefacts_toolkit_testsuite.pytest import metrics_fixture
-from artefacts_toolkit_testsuite.nav2 import sim_fixture
+from artefacts_toolkit_testsuite.nav2 import sim_fixture, assert_nav2_started, assert_nav2_completed, assert_close_to_waypoint
 from artefacts_toolkit_config import merge_ros_params_files
 #Currently requires https://github.com/art-e-fact/artefacts-toolkit-config/pull/8
 
@@ -45,7 +45,7 @@ def reach_goal_proc():
 
 
 @launch_pytest.fixture(scope="module")
-def launch_description(reach_goal_proc, sim):
+def launch_description(reach_goal_proc, sim): #make sure sim is initialized
     """Launch description fixture for pytest-based testing"""
     try:
         world = get_artefacts_param("launch", "world", default="empty.sdf")
@@ -117,45 +117,18 @@ def launch_description(reach_goal_proc, sim):
 @pytest.mark.launch(fixture=launch_description)
 def test_nav2_started(reach_goal_proc, launch_context):
     """Test that Nav2 starts successfully"""
-
-    def validate_nav2_output(output):
-        print(
-            f"reach_goal output: '{output[:200]}...' (truncated)"
-            if len(output) > 200
-            else f"reach_goal output: '{output}'"
-        )
-        if not output.strip():
-            print("WARNING: reach_goal process produced no output!")
-        # Wait for the complete navigation process, then check if Nav2 was activated
-        assert "Nav2 active!" in output, "process never printed Nav2 active!"
-
-    # Get the reach_goal process from the launch context
-    print("Starting to wait for reach_goal process output...")
-    process_tools.assert_output_sync(
-        launch_context, reach_goal_proc, validate_nav2_output, timeout=120
-    )
+    assert_nav2_started(reach_goal_proc, launch_context)
 
 
 @pytest.mark.launch(fixture=launch_description)
 def test_reached_goal(reach_goal_proc, launch_context, sim, artefacts_metrics):
     """Check that the navigation goal is reached"""
 
-    def validate_goal_output(output):
-        print(f"reach_goal output: '{output}'")
-        if not output.strip():
-            print("WARNING: reach_goal process produced no output!")
-        assert "Goal succeeded!" in output, "process never printed Goal succeeded!"
-
-    # Get the reach_goal process from the launch context
-    print("Starting to wait for goal completion...")
-    process_tools.assert_output_sync(
-        launch_context, reach_goal_proc, validate_goal_output, timeout=90
-    )
+    assert_nav2_completed(reach_goal_proc, launch_context)
 
     # Additional assertion using simulation state - wait for entity to be available
     print("Now checking entity state after goal completion...")
     robot = sim.get_entity("sam_bot")
-
 
     # Test waypoint distance functionality using the new waypoint feature
     print("Testing waypoint distance to navigation goal...")
@@ -179,6 +152,7 @@ def test_reached_goal(reach_goal_proc, launch_context, sim, artefacts_metrics):
     goal_waypoint = Pose(
         x=goal_x, y=goal_y, z=0.0, roll=0.0, pitch=0.0, yaw=0.0, frame="custom_odom"
     )
+
     # Calculate distance to goal using the new waypoint feature
     distance_to_goal_metric = robot.distance_to(goal_waypoint)
     waypoint_dist = distance_to_goal_metric.now()

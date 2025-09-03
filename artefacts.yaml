@@ -39,7 +39,7 @@ jobs:
         params:
           launch/world: ["empty.sdf"]
           amcl/update_min_a: [0.2, ]
-          amcl/update_min_d: [0.2, 0.1 ]
+          amcl/update_min_d: [0.2 ]
       settings:
         - name: reach_goal
           run: "rm output/*.* ; python3 -m pytest  src/sam_bot_nav2_gz/test/test_reach_goal_pytest.py -s --junit-xml output/tests_junit.xml"
@@ -64,7 +64,7 @@ jobs:
           amcl/update_min_a: [0.2]
           amcl/update_min_d: [0.2]
       settings:
-        - name: reach_goal
+        - name: follow_waypoints
           run: "rm output/*.* ; python3 -m pytest  src/sam_bot_nav2_gz/test/test_waypoints_pytest.py -s --junit-xml output/tests_junit.xml"
   nav2:
     type: test
