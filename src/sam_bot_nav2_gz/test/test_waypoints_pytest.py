@@ -1,5 +1,10 @@
+import sys
 import os
+import yaml
+from datetime import datetime
 import pytest
+import launch_pytest
+
 from launch.substitutions import (
     LaunchConfiguration,
 )
@@ -10,19 +15,12 @@ from launch.actions import (
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
-import launch_pytest
-from launch_pytest.tools import process as process_tools
-from artefacts_toolkit.config import get_artefacts_param
-import sys
 
-sys.path.append(os.path.dirname(__file__))
-from sim_state.metric_value import Pose
-import yaml
-from datetime import datetime
-from artefacts_toolkit_testsuite.pytest import metrics_fixture
-from artefacts_toolkit_testsuite.nav2 import sim_fixture, assert_nav2_started, assert_nav2_completed, assert_close_to_waypoint
-from artefacts_toolkit_config import merge_ros_params_files
 #Currently requires https://github.com/art-e-fact/artefacts-toolkit-config/pull/8
+from artefacts_toolkit.config import get_artefacts_param, merge_ros_params_files
+from sim_state.metric_value import Pose
+from artefacts_toolkit_testsuite.pytest import metrics_fixture
+from artefacts_toolkit_testsuite.nav2 import sim_fixture, assert_nav2_started, assert_nav2_completed, assert_close_to_waypoint, assert_reached_waypoint
 
 
 ARTEFACTS_PARAMS_FILE = os.environ.get(
@@ -90,6 +88,7 @@ def launch_description(follow_waypoints_proc, sim): #make sure sim is initialize
     )
 
     # Gazebo ros bridge
+    # TODO factorize out
     gz_bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
@@ -113,7 +112,6 @@ def launch_description(follow_waypoints_proc, sim): #make sure sim is initialize
             launch_navigation_stack,
             follow_waypoints_proc,
             gz_bridge,
-            launch_pytest.actions.ReadyToTest(),
         ]
     )
 
