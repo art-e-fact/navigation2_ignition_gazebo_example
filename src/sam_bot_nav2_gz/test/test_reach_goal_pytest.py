@@ -18,7 +18,7 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 from sim_state.metric_value import Pose
 from artefacts_toolkit_testsuite.pytest import metrics_fixture
-from artefacts_toolkit_testsuite.nav2 import sim_fixture, assert_nav2_started, assert_nav2_completed, assert_close_to_waypoint
+from artefacts_toolkit_testsuite.nav2 import sim_fixture, assert_nav2_started, assert_nav2_completed
 from artefacts_toolkit_config import merge_ros_params_files
 #Currently requires https://github.com/art-e-fact/artefacts-toolkit-config/pull/8
 
