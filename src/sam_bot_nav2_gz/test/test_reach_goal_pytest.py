@@ -1,6 +1,5 @@
 import os
 import pytest
-import rclpy
 from launch.substitutions import (
     LaunchConfiguration,
 )
@@ -17,9 +16,9 @@ from artefacts_toolkit.config import get_artefacts_param
 import sys
 
 sys.path.append(os.path.dirname(__file__))
-from sim_state import IgnitionSimStateUtil
 from sim_state.metric_value import Pose
 from artefacts_toolkit_testsuite.pytest import metrics_fixture
+from artefacts_toolkit_testsuite.nav2 import sim_fixture
 from artefacts_toolkit_config import merge_ros_params_files
 #Currently requires https://github.com/art-e-fact/artefacts-toolkit-config/pull/8
 
@@ -29,6 +28,10 @@ ARTEFACTS_PARAMS_FILE = os.environ.get(
 )
 
 
+# used to access simulation state. The one fom nav2 includes generation of basic csvs rendered as charts
+sim = sim_fixture("collision_test", "sam_bot", output_dir="output")
+
+artefacts_metrics = metrics_fixture()
 
 @pytest.fixture(scope="module")
 def reach_goal_proc():
@@ -109,51 +112,6 @@ def launch_description(reach_goal_proc, sim):
         ]
     )
 
-
-@pytest.fixture(scope="module")
-def sim():
-    """Fixture that provides access to simulation state during tests"""
-    if not rclpy.ok():
-        rclpy.init()
-    # Use empty world which is what the test actually launches
-    util = IgnitionSimStateUtil("collision_test", record_as="output/simulation.mcap")
-
-    yield util
-    # csv exports
-    robot = util.get_entity("sam_bot")
-    # Export comprehensive CSV files with debugging
-    print("Exporting robot navigation data...")
-
-    # 1. Full robot pose over time (includes x, y, z, roll, pitch, yaw)
-    robot.pose().to_csv("output/robot_full_pose.csv")
-    print("✓ Exported full pose data to output/robot_full_pose.csv")
-
-    # 2. Robot x/y position over time (focused on navigation trajectory)
-    robot.pose().to_csv("output/robot_xy_position.csv", columns=["x", "y"])
-    print("✓ Exported x/y position trajectory to output/robot_xy_position.csv")
-
-    # 3. Robot velocity over time
-    robot_velocity = robot.velocity()
-    print(
-        f"Velocity data available with {len(robot_velocity._time_array) if hasattr(robot_velocity, '_time_array') else 'unknown'} data points"
-    )
-    robot_velocity.to_csv("output/robot_velocity.csv")
-    print("✓ Exported velocity data to output/robot_velocity.csv")
-
-
-    # Export robot xy position in custom_odom frame
-    robot.pose(frame_id="custom_odom").to_csv(
-        "output/robot_xy_pose_custom_odom.csv", columns=["x", "y"]
-    )
-    print(
-        "✓ Exported robot xy position in custom_odom frame to output/robot_xy_pose_custom_odom.csv"
-    )
-
-
-    # Cleanup
-    util.stop_recording()
-
-artefacts_metrics = metrics_fixture()
 
 
 @pytest.mark.launch(fixture=launch_description)
