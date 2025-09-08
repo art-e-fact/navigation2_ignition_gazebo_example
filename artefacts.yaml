@@ -21,7 +21,7 @@ jobs:
         - name: bringup
           ros_testfile: "src/sam_bot_nav2_gz/test/test_bringup.launch.py"
 
-  pytest:
+  reachgoal:
     type: test
     package:
       docker:
@@ -44,7 +44,7 @@ jobs:
         - name: reach_goal
           run: "rm output/*.* ; python3 -m pytest  src/sam_bot_nav2_gz/test/test_reach_goal_pytest.py -s --junit-xml output/tests_junit.xml"
 
-  pytestwp:
+  waypoints:
     type: test
     package:
       docker:
@@ -66,29 +66,7 @@ jobs:
       settings:
         - name: follow_waypoints
           run: "rm output/*.* ; python3 -m pytest  src/sam_bot_nav2_gz/test/test_waypoints_pytest.py -s --junit-xml output/tests_junit.xml"
-  nav2:
-    type: test
-    package:
-      docker:
-        build:
-          dockerfile: ./Dockerfile
-    runtime:
-      simulator: gazebo:fortress
-      framework: ros2:humble
-    timeout: 6 #minutes
-    scenarios:
-      defaults: # Global to all scenarios, and overriden in specific scenarios.
-        output_dirs: ["output"]
-        metrics:
-          - /odometry_error
-          - /distance_from_start_gt
-          - /distance_from_start_est
-        params:
-          launch/world: ["bookstore.sdf"]
-          controller_server/controller_frequency: [10.0]
-      settings:
-        - name: reach_goal
-          ros_testfile: "src/sam_bot_nav2_gz/test/test_reach_goal.launch.py"
+
 
   nav2-tune:
     type: test
