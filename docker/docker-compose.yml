@@ -1,0 +1,51 @@
+networks:
+  zenoh-net:
+    driver: bridge
+    name: zenoh-net
+
+services:
+  zenoh-router:
+    image: eclipse/zenoh:1.3.4
+    container_name: zenoh-router
+    ports:
+      - "7447:7447/tcp"
+      - "8000:8000"
+    volumes:
+      - ./router-config.json5:/router-config.json5
+    command: ["-c", "/router-config.json5"]
+    networks:
+      - zenoh-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8000/@/local/router || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+    restart: unless-stopped
+
+  # ROS 2 <-> Zenoh мост ВНУТРИ контейнера с роботом
+  ros2dds-bridge-local:
+    image: eclipse/zenoh-bridge-ros2dds:latest
+    container_name: ros2dds-bridge-local
+    volumes:
+      - ./ros2dds-config.json5:/config.json5
+    command: ["-c", "/config.json5"]
+    environment:
+      - ROS_DISTRO=humble
+    networks:
+      - zenoh-net
+    restart: unless-stopped
+
+  virtual-robot:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: virtual-robot
+    volumes:
+      - /dev/shm:/dev/shm
+    networks:
+      - zenoh-net
+    privileged: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped

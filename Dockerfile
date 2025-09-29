@@ -14,4 +14,4 @@ RUN apt update -y && apt install -y ros-humble-rosbag2-storage-mcap && rosdep in
 RUN source /opt/ros/humble/setup.bash --extend && colcon build --symlink-install
 
 RUN pip install -r src/sam_bot_nav2_gz/requirements.txt
-CMD source /ws/install/setup.bash && artefacts run $ARTEFACTS_JOB_NAME
+CMD ["bash", "-c", "source /opt/ros/humble/setup.bash && source /ws/install/setup.bash && ros2 launch sam_bot_nav2_gz complete_navigation.launch.py"]

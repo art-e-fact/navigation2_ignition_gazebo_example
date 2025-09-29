@@ -173,7 +173,7 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 name="world_file",
-                default_value="empty.sdf",
+                default_value="bookstore.sdf",
             ),
             bringup,
             waiting_toolbox,
