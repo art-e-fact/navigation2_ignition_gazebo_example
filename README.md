@@ -33,7 +33,7 @@ source install/setup.bash
 
 ## Run example
 ```
-ros2 run nav2_gz_testing example_waypoint_follower.py
+ros2 launch nav2_gz_testing waypoint_follower_example_launch.py
 ```
 
 ## Run tests with **pytest** locally
