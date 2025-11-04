@@ -25,6 +25,8 @@
   <exec_depend>rqt_tf_tree</exec_depend>
   <exec_depend>navigation2</exec_depend>
   <exec_depend>nav2_bringup</exec_depend>
+  <!-- nav2_route needed because: https://github.com/ros-navigation/navigation2/issues/5634#issuecomment-3431532519 -->
+  <exec_depend>nav2_route</exec_depend>
   <exec_depend>tf2_tools</exec_depend>
   <exec_depend>image_transport_plugins</exec_depend>
   <exec_depend>image_transport</exec_depend>
